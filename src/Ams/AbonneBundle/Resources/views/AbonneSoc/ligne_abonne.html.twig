@@ -1,0 +1,16 @@
+<tr>
+    <td><a href="{{path('fiche_abonne',{'id':abonne.abonne_id})}}"> {{abonne.numabo_ext}}</a> </td>
+    <td>{{abonne.vol1}}</td>
+    <td>{{abonne.vol2}}</td>
+    <td>{{abonne.depotLibelle}}</td>
+    <td>{{abonne.socLibelle}}</td>
+    <td>{{abonne.vol4}} {{abonne.vol3}}<br />{{abonne.cp}} - {{abonne.ville}}</</td>
+    {% if  abonne.pointLivraisonId == null %}
+       <td> Cet abonné ne posséde pas de point de livraison .</td> 
+    {% else %}
+        <td>{{abonne.pointLivraisonAdresse}} {{abonne.pointLivraisonCadrs}}<br />{{abonne.pointLivraisonCp}} - {{abonne.pointLivraisonVille}}</td>
+    {% endif %}
+    <td>{{abonne.date_debut|date('d/m/Y')}}</td> 
+    
+    
+</tr>

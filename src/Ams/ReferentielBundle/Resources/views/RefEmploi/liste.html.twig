@@ -1,0 +1,27 @@
+{% extends 'AmsReferentielBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['codeNG'           ,null                       ,null               ,isLength6          ,null                   ,null                   ,null              ,null],
+['code'             ,null                       ,null               ,isLength3          ,null                   ,null                   ,null              ,null],
+['libelle'          ,null                       ,null               ,isMax50            ,null                   ,null                   ,null              ,null],
+['paie'             ,null                       ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['prime'            ,null                       ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['affichage_modele_tournee' ,null               ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['affichage_modele_activite',null               ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':'AmsReferentielBundle:RefEmploi'})|raw}}");
+        initDataProcessor();
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==0 || cInd==2) return false;
+        return true;
+    }
+    </script>
+{% endblock %}

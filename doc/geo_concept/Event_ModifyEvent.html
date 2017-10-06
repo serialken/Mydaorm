@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Event : feature modified</title>
+<link rel="stylesheet" href="http://api.geoconcept.net/htc/htc/skins/htc.css">
+<script src="http://api.geoconcept.net/htc/htc.js"></script>
+<script>
+    function init() {
+        var options = {
+            server : 'http://10.150.5.157:8080/geoweb-easy/maps',
+            mapName : 'Aulnay_Testgcm',
+            tab : 'Tournees'
+        };
+        var map = new GCUI.Map('map', options);
+        map.onEvent("load", onMapLoaded);
+    }
+    function onMapLoaded() {
+        var map = GCUI.getMap('map');
+        map.zoomToMaxExtent();
+
+        var vectorLayer = new OpenLayers.Layer.Vector("Marker");
+        var feature = new OpenLayers.Feature.Vector(
+         new OpenLayers.Geometry.Point(613721, 2444082),
+         {mydata:'my feature data 1'},
+         {externalGraphic: 'http://api.geoconcept.net/htc/docs/en/htc-book/content/scripts/img/marker.png', graphicHeight: 21, graphicWidth: 16});
+        vectorLayer.addFeatures(feature);
+        feature = new OpenLayers.Feature.Vector(
+                new OpenLayers.Geometry.Point(613921, 2444282),
+                {mydata:'my feature data 2'},
+                {externalGraphic: 'http://api.geoconcept.net/htc/docs/en/htc-book/content/scripts/img/marker.png', graphicHeight: 21, graphicWidth: 16});
+        vectorLayer.addFeatures(feature);
+        map.addLayer(vectorLayer);
+
+        vectorLayer.events.on({
+                        'featuremodified': function(evt) {
+                                var feature = evt.feature;
+                                alert(feature.geometry);
+                        }
+                });
+                var modifyControl = new OpenLayers.Control.ModifyFeature(vectorLayer);
+                map.addControl(modifyControl);
+                modifyControl.activate();
+    }
+</script>
+</head>
+<body onload="init()">
+    <div id="map" style="width: 800px; height: 500px;"></div>
+</body>
+</html>

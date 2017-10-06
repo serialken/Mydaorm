@@ -1,0 +1,136 @@
+{% extends 'AmsSilogBundle::layout_dashboard.html.twig' %}
+{% block title %}Calendrier des opérations hors-presse{% endblock %}
+
+{% block dashboard %}
+    <style>
+
+            body {
+                margin-top: 40px;
+                text-align: center;
+                font-size: 14px;
+                font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            }
+
+            #calendar {
+                width: 100%;
+                margin: 0 auto;
+            }
+            
+            
+            .fc-event-inner {
+                margin: 5px;
+            }
+            
+            #calendar a.eventModal:hover {
+                border-color: #66afe9;
+                border-width: 1px;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+                outline: 0 none;
+            }
+            
+            #calendarLegend {
+                position: fixed;
+                right: 15px;
+                bottom: 5%;
+                width: 200px;
+                z-index: 10;
+            }
+
+    </style>
+    <div id='calendar'>
+       
+    </div>
+
+  <div id="calendarLegend" class="panel panel-info">
+        <div class="panel-heading">Legende</div>
+        <table class="table">
+            <tbody>
+                {% for evenement in evenements %}
+                <tr>
+                    <td style="background-color:{{evenement.couleur}}">&nbsp;</td>
+                    <td>{{evenement.libelle}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        
+        var dateNow = new Date();
+            
+        var fullCalendarOptions = {
+            droppable: false,
+            eventStartEditable: false,
+            header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right:'month,basicDay,basicWeek'
+            },
+            editable: true,
+            events: [
+ 
+                        {% for operation in operations %}
+                            {
+                                id : '{{ operation.id }}',
+                                start: new Date('{{operation.dateDebut|date('Y-m-d') }}'),
+                                end: new Date('{{operation.dateFin|date('Y-m-d') }}'),
+                                color: '{{ evenements[operation.statut]['couleur'] }}',
+                                title:"{{operation.libelle|raw|escape('js')}}-{{operation.produit.libelle|raw|escape('js')}}",
+                                url : "#{#{{path('calendrier_operation_speciale', {'id': operation.id})}}#}",
+                                image: '{% if operation.produit.image != NULL %} {{asset(operation.produit.image.webPath)}} {% endif %}',
+                                type : 'event',
+                                attrTitle : 'Campagne : {{operation.libelle}}'
+                            },
+                        {% endfor %}
+   
+                   
+            ],
+            
+            eventClick: function(event) {
+                        if (event.url) {
+                            window.open(event.url, "_self");
+                        return false;
+                    }
+           } ,         
+
+
+    dayClick:  function(date) {  
+        
+        mois =  date.getMonth()+1;
+        if(mois < 10)
+        mois = '0'+ mois;
+        jour = date.getDate();
+        if(date.getDate() < 10 )
+               jour = '0'+jour  
+         var dateFormat = date.getFullYear()+'-'+mois+'-'+jour;   
+         var  url= "{{path('calendrier_operation_special_add')}}?date_parution=" + dateFormat;
+         $(this).attr( "class", "nyroModal" );
+         $(this).attr("data-toggle", "modal");
+         $(this).attr("data-target", "#amsModal");
+         ChargeModal(url);
+        },
+   
+         feries: ''
+
+        };
+        
+	$(document).ready(function() {
+
+            var indexLastElm = fullCalendarOptions.events.length-1;
+            if (fullCalendarOptions.events[indexLastElm] === undefined) {
+                fullCalendarOptions.events.splice(indexLastElm, 1);
+            }
+            
+            $('#calendar').fullCalendar(fullCalendarOptions);
+            
+            setTimeout(function(){
+                $('#calendar').fullCalendar( 'refetchEvents' );
+            }, 300);
+                  
+	});
+         
+	
+    </script>
+
+{% endblock %}

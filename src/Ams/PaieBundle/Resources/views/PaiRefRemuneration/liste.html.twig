@@ -1,0 +1,23 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['societe_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['population_id'    ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_debut'       ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_fin'         ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['valeur'           ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['valeurHP'         ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['valeurHP2'        ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+    </script>
+{% endblock %}

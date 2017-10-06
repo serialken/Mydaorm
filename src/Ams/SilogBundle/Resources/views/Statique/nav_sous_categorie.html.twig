@@ -1,0 +1,21 @@
+{# Affichage filtre et sous menu sous forme de tabulation #}     
+<div  style='position:relative; height:700px; width:100%;'>
+    <div id="formFiltreDepotFlux">
+        <form method="post"  action ="{{path(route)}}">
+           {{form_widget(form)}}
+           <input type="submit" value="Filtrer" class="btn btn-primary"/>
+        </form>
+</div>
+
+<ul class="nav nav-tabs">
+    {%for sousCategorie in listeSousCategories %} 
+        {% if sousCategorie.page_defaut==route %}
+            <li class="active">
+        {% else %}
+            <li>
+        {% endif %}
+               <a href="{{path(sousCategorie.page_defaut)}}">{{sousCategorie.libelle}} </a>
+            </li>	
+    {% endfor %}
+</ul>
+

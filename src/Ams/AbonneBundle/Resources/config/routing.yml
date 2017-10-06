@@ -1,0 +1,18 @@
+recherche_abonne:
+    pattern:  /recherche-abonne
+    defaults: { _controller: AmsAbonneBundle:AbonneSoc:rechercheAbonne}
+    
+        
+fiche_abonne:
+    pattern: abonne/details/{id}
+    defaults: { _controller: AmsAbonneBundle:AbonneSoc:ficheAbonne }
+    requirements:
+        id: \d+
+    
+recherche_abonne_ajax:
+    pattern:  /recherche-abonne_ajax
+    defaults: { _controller: AmsAbonneBundle:AbonneSoc:xmlhttprequest}
+
+change_tournee_abonne:
+    pattern:  /change_tournee_abo
+    defaults: { _controller: AmsAbonneBundle:AbonneSoc:changeTournee}

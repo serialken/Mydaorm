@@ -1,0 +1,109 @@
+<div class=" liste_invendu">
+{% if invendus|length %}
+    <br><br><br><br>
+    <div class="row">
+        <form action="{{path('saisie_nb_ex_invendu')}}" method="POST">
+            <table class="table table-hover">
+          {% for lv in lieuVente %}
+                <tr class="active">
+                    <th style="border: none">N°LV : {{lv.numero}} {{lv.numero}}</th>
+                    <th style="border: none">Libelle LV :{{lv.libelle}}</th>
+                    <th style="border: none"></th>
+                    <th style="border: none">Adresse LV : {{lv.adresse_1~lv.adresse_2~lv.adresse_3}}</th>
+                </tr>
+                <tr class="active">
+                    <th style="border: none">
+                        Libelle du depot : {{depot.libelle}}
+                    </th>
+                    <th style="border: none"></th>
+                    <th style="border: none"></th>
+                    <th style="border: none">Telephone LV : {{lv.telephone}}</th>
+                </tr>
+                <tr class="active">
+                    <th style="border: none">Date : {{date|date('d/m/Y')}}</th>
+                    <th style="border: none"></th>
+                    <th style="border: none"></th>
+                    <th style="border: none"></th>
+                </tr>
+                <tr class="active">
+                    <th style="border: none">
+                <table border="1" style="width: 100%;">
+                            <tr>
+                                <td>Nb total ex invendus</td>
+                                <td>Nb total ex livrés</td>
+                            </tr>
+                            <tr>
+                                <td><i id="nbtotalInvendu">{%if totalInvendu is null%}0{%else%}{{totalInvendu}}{%endif%}</i></td>
+                                <td>{%if totalLivre is null%}0{%else%}{{totalLivre}}{%endif%}</td>
+                            </tr>
+                        </table>
+                    </th>
+
+                <th style="border: none"></th>
+                <th style="border: none"></th> 
+                <th style="border: none"></th> 
+                </tr>
+    {% endfor %}
+
+                {#<tr><th style="border: none"></th><th style="border: none"></th><th style="border: none"></th><th style="border: none"></th></tr>#}
+                <tr class="" style="background: lightgray">
+                    <th>Titre</th>
+                    <th>Nb ex livrés</th>
+                    <th>Prix</th>
+                    <th>Nb ex invendus</th>
+                </tr>
+       {% for invendu in invendus %}
+                <tr>
+                    <td style="text-align: center;width:25%">{#{{invendu.code_societe}} {{invendu.code_titre}}#}{{invendu.libelle_abrege|upper}}</td>
+                    <td style="text-align: center;width:25%">{{invendu.qte_livree}}</td>
+                    <td style="text-align: center;width:25%">{{invendu.prix|number_format(2,',','.')}}</td>
+                    <td style="text-align: center;width:25%">
+                        <input type="test" name="nbInvendu[{{invendu.id}}]" id="nbInvendu_{{invendu.id}}" class="champ_resultat" style="width:50%" value="{{invendu.qte_invendue}}"
+                       init="{{invendu.qte_invendue}}"        
+                       {% if invendu.date_export_dcs is not null %} disabled=""{% endif %}/>
+                        <img class="loader_{{invendu.id}}" style="display:none;"  width="30" height="23" src='{{ asset('images/loading110.gif')}}'/>
+                        <a href="javascript:void(0);"class="{% if invendu.date_export_dcs is not null %} hide {% endif %} modifier" id="{{invendu.id}}" alt="Saisie nombre exemplaire invendu"><span class="glyphicon glyphicon-edit" style="left: 6px;" ></span>
+                        </a>
+
+                    </td>
+                </tr>
+       {% endfor %}
+            </table>
+            <button type="submit" class="btn btn-primary" id="enregister">Enregister</button>
+        </form>
+    </div>
+{% else %}
+    <p class="alert alert-info">Aucun résultats</p>
+{% endif %}
+</div>
+<script>
+    var url = '{{path('saisie_nb_ex_invendu')}}';
+    $('a.modifier').click(function(e) {
+        $(this).hide();
+        var idInvendu = $(this).attr("id");
+        var nbInvendu = $('input#nbInvendu_' + idInvendu + '').val();
+        var loader = $('img.loader_' + idInvendu);
+        var vInit=$('input#nbInvendu_' + idInvendu + '').attr('init');
+        loader.show();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: "idInvendu=" + idInvendu + '&nbInvendu=' + nbInvendu,
+            success: function(data) {
+                $('input#nbInvendu_' + idInvendu + '').val(data);
+                loader.hide();
+                $('a#' + idInvendu).show();
+                $('input.champ_resultat:enabled:first').trigger('focus');
+                $('i#nbtotalInvendu').text( parseInt($('i#nbtotalInvendu').text()) - parseInt(vInit==""?0:vInit) + parseInt(nbInvendu==""?0:nbInvendu));
+                $('input#nbInvendu_' + idInvendu + '').attr('init',nbInvendu);
+            }
+        });
+    });
+    $('input.champ_resultat').on("change",function(){
+        var intTest=/^\d+$/;
+        if(intTest.test($(this).val()) == false){
+            $(this).val($(this).attr("init"));
+        }
+    });
+</script>
+

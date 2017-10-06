@@ -1,0 +1,100 @@
+liste_pai_refferie:
+    pattern:  /liste-pai-ref-ferie
+    defaults: { _controller: "AmsPaieBundle:PaiRefFerie:liste" }
+
+gridliste_pai_refferie:
+    pattern:  /grid-pai-ref-ferie
+    defaults: { _controller: "AmsPaieBundle:PaiRefFerie:grid" }
+
+liste_pai_refmois:
+    pattern:  /liste-pai-ref-mois
+    defaults: { _controller: "AmsPaieBundle:PaiRefMois:liste" }
+
+gridliste_pai_refmois:
+    pattern:  /grid-pai-ref-mois
+    defaults: { _controller: "AmsPaieBundle:PaiRefMois:grid" }
+
+liste_pai_refremuneration:
+    pattern:  /liste-pai-ref-remuneration
+    defaults: { _controller: "AmsPaieBundle:PaiRefRemuneration:liste" }
+
+gridliste_pai_refremuneration:
+    pattern:  /grid-pai-ref-remuneration
+    defaults: { _controller: "AmsPaieBundle:PaiRefRemuneration:grid" }
+
+liste_pai_refpoids:
+    pattern:  /liste-pai-ref-poids
+    defaults: { _controller: "AmsPaieBundle:PaiRefPoids:liste" }
+
+gridliste_pai_refpoids:
+    pattern:  /grid-pai-ref-poids
+    defaults: { _controller: "AmsPaieBundle:PaiRefPoids:grid" }
+
+ajax_pai_refpoids_maj_tournee:
+    pattern:  /ajax-pai-refpoids-maj-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiRefPoids:ajaxMajTournee" }
+
+
+liste_pai_refsupplement:
+    pattern:  /liste-pai-ref-supplement
+    defaults: { _controller: "AmsPaieBundle:PaiRefSupplement:liste" }
+
+gridliste_pai_refsupplement:
+    pattern:  /grid-pai-ref-supplement
+    defaults: { _controller: "AmsPaieBundle:PaiRefSupplement:grid" }
+
+ajax_pai_refsupplement_maj_tournee:
+    pattern:  /ajax-pai-refsupplement-maj-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiRefSupplement:ajaxMajTournee" }
+
+
+liste_pai_refqualite:
+    pattern:  /liste-pai-ref-qualite
+    defaults: { _controller: "AmsPaieBundle:PaiRefQualite:liste" }
+
+gridliste_pai_refqualite:
+    pattern:  /grid-pai-ref-qualite
+    defaults: { _controller: "AmsPaieBundle:PaiRefQualite:grid" }
+
+
+liste_pai_refpostepaiegeneral:
+    pattern:  /liste-pai-ref-poste-paie-general
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieGeneral:liste" }
+
+gridliste_pai_refpostepaiegeneral:
+    pattern:  /grid-pai-ref-poste-paie-general
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieGeneral:grid" }
+
+liste_pai_refpostepaieactivite:
+    pattern:  /liste-pai-ref-poste-paie-activite
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieActivite:liste" }
+
+gridliste_pai_refpostepaieactivite:
+    pattern:  /grid-pai-ref-poste-paie-activite
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieActivite:grid" }
+
+liste_pai_refpostepaiesupplement:
+    pattern:  /liste-pai-ref-poste-paie-supplement
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieSupplement:liste" }
+
+gridliste_pai_refpostepaiesupplement:
+    pattern:  /grid-pai-ref-poste-paie-supplement
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaieSupplement:grid" }
+
+
+liste_pai_refpostepaiemajoration:
+    pattern:  /liste-pai-ref-poste-paie-majoration
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaiMajoration:liste" }
+
+gridliste_pai_refpostepaiemajoration:
+    pattern:  /grid-pai-ref-poste-paie-majoration
+    defaults: { _controller: "AmsPaieBundle:PaiRefPostePaiMajoration:grid" }
+
+
+liste_pai_refurssaf:
+    pattern:  /liste-pai-ref-urssaf
+    defaults: { _controller: "AmsPaieBundle:PaiRefUrssaf:liste" }
+
+gridliste_pai_refurssaf:
+    pattern:  /grid-pai-ref-urssaf
+    defaults: { _controller: "AmsPaieBundle:PaiRefUrssaf:grid" }

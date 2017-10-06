@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="RNavProfilsDroits" table="R_NAV_PROFILS_DROITS">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="pdrPrfCode" target-entity="TrUtlProfils">
+      <join-columns>
+        <join-column name="PDR_PRF_CODE" referenced-column-name="PRF_CODE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="pdrPel" target-entity="TrNavPagesElements">
+      <join-columns>
+        <join-column name="PDR_PEL_ID" referenced-column-name="PEL_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="pdrDroitElt" target-entity="TrNavElementsDroits">
+      <join-columns>
+        <join-column name="PDR_DROIT_ELT" referenced-column-name="EDR_DROIT_ELT"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

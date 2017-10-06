@@ -1,0 +1,13 @@
+/web/app_local.php
+.idea/
+vendor/
+app/config/parameters_local.yml
+app/cache/
+app/logs/
+composer.lock
+app/config/config_local.yml
+app/config/mroad_local.ini
+app/config/routing_local.yml
+web/css/compresse/
+web/js/compresse/
+nbproject

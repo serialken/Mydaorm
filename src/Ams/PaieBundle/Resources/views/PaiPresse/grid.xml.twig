@@ -1,0 +1,26 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="groupe_id"          type="coro" width="50"  align="center"  sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="tournee_id"         type="coro" width="200" align="left"    sort="sortCombo">Tournée{{comboTournee|raw}}</column>
+        <column id="lien_journal"       type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="lien_planning"      type="ro"   width="30"  align="center"  sort="na"></column> 
+        <column id="employe_id"         type="coro" width="200" align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+<!-- On met les champs cachés après le split, sinon ils posent problème lors de l'export excel -->
+        <column id="tournee_mere"       type="ro"   hidden="true"></column> 
+        <column id="tournee_org_id"     type="ro"   hidden="true"></column> 
+        <column id="journal_id"         type="ro"   hidden="true"></column>
+        {% for produit in produits %}
+            <column id="Q{{produit.id}}" width="40" type="ed" align="right" sort="int">{{produit.libelle}}</column> 
+            <column id="C{{produit.id}}" width="40" type="ed" align="right" sort="int">#cspan</column> 
+        {% endfor %}     
+	<beforeInit> 
+            <call command="attachHeader"><param>#select_filter_strict,#select_filter_strict,#select_filter_strict,,,,,{% for produit in produits %},Qte,NbCli{% endfor %}</param></call>
+            <call command="attachFooter"><param>,Total,,,,,,{% for produit in produits %},#stat_total,#stat_total{% endfor %}</param></call>
+        </beforeInit> 
+        <afterInit> 
+            <call command="splitAt"><param>2</param></call>   
+        </afterInit> 
+    </head>      
+    {% include 'AmsPaieBundle:PaiHorsPresse:row.xml.twig' %}
+</rows>

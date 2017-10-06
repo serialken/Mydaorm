@@ -1,0 +1,75 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    {% if paie_en_cours  %}
+        <b>Une interface de paie est déjà en cours d'éxécution, merci de consulter la log.</b>
+    {% elseif isModif  %}
+        <input type="button" id="button_generer" value="Générer" onclick="confirmAction('Voulez-vous vraiment générer les ev ?','genererEv()')">
+    {% endif %}             
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT       ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['extrait'          ,'#text_filter'             ,null               ,null               ,null               ,null               ,null              ,null],
+['depot_id'         ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['flux_id'          ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['matricule'        ,'#text_filter'             ,null               ,null               ,null               ,null               ,null              ,null],
+['matriculeNG'      ,'#text_filter'             ,null               ,null               ,null               ,null               ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['rc'               ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['date_stc'         ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['date_extrait'     ,'#select_filter_strict'    ,null               ,null               ,null               ,null               ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null               ,null               ,'cancelSTC(rId, cInd)' ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        dp.setUpdateMode("cell","true");
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd===1) return false; // depot_id
+        if (cInd===2) return false; // flux_id
+        if (cInd===5) return false; // employe_id
+        return true;
+    }
+    
+    function genererEv(){
+        ajaxMessage("Génération des ev en cours ...");
+        $('#button_generer').prop('disabled', true);
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-generer-pai-stc",
+            type: "GET",
+            data: { },
+            success: function(data) { 
+                ajaxSucces("Lancement réalisé ...<br/>Merci de consulter la log"); 
+                window.location.href = "liste-pai-int-traitement";
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+
+    function cancelSTC(rId, cInd) {
+        if (grid.cellById(rId, cInd).getValue()=='') return;
+        dhtmlx.confirm({
+            type: "confirm-warning",
+            text: "Voulez-vous vraiment annuler le STC ?",
+            ok: "Oui",
+            cancel: "Non",
+            callback: function(result) {
+                if (result == true)
+                    confirmedCancelSTC(rId);
+            }
+        });
+    }
+    function confirmedCancelSTC(rId) {
+        ajaxMessage("Annulation du STC en cours ...");
+        dp.setUpdated(rId, true, "updated");
+    }
+</script>
+{% endblock %}

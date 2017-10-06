@@ -1,0 +1,67 @@
+comptes_rendus_reception:
+    pattern:  /compte-rendu-reception
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:ReceptionDepot" }
+    
+comptes_rendus_distribution:
+    pattern:  /compte-rendu-distribution
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:DistributionDepot" }
+    
+compte_rendu_reception:
+    pattern:  /compte-rendu-reception-liste-xml/{date}/{depotId}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:gridReception" }
+
+compte_rendu_reception_sauvegarde:
+    pattern: /compte-rendu-reception-sauvegarde
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:save"}
+    
+compte_rendu_distribution:
+    pattern:  /compte-rendu-distribution-liste-xml/{date}/{flux}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:gridDistribution" }
+
+compte_rendu_modif_tournee:
+    pattern:  /compte-rendu-distribution-liste-tournee/{id}/{date}/{flux}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:tourneeModif" }
+    
+compte_rendu_liste_tournee:
+    pattern:  /compte-rendu-distribution-liste-tournee-xml/{id}/{date}/{flux}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:gridDistributionParDepot" }
+
+compte_rendu_distribution_sauvegarde:
+    pattern: /compte-rendu-distribution-sauvegarde/{repository}/{date}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:saveDistribution"}
+    
+compte_rendu_distribution_modif:
+    pattern:  /compte-rendu-distribution-modif/
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:modifDistribution" }
+
+compte_rendu_distribution_modif_massive:
+    pattern:  /compte-rendu-distribution-modif-massive/
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:modifMassive" }
+    
+compte_rendu_liste_exemplaires_non_distribues:
+    pattern:  /compte-rendu-distribution-liste-exemplaires-non-distribues-xml/{date}/{tournee_id}/{id_depot}/{id_cptr}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:gridExemplairesNonDistribues" }
+    
+compte_rendu_liste_exemplaires_non_distribues_sauvegarde:
+    pattern:  /compte-rendu-distribution-liste-exemplaires-non-distribues-save/{date}/{id_cptr}
+    defaults: { _controller: "AmsDistributionBundle:CompteRendu:saveExemplairesNonDistribues" }
+
+compte_rendu_reception_camion:
+    pattern:  /reception_camion/
+    defaults: { _controller: "AmsDistributionBundle:ReceptionCamion:Index" }
+    
+compte_rendu_reception_camion_grid:
+    pattern:  /reception_camion-xml/{date}/{flux}
+    defaults: { _controller: "AmsDistributionBundle:ReceptionCamion:Grid" }
+    
+compte_rendu_reception_camion_crud:
+    pattern:  /reception_camion_crud/
+    defaults: { _controller: "AmsDistributionBundle:ReceptionCamion:Crud" }
+    
+compte_rendu_reception_pco:
+    pattern:  /reception_pco/
+    defaults: { _controller: "AmsDistributionBundle:ReceptionPco:Index" }
+    
+compte_rendu_reception_pco_sauvegarde:
+    pattern: /reception_pco-sauvegarde
+    defaults: { _controller: "AmsDistributionBundle:ReceptionPco:save"}

@@ -1,0 +1,36 @@
+ {% extends 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+{% block pagetitle %}> <a href="{{ path('_ams_accueil_defaut') }}" class="level0 active">Accueil</a>
+    <SPAN style="float: right; position:relative"> <a href= "{{pageWiki}}" target="_blank"> Aide?</a> </SPAN>
+{% endblock %}
+
+{% block body %}
+
+    {%for categorie in listeCategories %} 
+        <div class="bloc interlink">
+            <table cellspacing="0" cellpadding="0" width="100%">
+                    <tr>
+                            <td rowspan="2" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+                            <td class="content"><a href="{{path(categorie.page_defaut,{'slug':categorie.slug|lower, 'categorieId': categorie.id })}}"><img class="{{categorie.class}}" src="{{ asset('images/trans.png') }}"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="title"><a href="{{path(categorie.page_defaut,{'slug':categorie.slug|lower,'categorieId': categorie.id })}}">{{categorie.libelle}}</a></td>
+                    </tr>
+            </table>
+        </div>		
+
+    {% endfor %}
+
+{% endblock %}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

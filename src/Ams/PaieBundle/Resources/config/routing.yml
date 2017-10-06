@@ -1,0 +1,15 @@
+AmsPaieBundle_referentiel:
+    resource: "@AmsPaieBundle/Resources/config/routing/referentiel.yml"
+    prefix:   /referentiel
+
+AmsPaieBundle_paie:
+    resource: "@AmsPaieBundle/Resources/config/routing/paie.yml"
+    prefix:   /paie
+
+AmsPaieBundle_interface:
+    resource: "@AmsPaieBundle/Resources/config/routing/interface.yml"
+    prefix:   /interface
+    
+AmsPaieBundle_report:
+    resource: "@AmsPaieBundle/Resources/config/routing/report.yml"
+    prefix:   /report

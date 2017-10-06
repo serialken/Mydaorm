@@ -1,0 +1,54 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        {% if is_new is defined %}
+            {% if is_new %} Création de type de produit {% else %} Modification de type de produit {% endif %}
+        {% endif %}
+        {% if supp is defined %}
+            {% if supp %} Suppression de type de produit{% endif %}
+        {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerte">
+                </div>
+                {% if is_new is defined %}
+                <form method="post" class="formTypeProduit" id="formTypeProduit" action="{{ is_new ? path('type_produit_creation') : path('type_produit_modification_ajax',{'param1': typeProduit.id })}}" {{ form_enctype(typeProduitForm) }} >          
+                  {{ form_widget(typeProduitForm) }}
+                {% endif %}
+                {% if supp is defined %}
+                    <form method="post" class="formTypeProduit" id="formTypeProduit" action="{{path('type_produit_suppression',{'typeId': typeProduit.id })}}" >
+                    <h3>Confirmer la supression du type de produit</h3> </br>
+                {% endif %}
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                  </div>
+                </form>
+            </div> 
+            <script type="text/javascript">    
+               $(document).ready(function() {
+                    $('#formTypeProduit').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                          url: $(this).attr('action'),
+                          type: $(this).attr('method'),
+                          data: $(this).serialize(),
+                          cache: false,
+                          success: function(data) {
+                                $('#amsModal').html(data.modal);
+                                $('#modalAlerte').html(data.alert);
+                                setTimeout( "$('#amsModal').modal('hide');",5000 );
+                                setTimeout(location.reload(),4000); 
+                          },
+                          error: function(data) {
+                               //alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data+"\n\nUne erreur est survenue. Merci de rafraichir la page ou de contacter un administatateur si cette erreur persiste: "+data);
+                               alert("Un type de produit existe deja avec cet ID");
+                          },
+                        });
+                        return false; //
+                    });
+                    
+                });
+            </script>  
+    {% endblock %}

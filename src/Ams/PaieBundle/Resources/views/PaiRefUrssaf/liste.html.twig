@@ -1,0 +1,25 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['prd_caract_id'    ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['produit_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['type_id'          ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['typeurssaf'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_modif'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==1 || cInd==2 || cInd==4) return false; // produit_id
+        return true;
+    }
+    </script>
+{% endblock %}

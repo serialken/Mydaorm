@@ -1,0 +1,7 @@
+ams_invendu_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: AmsInvenduBundle:Default:index }
+
+AmsInvenduBundle_invendu:
+    resource: "@AmsInvenduBundle/Resources/config/routing/invendu.yml"
+    prefix: /invendu

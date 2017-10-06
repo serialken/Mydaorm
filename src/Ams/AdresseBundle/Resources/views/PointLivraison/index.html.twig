@@ -1,0 +1,278 @@
+{% extends '::base.html.twig' %}
+{% block title %}Point de livraison{% endblock %}
+{% block body %}
+<style>
+    form td {
+        padding: 3px;
+    }
+    .error_form {
+        color:red;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table td{
+        text-align: left;
+    }
+</style>    
+<div id="flashAlertePointLivraison">
+        {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+</div>
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active">
+    <a href="#adresse" data-toggle="tab">Recherche par adresse</a>
+  </li>
+  <li>
+    <a href="#abonne" data-toggle="tab">Recherche par abonné</a>
+  </li>
+</ul>
+
+<div class="tab-content"> 
+    <div class="tab-pane active well" id="adresse">
+        {% if codeTournee %}
+            <p align="left">Point de livraison à intégrer à la tournée <strong>{{codeTournee}}</strong></p>
+        {% endif %}
+        <div class="row" id="rechercheRnvp" >
+            <div class="col-md-6">
+                <br />
+                {# formulaire de recherche #}
+                <form method="post" action="{{path('adresse_point_livraison')}}" >
+                    <table>
+                        <tr>
+                            <td>
+                                {{ form_label(form.adresse) }}
+                            </td>
+                            <td colspan="3">
+                                {{ form_widget(form.adresse) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                {{ form_errors(form.adresse) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ form_label(form.cAdrs) }}
+                            </td>
+                            <td>
+                                {{ form_widget(form.cAdrs) }}
+                            </td>
+                            <td>
+                                {{ form_label(form.lieuDit) }}
+                            </td>
+                            <td>
+                                {{ form_widget(form.lieuDit) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {{ form_errors(form.cAdrs) }}
+                            </td>
+                            <td colspan="2">
+                                {{ form_errors(form.lieuDit) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ form_label(form.cp) }}
+                            </td>
+                            <td>
+                                {{ form_widget(form.cp) }}
+                                <i id="search-city-adr" class="glyphicon glyphicon-search" style="cursor:pointer"onmouseover="affPopoverLien(this);" data-description="Rechercher la commune" 
+                                                                data-content="Cet icône permet de rechercher les communes associées au code postal entré dans le champ précédent. A la suite d'un clique le champ commune n'est rempli qu'avec les communes associées au code postal !!!!" ></i>
+                            </td>
+                            <td>
+                                {{ form_label(form.commune) }}
+                            </td>
+                            <td>
+                                {{ form_widget(form.commune) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {{ form_errors(form.cp) }}
+                            </td>
+                            <td colspan="2">
+                                {{ form_errors(form.commune) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ form_row(form._token) }} 
+                            </td>
+                            <td>
+                                {{ form_row(form.ville) }} 
+                            </td>
+                        </tr>
+                    </table>
+                        <BR>
+                        {% if idTournee %}
+                            <input type="hidden" name="tourneeId" value="{{ idTournee }}"/>
+                        {% endif %}
+                        {% if codeTournee %}
+                            <input type="hidden" name="tourneeCode" value="{{ codeTournee }}"/>
+                        {% endif %}
+                        <table>
+                            <tr>
+                                <td> 
+                                    <button id="rechercheAdr" type="submit" class="btn btn-primary" onmouseover="affPopoverLien(this);" data-description="Rechercher des adresses" data-content="Ce bouton permet de rechercher des points de livraison via les informations d'une adresse: Attention le champ adresse est obigatoire." >
+                                        <i class="glyphicon glyphicon-search icon-white"></i> Rechercher 
+                                    </button>
+                                </td>
+                            </tr>
+                     </table>
+                 </form>
+            </div>
+            {# adresse proposée pour le rnvp #}
+            <div class="col-md-6">    
+                {% if ResRNVP.etatRetourRnvp is defined %}
+                    {#  Affichage de l'alerte permanente relative au RNVP  #}
+                    <div id="statiqueAlertPointLivraison">
+                        <div class="alert {{etat}}" role="alert">
+                            {{ message }}
+                        </div>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <th>Adressse</th>
+                            <td>{{ResRNVP.pio_adresse}}</td>
+                        </tr>
+                        <tr>
+                            <th>Compl. Adressse</th>
+                            <td>{{ResRNVP.pio_cadrs}}</td>
+                        </tr>
+                        <tr>
+                            <th> Lieu dit </th>
+                            <td> {{ResRNVP.pio_lieudit}} </td>
+                        </tr>
+                        <tr>
+                            <th> Cp </th>
+                            <td> {{ResRNVP.po_cp}} </td>
+                        </tr>
+                        <tr>
+                            <th>Ville </th>
+                            <td> {{ResRNVP.po_ville}} </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center"> 
+                                <button id="validRnvp"  class="btn btn-primary"  onClick ="ChargeZone('{{ path('point_livraison_geocode',{'idTournee': idTournee})}}' , 'listGeocode');"
+                                                                                                             onmouseover="affPopoverLien(this);" data-description="Normaliser une adresse" data-content="Ce bouton permet de valider l'adresse normalisé indiquez au dessus et de passer au géocodage de cette derniére"/>
+                                <i class="glyphicon glyphicon-ok icon-white"></i> Valider le Rnvp</button>
+                            </td>
+                        </tr>
+                    </table>
+                {% endif %}
+            </div>  
+        </div> 
+        {# coordonnées proposée pour le geocodage  #}
+        <div  id="listGeocode"  > 
+        </div>   
+    </div>
+    <div class="tab-pane fade active" id="abonne"> 
+     {{ render(controller('AmsAdresseBundle:PointLivraison:rechercheAbonne')) }}
+    </div>
+</div> 
+
+<script type="text/javascript">  
+    /* Opérations lancées au chargement de la page */
+    $(document).ready(function() {
+        // On masque les alertes par défaut
+        $('#flashAlertePointLivraison .alert').hide();
+    }); 
+    
+    $('#myTab a').click(function (e) {
+         e.preventDefault();
+         $(this).tab('show');
+     });
+     /**
+      *  fonction qui gere les erreurs sur le champ commune
+      */
+     $('#rechercheAdr').click(function (e) {
+        var communeId = $('#ams_adressebundle_adressernvp_commune :selected').val();
+        if(communeId > 0)
+        {
+            return true;
+        } 
+        else 
+        {
+            e.preventDefault();
+            var msg = "<strong>Attention !!!</strong> une erreur est survenu, le champ commune n'est pas renseigné.<br />Vérifiez que vous avez les droits d'accés à une commune liée au code postal renseigné.";
+            showSelecteurFlashAlert('flashAlertePointLivraison', 'danger', msg, 10000);
+            return false;
+        }
+     });
+     
+    /**
+    * Fonction qui affecte des coordonnées a un adresse normaliséé a la creation d'un point de livraison
+    * @param string path correspond a la route pour geocoder avec la tournéé incluse dans le chemin
+    * @param string x correspond aux coordonnées de l'adresse recupéré en type hidden
+    * @param string y correspond aux coordonnées de l'adresse recupéré en type hidden
+    * @param string score correspond au GeocodeScore de l'adresse recupéré en type hidden
+    * @param string type correspond au GeocodeType de l'adresse recupéré en type hidden
+    * @param string zone correspond a la div ou on va charger les adresse liés a ce point de livraison une fois créé
+    */
+    function updateGeocodagePointLivraison(path, x, y, score, type, zone) {
+        $.ajax({
+            url: path,
+            data: '&geox='+ x + '&geoy='+ y + '&geoscore='+ score + '&geotype='+ type,
+            type: 'POST',
+            dataType: 'text',   
+            success : function(text, statut){
+                //console.log(statut);
+                //console.log('toto');
+                moveToTop();
+                if (statut == 'success')
+                {
+                    var msg = "L'adressse a été normalisée et géocodée avec succés. Vous pouvez maintenant lier des abonnées à ce point de livraison.";
+                    showSelecteurFlashAlert('flashAlertePointLivraison', 'success', msg, 5000);
+                    ChargeZone(path, zone);
+                }
+                else
+                {
+                   var msg = "<strong>Attention</strong> une erreur est survenue lors de la tentative de création du point.<br />Veuillez vous assurez que le point de livraison a correctement été créé.";
+                   showSelecteurFlashAlert('flashAlertePointLivraison', 'danger', msg, 5000); 
+                }
+            },
+             error : function(text){
+                moveToTop();
+                var msg = "<strong>Attention</strong> une erreur a été rencontré, le point de livraison n'a pas pu être créé.<br />Veuillez contacter le support si l'erreur persiste.";
+                showSelecteurFlashAlert('flashAlertePointLivraison', 'danger', msg, 10000);
+                
+             },
+             
+             beforeSend: function() {				            	
+                    afficheImgAttente();
+            },
+            complete: function() {
+                    masqueImgAttente();
+                    //moveToMiddle();
+            }
+        });
+    }
+    
+    var init_ville =  $('#ams_adressebundle_adressernvp_commune').html();
+    
+    $('#search-city-adr').click(function() {
+        $('#ams_adressebundle_adressernvp_commune').html(init_ville);
+        
+        var pattern = "^" + $("#ams_adressebundle_adressernvp_cp").val();
+
+        // Lorsqu'on utilise le constructeur pas besoin de délimiteur de pattern
+        var re = new RegExp(pattern);
+        
+        $('#ams_adressebundle_adressernvp_commune option').each(function( index ) {
+
+            if (re.test($(this).html())) {
+              $(this).toggleOption(true);
+            } else if ($(this).val() != '') {
+              $(this).toggleOption(false);
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}

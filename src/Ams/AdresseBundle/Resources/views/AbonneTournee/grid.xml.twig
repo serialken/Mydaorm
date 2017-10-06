@@ -1,0 +1,31 @@
+<rows>
+  <head>      
+          <column type="ro" width="0" align="left" sort="str"> id  </column>
+          <column type="ro" width="300" align="left" sort="str"> Nom  </column>
+          <column type="ro" width="" align="center" sort="str"> Num abonne</column>
+          <column type="ro" width="400" align="left" sort="date">Adresse</column>
+          <column type="ro" width="" align="center" sort="date">Tournée initial</column>
+{#          <column type="ro" width="10" align="center" sort="date">Ordre</column>#}
+          <column type="ro" width="" align="center" sort="str">Société</column>
+          <column type="ro" width="" align="center" sort="str">Produit</column>
+          <column width="" type="coro" align="center" sort="str">Tournée destination {{ tournees|raw }}</column> 
+          <column width="0" type="ro" align="center" sort="str">numAboId</column> 
+          <afterInit>
+                  <call command='attachHeader'> <param>,#text_filter,#text_filter,#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,</param> </call>   
+          </afterInit>  
+  </head> 
+    {% for row in data %}
+      <row>
+              <cell> {{ row.id }}</cell>
+              <cell> {{ row.vol1~" "~row.vol2 }}</cell>
+              <cell> {{ row.num_abonne_soc }}</cell>
+              <cell> {{ row.ville }} </cell> 
+              <cell> {{row.code_tournee}} </cell> 
+{#              <cell> {{row.point_livraison_ordre}} </cell> #}
+              <cell> {{ row.societe_libelle}} </cell> 
+              <cell> {{row.produit_libelle}}</cell>
+              <cell> </cell>
+              <cell> {{row.abonne_soc_id}}</cell>
+      </row>
+    {% endfor %}
+</rows>

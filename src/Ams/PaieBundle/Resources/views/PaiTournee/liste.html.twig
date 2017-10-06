@@ -1,0 +1,247 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreSplit"/> Cacher les tournées splittées</span>
+    <span><a href="{{path('emargemement')}}"><img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Export Excel" >Emargement</a></span>
+    {% if isAlim %}
+        <span  style="float:right;">
+            <input type="button" value="Supprimer" onclick='suppression();'>&nbsp;
+            <input type="button" value="Alimenter" onclick='alimentation();'>
+        </span>
+    {% endif %}
+{% endblock %}
+ 
+{% block operation %}
+    <div class="row well" style="margin: 10px">
+        {% if isModif %}
+            <div class="col-md-4">
+               <form id="split">
+                   <select id="comboSplit" style="width:150px;">{{comboSplit|raw}}</select>
+                   <input id="nb_tournee_dst" maxlength="1" length="2" value="2">
+                   <input type="button" value="Splitter" onclick="splitter()">
+               </form>
+            </div>
+            <div class="col-md-3">
+               <form id="ajout">
+                   <select id="comboModele" style="width:150px;">{{comboModele|raw}}</select>
+                   <input type="button" value="Ajouter" onclick="ajouter()">
+               </form>
+            </div>
+            <div  class="col-md-3">
+               <form id="desplit">
+                   <select id="comboDeSplit" style="width:150px;">{{comboDeSplit|raw}}</select>
+                   <input type="button" value="DeSplitter" onclick="deSplitter()">
+               </form>
+            </div>
+        {% endif %}             
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1            ,HEADER2                ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['tournee_mere'     ,'#rspan'           ,null                   ,null               ,'0'                     ,null                 ,null              ,null],
+['depot_id'         ,'#rspan'           ,null                   ,isNotEmpty         ,'{{depot_id}}'          ,null                 ,null              ,null],
+['flux_id'          ,'#rspan'           ,null                   ,isNotEmpty         ,'{{flux_id}}'           ,null                 ,null              ,null],
+['date_distrib'     ,'#rspan'           ,null                   ,isNotEmpty         ,'{{date_distrib}}'      ,null                 ,null              ,null],
+['groupe_id'        ,'#rspan'           ,'#select_filter_strict',isNotEmpty         ,null                    ,null                 ,null              ,null],
+['tournee_id'       ,'#rspan'           ,'#select_filter_strict',isNotEmpty         ,null                    ,null                 ,null              ,null],
+['journal_id'       ,'#rspan'           ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['>Journal'         ,'#rspan'           ,null                   ,null               ,null                    ,'{{m.lienJournal()}}','goJournal(rId)'  ,null],
+['>Planning'        ,'#rspan'           ,null                   ,null               ,null                    ,'{{m.lienEmploye()}}','goPlanning(rId)' ,null],
+['employe_id'       ,'#rspan'           ,'#select_filter_strict',null               ,null                    ,null                 ,null              ,null],
+['nbkm'             ,'Km Réels'         ,'#numeric_filter'      ,isKm2OrNull        ,null                    ,null                 ,null              ,null],
+['nbkm_paye'        ,'Km Payés'         ,'#numeric_filter'      ,isKm2OrNull        ,null                    ,null                 ,null              ,null],
+['transport_id'     ,'Mode'             ,'#select_filter_strict',null               ,null                    ,null                 ,null              ,null],
+['valrem_org'       ,'Origine'          ,'#select_filter'       ,null               ,null                    ,null                 ,null              ,null],
+['valrem'           ,'Réelle'           ,'#numeric_filter'      ,null               ,'0.00000'               ,null                 ,null              ,null],
+['valrem_calculee'  ,'Calculée'         ,'#numeric_filter'      ,null               ,null                    ,null                 ,null              ,null],
+['ecart'            ,'Ecart en %'       ,'#numeric_filter'      ,null               ,null                    ,null                 ,null              ,null],
+['majoration'       ,'Majoration *'     ,'#select_filter_strict',isNotEmpty         ,'0.00'                  ,null                 ,null              ,null],
+['retard'           ,'Retard porteur *' ,null                   ,isDureeMax5        ,'00:00'                 ,null                 ,null              ,null],
+['duree_attente'    ,'Attente Imprimerie',null                   ,isDureeMax5OrNull  ,'00:00'                 ,null                 ,null              ,null],
+['heure_debut'      ,'Forcée *'         ,null                   ,isTimeOrNull       ,null                    ,null                 ,null              ,null],
+['heure_debut_calculée' ,'Calculée'     ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_totale'     ,'Totale'           ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_nuit'       ,'Nuit'             ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_tournee'    ,'Tournée'          ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_supplement' ,'Autre'            ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_reperage'   ,'Repérage'         ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['nbcli'            ,'Clients'          ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbtitre'          ,'Titres'           ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbadr'            ,'Adresses'         ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbspl'            ,'Suppléments'      ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbprod'           ,'Produits'         ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbrep'            ,'Repérages'        ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['poids'            ,'#rspan'           ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['old_employe_id'   ,null               ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['lock'             ,'#ismodif'         ,'#ismodif'             ,null               ,null                    ,'{{m.lienSupprime()}}','removeRow(rId,cInd)' ,null]
+    ];
+    
+    $(document).ready(function() {
+        dhtmlxLoadCookieObject($('#filtreSplit'));
+    });
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+//        grid.enableTooltips("false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false");
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)}}","{{tournee_id}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+        
+        grid.attachEvent("onXLE", function(){   
+             var  total_retard = 0;
+             var  total_attente = 0;
+             var  total_nuit = 0;
+             var  total_tournee = 0;
+             var  total_reperage = 0;
+             var  total_supplement = 0;
+             var  total_totale = 0;
+             grid.forEachRow(function(id){
+                total_retard  += MyGetMinutes(grid.cellById(id,18).getValue());
+                total_attente += MyGetMinutes(grid.cellById(id,19).getValue());
+                total_totale += MyGetSeconds(grid.cellById(id,22).getValue());
+                total_nuit += MyGetSeconds(grid.cellById(id,23).getValue());
+                total_tournee += MyGetSeconds(grid.cellById(id,24).getValue());
+                total_supplement += MyGetSeconds(grid.cellById(id,25).getValue());
+                total_reperage += MyGetSeconds(grid.cellById(id,26).getValue());
+            })
+            grid.setFooterLabel(18, Minute2Time(total_retard));
+            grid.setFooterLabel(19, Minute2Time(total_attente));
+            grid.setFooterLabel(22, Second2Time(total_totale));
+            grid.setFooterLabel(23, Second2Time(total_nuit));
+            grid.setFooterLabel(24, Second2Time(total_tournee));
+            grid.setFooterLabel(25, Second2Time(total_supplement));
+            grid.setFooterLabel(26, Second2Time(total_reperage));
+        });
+    }
+/*    function dhtmlxgridBeforeLoad(){
+        grid.splitAt(7);
+    }*/
+    function dhtmlxgridOnLoad(){
+        gridFilter(0);
+        $('#filtreSplit').on('change', function() {
+            gridFilter(0);
+            dhtmlxSaveCookieObject($('#filtreSplit'));
+        });
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==4) return false; // groupe_id
+        if (cInd==5) return false; // tournee_id
+        return true;
+    }
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,6).getValue());
+        }
+    function goPlanning(rId){
+        goLinkGrid("{{path('pai_planning')|raw}}"+"?employe_id=",grid.cellById(rId,9).getValue());
+        }
+
+    function dhtmlxgridAfterDelete(id, action, tid, tag){
+        ajaxComboModele();
+        ajaxComboSplit();
+    }
+    function alimentation(){
+        dhtmlx.confirm({
+                type:"confirm-warning",
+                text:"Attention, vous allez perdre toutes vos modifications sur la journée en cours.<br/>Voulez-vous vraiment faire l'alimentation ?",
+                ok:"Oui",
+                cancel:"Non",
+                callback:function(result) { if (result===true) confirmedAlimentation(); }
+                });
+     }
+    function confirmedAlimentation(){
+        ajaxMessage("Alimentation en cours ...");
+        $.ajax({
+             timeout: 999000,
+             url: "ajax-alimentation-pai-tournee",
+             type: "GET",
+             success: function(data) { 
+                ajaxSucces("Alimentation terminée"); 
+                onLoadGrid();
+                ajaxComboSplit();
+                ajaxComboDeSplit();
+                ajaxComboModele();
+             },
+             error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+    function suppression(){
+        dhtmlx.confirm({
+                type:"confirm-warning",
+                text:"Attention, vous allez supprimer toutes les tournées sur la journée en cours.<br/>Voulez-vous vraiment faire la suppression ?",
+                ok:"Oui",
+                cancel:"Non",
+                callback:function(result) { if (result===true) confirmedSuppression(); }
+                });
+     }
+    function confirmedSuppression(){
+        ajaxMessage("Suppression en cours ...");
+        $.ajax({
+             timeout: 999000,
+             url: "ajax-suppression-pai-tournee",
+             type: "GET",
+             success: function(data) { 
+                ajaxSucces("Suppression terminée"); 
+                onLoadGrid();
+                ajaxComboSplit();
+                ajaxComboDeSplit();
+                ajaxComboModele();
+             },
+             error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+    function ajouter(){
+        ajaxMessage("Ajout de la tournée en cours ...");
+         $.ajax({
+            url: "ajax-ajouter-pai-tournee",
+            type: "GET",
+            data: { modele_tournee_jour_id: $('#comboModele').val() },
+            success: function(data) {
+                ajaxSucces("Ajout terminé"); 
+                onLoadGrid();
+                $("#comboModele option:selected").remove();
+                ajaxComboSplit();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+    function splitter(){
+        ajaxMessage("Split de la tournée en cours ...");
+        $.ajax({
+            url: "ajax-splitter-pai-tournee",
+            type: "GET",
+            data: { 
+               tournee_org_id: document.getElementById('comboSplit').value,
+               nb_tournee_dst: document.getElementById('nb_tournee_dst').value
+            },
+            success: function(data) {
+                ajaxSucces("Split terminé");
+                onLoadGrid();
+                $("#comboSplit option:selected").remove();
+                ajaxComboDeSplit();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+   function deSplitter(){
+        ajaxMessage("DeSplit de la tournée en cours ...");
+        $.ajax({
+            url: "ajax-desplitter-pai-tournee",
+            type: "GET",
+            data: { tournee_split_id: document.getElementById('comboDeSplit').value },
+            success: function(data) {
+                ajaxSucces("DeSplit terminé"); 
+                onLoadGrid();
+                $("#comboDeSplit option:selected").remove();
+                ajaxComboSplit();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+    function ajaxComboModele()  { ajaxReloadCombo($('#comboModele'),"ajax-combo-modele-pai-tournee",{}); }
+    function ajaxComboSplit()   { ajaxReloadCombo($('#comboSplit'),"ajax-combo-split-pai-tournee",{}); }
+    function ajaxComboDeSplit() { ajaxReloadCombo($('#comboDeSplit'),"ajax-combo-desplit-pai-tournee",{}); }
+</script>
+{% endblock %}

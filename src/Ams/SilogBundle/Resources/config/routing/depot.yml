@@ -1,0 +1,32 @@
+depot:
+    pattern:  /
+    defaults: { _controller: "AmsSilogBundle:Depot:index" }
+
+depot_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "AmsSilogBundle:Depot:show" }
+
+depot_creation_ajax:
+    pattern:  /create_ajax
+    defaults: { _controller: "AmsSilogBundle:Depot:create" }
+    
+depot_liste_ajax:
+    pattern:  /liste_ajax
+    defaults: { _controller: "AmsSilogBundle:Depot:ajaxSelectDepots" }
+
+depot_modification_ajax:
+    pattern:  /update_ajax
+    defaults: { _controller: "AmsSilogBundle:Depot:update" }
+    
+depot_ajout_commune_ajax:
+    pattern:  /add_commune_ajax
+    defaults: { _controller: "AmsSilogBundle:Depot:ajoutDepotCommune" }
+    
+depot_delete_commune_ajax:
+    pattern:  /delete_commune_ajax
+    defaults: { _controller: "AmsSilogBundle:Depot:suppDepotCommune" }
+    
+depot_grid_commune:
+    pattern:  /grid
+    defaults: { _controller: "AmsSilogBundle:Depot:gridCommunes" }
+    

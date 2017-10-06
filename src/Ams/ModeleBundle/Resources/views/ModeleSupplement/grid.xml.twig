@@ -1,0 +1,16 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="depot_id"       type="ro"   hidden="true"></column>
+        <column id="flux_id"        type="ro"   hidden="true"></column>
+        <column id="date_debut"     type="dhxCalendar" width="70" align="center" sort="date">Début</column> 
+        <column id="date_fin"       type="dhxCalendar" width="70" align="center" sort="date">Fin</column> 
+        <column id="jour_id"        type="coro" width="80"  align="left"    sort="int">Jour{{m.combo(comboJour|raw)}}</column> 
+        <column id="natureclient_id" type="coro" width="80" align="left"    sort="int">Nature Client{{m.combo(comboNatureClient|raw)}}</column> 
+        <column id="supplement_id"  type="coro" width="250"   align="left"    sort="sortCombo">Supplément{{m.combo(comboSupplement|raw)}}</column> 
+        <column id="produit_id"     type="coro" width="250"   align="left"    sort="sortCombo">Titre{{m.combo(comboTitre|raw)}}</column>
+        <column id="commentaire"    type="txt"  width="*"   align="left"    sort="str">Commentaire</column>
+        {{m.columnAjout(isModif)}}
+    </head> 
+   {% include 'AmsModeleBundle:ModeleSupplement:row.xml.twig' %}
+</rows>

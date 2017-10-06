@@ -1,0 +1,29 @@
+<form id="imp-form" method="POST" action="{{path('crm_save_imputation_paie')}}" role="form" name=""> 
+    <table class="table table-center left arb ">
+        <thead>
+            <tr>
+                <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Imputation Paie</b></th>         
+            </tr>
+        </thead>
+        <tr class="col-xs-14 ">
+            <td  class="col-xs-4  md-label" colspan="1">
+                {{ form_label(form.imputationPaie) }}&nbsp;&nbsp;{{ form_widget(form.imputationPaie, {'attr':{'class':''}})}}    
+            </td>
+            <td  class="col-xs-6 md-label" colspan="1" id="imp-date-td" style="{% if imputationPaie == 0 %}display:none{%else%}display:block{%endif%}  ">
+                {% if imputationPaie == 0  %}{% set isDateImputationDisabled = 'disabled' %}{%else%}{% set isDateImputationDisabled = false %}{% endif %}
+                    {{ form_label(form.dateImputationPaie) }}&nbsp;&nbsp;{{ form_widget(form.dateImputationPaie, {'attr': {'disabled': isDateImputationDisabled,'value':dateImputation|date('d/m/Y')}})}}
+            </td>
+            <td>
+                <input type="hidden" id ="abonneSocId" name="abonneSocId" value="{% if crmDetail.abonneSoc is defined %}{{crmDetail.abonneSoc.id}} {%endif%}"/>
+                <input type="hidden" id ="dateMax" name="dateMax" value="{{dateMax}}"/>
+                <input type="hidden" id="dateMin" name="dateMin" value="{{dateMin}}"/>
+            </td> 
+        </tr>
+        <tr class="col-xs-14" style="text-align:center">
+            <td colspan="3">
+                {{ form_label(form.cmtImputationPaie) }}:&nbsp;&nbsp;{{ form_widget(form.cmtImputationPaie, { 'attr': {'class': 'big-texarea'} }) }}
+                <button type="submit" id="saveImputation" class="btn-md btn-primary" >Valider</button>
+            </td>
+        </tr>
+    </table>
+</form>

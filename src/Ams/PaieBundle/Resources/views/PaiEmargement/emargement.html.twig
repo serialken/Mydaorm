@@ -1,0 +1,141 @@
+{% if meta is defined %} {# nécessaire pour la génération en ligne de commande #}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+{% endif %}
+<style type="text/css" media="screen">
+    .title {
+        border: 3px solid black;
+        padding-left: 80px;
+        padding-right: 80px;
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .grid {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding-top: 60px;
+    }
+    .grid th {
+        border: 1px solid black;
+        text-align: center;
+        font-size: 10px;
+    }
+    .grey {
+        background-color: darkgray;
+        color: black;
+    }
+    .grid td {
+        border: 1px solid black;
+        font-size: 10px;
+    }
+    .center {
+        text-align: center;
+    }
+    .column {
+        width: 25px;
+        word-break: break-all; 
+    }
+   th.code {
+        width: 80px;
+        text-align: left;
+    }
+   td.code {
+        width: 80px;
+        text-align: left;
+    }
+    th.libelle {
+        width: 25px;
+    }
+    th.nom {
+         width: 120px;
+         text-align: left;
+    }
+   td.nom {
+         width: 120px;
+         text-align: left;
+    }
+</style>
+
+<page backtop="10mm" backbottom="10mm" backleft="5mm" backright="5mm">
+    <page_header>
+        <div class="title">CENTRE DE {{depot.libelle}}({{depot.code}})</div>
+        <table style="width:100%">
+            <tr>
+                <th>Arrivée des journaux: </th>
+                <th class="libelle">&nbsp; </th>
+                <th>Heure de prise de services</th>
+                <th class="libelle"> &nbsp;</th>
+                <th> Date distribution le {{date_distrib|date('d/m/Y')}} </th>
+            </tr>
+            <tr>
+                <th colspan='2'>Responsable: </th>
+                <th colspan='3' class="libelle"> &nbsp;</th>
+            </tr>
+        </table>
+    </page_header>
+   
+<table class='grid'>
+    <thead>
+    <tr class='grey'>
+        <th class="code">Tournée </th>
+        <th class="nom"> Nom </th>
+        <th>&nbsp;</th>
+        <th class="column"> Dif </th>
+            {% for produit in produits %}
+        <th class="column">{{produit|capitalize}}</th>
+        {% endfor%}
+        <th class="libelle"> Rep </th>
+        <th class="libelle"> Km payés </th>
+        <th class="libelle"> Durée Attente </th>
+        <th> Signature </th>
+    </tr>
+    </thead>
+    {%for employe_id, employe in employes %}
+          <tr class="{{cycle(['', 'grey'], loop.index) }}">
+                <td  class="code" rowspan='2' > {{codeTournee[employe_id]}} </td> 
+                <td class="nom" rowspan='2'> {{employe}}</td>
+                <th> Cli </th> 
+                {% if nbClientDifTournee[employe_id] is defined %}
+                   <td class='center'> {{nbClientDifTournee[employe_id]}} </td>
+                {% else %}
+                    <td class='center'> </td>
+                {% endif %}
+                {% for produit_id, produit in produits %}
+                    {% if nbAbonneParProduit[employe_id][produit_id] is defined  %}
+                         <td class='center'> {{nbAbonneParProduit[employe_id][produit_id]}}</td>
+                     {% else %}
+                         <td class='center'>  </td>
+                    {% endif %}
+                {% endfor %}
+                <td class='center'> {{reperage[employe_id]}} </td>    
+                <td class='center'> {{kmPaye[employe_id]}} </td>
+                <td class='center'> {{duree[employe_id]}} </td>
+                <td rowspan='2' class='center'> &nbsp; </td>
+            </tr> 
+            <tr class="{{cycle(['grey', ''], loop.index0) }}">
+                <th> Rec </th>
+                <td colspan="{{nbligne +3}}">
+                   {% if  (reclamations[employe_id] is defined) and  (reclamations[employe_id]|length >  0) %}
+                        {{reclamations[employe_id]}} 
+                   {% endif %}
+                </td>
+                <td class='center'> {{duree_attente[employe_id]}} </td>
+            </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="5"  class='grey center'> ABSENCES </td>
+        <td colspan="{{nbligne +2}}">   </td>
+         <td> Signature du responsable </td>
+    </tr>
+    <tr>
+        <td colspan="5"  class='grey center'> INCIDENT TERRAIN (n° tournée, nom et motif) </td>
+        <td colspan="{{nbligne +2}}"> &nbsp;  </td>
+         <td>  &nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="5"  class='grey center'> REMPLACEMENT (n° tournée, nom) </td>
+        <td colspan="{{nbligne +2}}"> &nbsp;</td>
+         <td> &nbsp; </td>
+    </tr>
+</table>
+</page>

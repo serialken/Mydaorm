@@ -1,0 +1,94 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="moisCalendaire"/> Mois calendaire</span>
+    <span  style="float:center;"><input type="checkbox" id="resumeValide"/> Valide</span>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['journal_id'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['>Journal'         ,null                       ,null               ,null               ,null                   ,'{{m.lienJournal()}}'  ,'goJournal(rId)'  ,null],
+['tournee_id'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['activite_id'      ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['Date Distrib'     ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['jour_id'          ,null                       ,'#select_filter_strict'    ,null               ,null                   ,null                   ,null              ,null],
+['Activité'         ,null                       ,'#select_filter'    ,null               ,null                   ,null                   ,'goActivite(rId)' ,null],
+['nbkm'             ,'Km Réels'                 ,'#numeric_filter'      ,isKm2OrNull        ,null                    ,null                 ,null              ,null],
+['nbkm_paye'        ,'Km Payés'                 ,'#numeric_filter'      ,isKm2OrNull        ,null                    ,null                 ,null              ,null],
+['transport_id'     ,'Mode'                     ,'#select_filter_strict',null               ,null                    ,null                 ,null              ,null],
+['heure_debut'      ,null                       ,null                   ,isTimeOrNull       ,null                    ,null                 ,null              ,null],
+['duree_totale'     ,'Totale'                   ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_nuit'       ,'Nuit'                     ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_tournee'    ,'Tournée'                  ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_activite'   ,'Activité'                 ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_supplement' ,'Autre'                    ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['duree_reperage'   ,'Repérage'                 ,null                   ,null               ,null                    ,null                 ,null              ,null],
+['nbcli'            ,'Clients'                  ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbtitre'          ,'Titres'                   ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbadr'            ,'Adresses'                 ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbspl'            ,'Suppléments'              ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbprod'           ,'Produits'                 ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['nbrep'            ,'Repérages'                ,'#numeric_filter'      ,null               ,'0'                     ,null                 ,null              ,null],
+['Commentaire'      ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null]
+  ];
+
+    $(document).ready(function() {
+        dhtmlxLoadCookieObject($('#moisCalendaire'));
+        dhtmlxLoadCookieObject($('#resumeValide'));
+    });
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}"+"?mois_calendaire="+($('#moisCalendaire').is(':checked')?"1":"0")+"&resume_valide="+($('#resumeValide').is(':checked')?"1":"0"),"");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+{#        
+        grid.attachEvent("onXLE", function(){   
+            var  total_duree = 0;
+            var  total_nuit = 0;
+             grid.forEachRow(function(id){
+                total_duree += MyGetMinutes(grid.cellById(id,7).getValue());
+                total_nuit += MyGetMinutes(grid.cellById(id,8).getValue());
+            });
+            grid.setFooterLabel(7, Minute2Time(total_duree));
+            grid.setFooterLabel(8, Minute2Time(total_nuit));
+        });
+#}    }
+
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,0).getValue());
+        }
+    function goActivite(rId){
+        if (grid.cellById(rId,2).getValue()){
+            goLinkGrid("{{path('liste_pai_tournee',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&date_distrib="+grid.cellById(rId,4).getValue()+"&tournee_id=",grid.cellById(rId,2).getValue());
+        }else{
+            goLinkGrid("{{path('liste_pai_activite',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&date_distrib="+grid.cellById(rId,4).getValue()+"&activite_id=",grid.cellById(rId,3).getValue());
+            }
+        }
+
+    //chargement de la liste des employés lorsqu'on change de dépot   
+    $(document).ready(function() {
+        $('#form_filtre_depot_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_flux_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_anneemois_id').on('change', function() { ajaxComboEmploye(); });
+    });
+    function ajaxComboEmploye()  {
+        ajaxReloadCombo($('#form_filtre_employe_id')
+        ,"ajax-combo-employe-pai-resume",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val(),anneemois_id:$('#form_filtre_anneemois_id').val()});
+   }
+        
+    function dhtmlxgridOnLoad(){
+        $('#moisCalendaire').on('change', function() {
+            dhtmlxSaveCookieObject($('#moisCalendaire'));
+            onLoadGrid();
+        });
+        $('#resumeValide').on('change', function() {
+            dhtmlxSaveCookieObject($('#resumeValide'));
+            onLoadGrid();
+        });
+    }
+    </script>
+{% endblock %}

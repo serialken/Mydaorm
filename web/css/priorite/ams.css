@@ -1,0 +1,76 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 1 avr. 2014, 16:09:04
+    Author     : DDEMESSENCE
+    Purpose    : Dernière couche css pour personaliser bootstrap & cie
+*/
+.fc-state-ferie {
+	background: #FA5858;
+	}
+        
+        
+th { padding-right: 10px;}
+/*form td, form th { padding-bottom: 2px; padding-right: 10px; }*/
+
+.liste_distrib li {
+    padding-bottom: 5px;
+}
+
+.liste_distrib {
+    text-align: left;
+}
+
+.info-bulle {
+    border: 1px solid;    
+}
+
+/* AMS MODAL : surcharge la modal bootstrap */
+
+div.ams-modal.modal-dialog {
+    width: 800px; 
+    height: 600px;
+    margin: 100px auto;
+}
+
+div.ams-modal .modal-content {
+    background-color: transparent;
+}
+
+div.ams-modal .modal-header {
+  padding: 8px;
+  color:#fff;
+  background: url('../../images/modal_header_bg.png') repeat-x top left;
+  border: 0px solid #e5e5e5;
+  border-radius: 6px 6px 0px 0px;
+  height: 60px;
+}
+
+div.ams-modal .modal-header .close {
+    color: #fff;
+}
+
+div.ams-modal .modal-body {
+    background: #fff;
+}
+
+div.ams-modal .modal-footer {
+  padding: 0px 20px 0px;
+  margin-top: 0px;
+  text-align: center;
+  background: #f0f0f0;
+  height: 22px;
+  border-radius: 0px 0px 6px 6px;
+}
+
+img.ajax-loader {
+    position: fixed;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+}
+
+

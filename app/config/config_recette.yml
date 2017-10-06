@@ -1,0 +1,39 @@
+imports:
+    - { resource: parameters_recette.yml }
+    - { resource: config.yml }
+    - { resource: mroad_recette.ini }
+
+#framework:
+#    validation:
+#        cache: apc
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+    globals:
+        app_date_fin: %DATE_FIN%
+        dhtmlx_img: %DHTMLX_IMG%
+        web_files_root_dir: %WEB_FILES_ROOT_DIR%
+        web_geoc_server_ip_port: %GEOC_WEB_SERVER_IP_PORT%
+        param: "@param"
+        
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+            
+assetic:    
+    bundles:        [ AmsSilogBundle, AmsCartoBundle,AmsHorspresseBundle ]

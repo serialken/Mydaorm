@@ -1,0 +1,12 @@
+admin_imprimante:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:Imprimante:index" }
+    
+admin_imprimante_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:Imprimante:grid" }
+    
+admin_imprimante_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:Imprimante:MotifCrud" }
+

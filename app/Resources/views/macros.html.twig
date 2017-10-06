@@ -1,0 +1,4 @@
+{% spaceless %}
+    {% macro locked(isModif) %}{% if not isModif %} locked="true"{% endif %}{% endmacro %}
+    {% macro urlExcel() %}'{{ asset('codebase/grid-excel-php/generate.php')}}'{% endmacro %}
+{% endspaceless %}

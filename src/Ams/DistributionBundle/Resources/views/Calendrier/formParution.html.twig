@@ -1,0 +1,8 @@
+<h4>Ajouter une parution spéciale</h4>
+<form method="post" class="form parutionSpeciale" id="formParution" action="{{ path('calendrier_create_parution',{'id':produit.id})}}" {{ form_enctype(formParution) }} >          
+    {{ form_widget(formParution, {'attr': {'class': 'form-horizontal'}} ) }}
+   
+    <span id="inputFormParution">
+        <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+    </span>
+</form>

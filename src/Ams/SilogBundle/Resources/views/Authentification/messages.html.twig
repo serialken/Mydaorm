@@ -1,0 +1,28 @@
+
+{% extends (app.session.get('modal') is defined and app.session.get('modal')==1) ? 'AmsSilogBundle::gabarit_modal.html.twig' : 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}{% endblock %}
+        
+{% block entete %} {% endblock %}
+
+
+{% block body %}
+	{% for flashMessage in app.session.flashbag.get('notice') %}
+	    <div class="flash-notice">
+	        {{ flashMessage }}
+	    </div>
+	{% endfor %}
+	<hr />	
+	
+	{% if (app.session.get('modal') is defined and app.session.get('modal')==1) %}
+		<a href="#" id="closeNyroModal">Annuler</a>
+	{% else %}
+		<a href="{{ url_derniere_page }}">Page précédente</a>
+	{% endif %}
+{% endblock %}
+
+
+
+    
+
+

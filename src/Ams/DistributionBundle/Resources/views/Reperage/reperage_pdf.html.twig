@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+  <html>
+    <head> 
+      <meta charset='utf-8'> 
+      <title> Reperage </title>
+    </head>
+    <body>
+{% set i = 0 %}
+{% for row in list %}
+	<table class="reperage"  width="800" align="center">
+		<tr>
+			<td class="title" colspan="3"> FEUILLE DE REPERAGE </td>
+		</tr>
+		
+		<tr>
+			<td class="data" colspan="3"> {{ 'Feuille a rendre avant le '  ~ app.request.cookies.get('toMakeDate') | raw }} (démarrage le 	  {{ row.dateDemar | date('d/m/Y') }})
+				<div class="society">
+					{% if row.societe %} {{ row.societe.libelle }} ({{ row.societe.code }}){% endif %} <br />
+					{% if row.tournee %}  {{ row.tournee.code }} 
+					{% endif %}
+				</div>
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td class="data_client"> {{ row.numaboExt }} </td> 
+			<td>  </td>
+			<td rowspan="5"> Info portage : <i>{% if row.infoComp1 is not empty %}{{ row.infoComp1 }}. {% endif %}{% if row.infoComp2 is not empty %}{{ row.infoComp2 }}. {% endif %}{% if row.divers1 is not empty %}{{ row.divers1 }}. {% endif %}{% if row.divers2 is not empty %}{{ row.divers2 }} {% endif %}</i></td>
+		</tr>
+		
+		<tr>
+			<td class="data_client" colspan="2"> {{ row.vol1 }} {{ row.vol2 }} </td>
+		</tr>
+		<tr>
+			<td class="data_client" colspan="2"> {{ row.vol3 }} {{ row.vol4 }} {{ row.vol5 }} </td>
+		</tr>
+		<tr>
+			<td class="data_client" colspan="2"> {{ row.cp ~' '~ row.ville }} </td>
+		</tr>
+		
+		<tr>
+			<td class="data_complement" colspan="2"> Doit être fait au passage dans la rue, à l'heure de livraison ... </td>
+		</tr>
+	
+		<tr>
+			<td class="element"> [ ] Petite BAL </td>
+			<td class="element" > [ ] Demande de code </td>
+			<td class="element" > [ ] Pas ce nom sur BAL</td>
+		</tr>
+		
+		<tr>
+			<td class="element"> [ ] OK - BAL pav </td>
+			<td class="element"> [ ] Vigik à programmer </td>
+			<td class="element"> [ ] Pas de BAL</td>
+		</tr>
+		
+		<tr>
+			<td class="element"> [ ] OK - BAL bat </td>
+			<td class="element"> [ ] Clef ou badge spécial </td>
+			<td class="element"> [ ] Zone non portée</td>
+		</tr>
+		
+		<tr>
+			<td class="element"> [ ] OK - Livré sous porte </td>
+			<td class="element"> [ ] Pas trouvé - demande complément d'adresse </td>
+			<td class="element "> [ ] Zone inaccessible la nuit</td>
+		</tr>
+		
+		<tr>
+			<td class="element"> [ ] OK - Livré gardien ou BAL commune </td>
+			<td></td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td class="comment"> Commentaire : </td>
+			<td></td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td>
+                            <div class="signature" > <strong> Nom et Signature </strong> de la personne qui a effectué le reperage </div>
+			</td>
+                        <td> 
+                            <div class="dialogCs"><strong> Saisie Dialog CS </strong></div>
+                        </td>
+                        <td>
+                            <div class="pepp"><strong> Saisie PEPP </strong></div>
+                        </td>
+		</tr>
+	</table>
+  {% set i = i+1 %}
+  {% if i % 2 == 0 and i < list|length %}
+    <div class="saut_page"></div>
+  {% endif %}
+  
+{% endfor %}
+
+<style>
+table.reperage{padding:2px; border-style: solid;border-width: 1px; border-top: none;border-left: none;border-right: none;position:relative}
+.title{font-size:28px;padding:0}
+.element{font-size:14px;}
+.element.right{text-align:right}
+.society{font-size:20px;font-weight:bold;text-align:right;position:absolute;top:5px;right:0px;}
+.code{font-size:20px;text-align:center}
+.data{font-size:17px;}
+.data_client{font-size:16px;font-weight:bold}
+.data_complement{font-weight:bold;height:40px}
+.signature{border:solid 1px; height: 165px; width: 300px;}
+.dialogCs{border:solid 1px; height: 165px; width: 200px; padding: 2px;}
+.pepp{border:solid 1px; height: 165px; width: 200px; padding: 2px;}
+.comment{font-size:20px;font-weight:bold; height: 50px;margin-bottom: 15px;}
+.saut_page{page-break-before: always;} /** SAUT DE PAGE PDF**/
+
+</style>
+
+    </body>
+  </html>

@@ -1,0 +1,27 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="typetournee_id"     type="coro" width="*"   align="left"    sort="sortCombo">Type Tournée{{comboTypeTournee|raw}}</column> 
+        <column id="date_debut"         type="dhxCalendar" width="70" align="center" sort="date">Début</column> 
+        <column id="date_fin"           type="dhxCalendar" width="70" align="center" sort="date">Fin</column> 
+        <column id="borne_inf"          type="ed"   width="70"  align="right"   sort="int">Inférieur</column> 
+        <column id="borne_sup"          type="ed"   width="70"  align="right"   sort="int">Supérieur</column> 
+        <column id="valeur"             type="ed"   width="80"  align="right"   sort="int">Valeur</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.typetournee_id}}</cell>
+            <cell>{{row.date_debut|date('d/m/Y')}}</cell>
+            <cell>{{row.date_fin|date('d/m/Y')}}</cell>
+            <cell>{{row.borne_inf}}</cell>
+            <cell>{{row.borne_sup}}</cell>
+            <cell>{{row.valeur}}</cell>
+            {{m.cellSupprime(isModif)}}
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+

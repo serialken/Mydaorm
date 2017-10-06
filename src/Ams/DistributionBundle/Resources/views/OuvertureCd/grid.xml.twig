@@ -1,0 +1,11 @@
+<rows>
+    {% for row in liste %}
+        <row locked="true">
+              <cell>{{row.libelle}}</cell>
+              <cell>{{row.nom}}</cell>
+              <cell>{{row.prenom}}</cell>
+              <cell>{{row.telephone}}</cell>
+              <cell>{{row.new_date}}</cell>
+        </row>
+    {% endfor %}
+</rows>

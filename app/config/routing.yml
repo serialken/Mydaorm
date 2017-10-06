@@ -1,0 +1,69 @@
+ams_invendu:
+    resource: "@AmsInvenduBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_horspresse:
+    resource: "@AmsHorspresseBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_reporting:
+    resource: "@AmsReportingBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_referentiel:
+    resource: "@AmsReferentielBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_carto:
+    resource: "@AmsCartoBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_produit:
+    resource: "@AmsProduitBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_employe:
+    resource: "@AmsEmployeBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_modele:
+    resource: "@AmsModeleBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_paie:
+    resource: "@AmsPaieBundle/Resources/config/routing.yml"
+    prefix:   /
+    
+ams_distribution:
+    resource: "@AmsDistributionBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_extension:
+    resource: "@AmsExtensionBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_silog:
+    resource: "@AmsSilogBundle/Resources/config/routing.yml"
+    prefix: 
+        
+ams_adresse:
+    resource: "@AmsAdresseBundle/Resources/config/routing.yml"
+    prefix:   
+        
+ams_navigation:
+    pattern:  /
+    defaults: { _controller: AmsSilogBundle:Navigation:accueil }
+    
+   
+ams_abonne:
+    resource: "@AmsAbonneBundle/Resources/config/routing.yml"
+    prefix: /
+    prefix:
+     
+ams_invendu:
+    resource: "@AmsInvenduBundle/Resources/config/routing.yml"
+    prefix:   /
+
+ams_exploitation:
+    resource: "@AmsExploitationBundle/Resources/config/routing.yml"
+    prefix: / 

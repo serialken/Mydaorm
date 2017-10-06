@@ -1,0 +1,16 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="extrait"        type="ch"   width="50"  align="center"  sort="str">Extrait</column> 
+        <column id="depot_id"       type="coro" width="150" align="left"    sort="sortCombo">Dépot{{comboDepot|raw}}</column>
+        <column id="flux_id"        type="coro" width="70"  align="left"    sort="sortCombo">Flux{{comboFlux|raw}}</column> 
+        <column id="matricule"      type="ro"   width="150" align="left"    sort="str">Matricule</column> 
+        <column id="matriculeNG"    type="ro"   width="150" align="left"    sort="str">Matricule NG</column> 
+        <column id="employe_id"     type="coro" width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="rc"             type="ro"   width="50"  align="center"  sort="str">RC</column> 
+        <column id="date_stc"       type="ro"   width="70"  align="center"  sort="sortDate">Date de fin de RC</column> 
+        <column id="date_extrait"   type="ro"   width="70"  align="center"  sort="sortDate">Date de STC</column> 
+        {{m.columnSansAjout(isModif and isDelete)}}
+    </head> 
+   {% include 'AmsPaieBundle:PaiStc:row.xml.twig' %}
+</rows>

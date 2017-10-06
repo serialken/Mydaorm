@@ -1,0 +1,384 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<div style="padding:20px 10px 10px 10px">
+    <div id="record_dialog" class="emv-dialog">
+         <div class="floater"></div>
+         <div class="frame">
+             <div class="header">Enregistrement des données</div>
+             <div id="msg_confirm">
+                 <div align="center">
+                    <img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br>
+                    <span>Veuillez patientez...</span><br>
+                </div>
+             </div>
+             <div class="footer"><span id="validButton" class="emv-button" style="display:none">OK</span></div>
+         </div>
+    </div>
+    <form id="reclam-form" method="POST" action="{{path('crm_create_rem')}}" role="form" name="reclam-form"> 
+        {% if action is defined and action == 'update'%}
+        <table class="no-border table-center" style="margin-bottom:15px;" >
+            <thead>
+                <tr style="float:right;" class="tr-no-border">
+                    {% if all == '0' %}{% set socId = edit %}{%else%}{% set  socId = '' %}{%endif%}
+                    <th colspan="14">
+                        <a href="{{path('crm_display_detail',{'cId': categorieId,'sSId':socId,'dpId': depo, 'all':all})}}" class="btn btn-primary  active"><i class="icon-arrow-left"></i>Retour</a>
+                      
+                    </th> 
+                </tr>
+            </thead>
+        </table>
+  {%endif%}
+    <table class="table table-center left">
+        <thead>
+            
+            <tr>
+               <th  BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Fiche d'identité</b></th>            
+            </tr>
+        </thead>
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td class="col-xs-7">  
+                <span >
+                    {{ form_label(form.societe) }}
+                </span>
+                {%if edit is defined%}
+                    <span style="width:200px!important">{{ form_widget(form.societe, {'value' : edit~'' ,'disabled':true })}}</span>
+                {%else%}
+                    <span>{{ form_widget(form.societe, {'disabled':true })}}</span>
+                {%endif%}
+               <span style="width:200px!important">{{ form_widget(form.societeId,{'attr': {'value': edit}})}}</span>
+            </td> 
+            <td class="col-xs-7">
+                <span class="">{{ form_label(form.dateCreat)}}</span>
+                <span class="e">{{ form_widget(form.dateCreat)}}</span>
+            </td>
+        </tr>
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td class="col-xs-7">  
+                <span class="">{{ form_label(form.vol1)}}</span>
+                {%if name is defined%}
+                    <span class="e">{{ form_widget(form.vol1, {'attr': {'readonly': true,value : name,size:'40'}})}}  </span>
+                {%else%}
+                    <span class="e">{{ form_widget(form.vol1,{'attr': {'readonly': true,size:'40'}})}} </span>
+                {%endif%}
+            </td>
+
+            <td  class="col-xs-7" >
+                <span class="">{{ form_label(form.vol2)}}</span>
+                {%if cplnom is defined %}
+                    <span class="e">{{ form_widget(form.vol2,{'attr': {'readonly': true,value : cplnom,size:'40'}})}}</span>
+                {%else%}
+                    <span class="e">{{ form_widget(form.vol2,{'attr': {'readonly': true, size:'40'}})}}</span>
+                {%endif%}
+            </td>
+         </tr>
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td  class="col-xs-7">
+                {{ form_label(form.vol4)}} <span class=""></span>
+                {%if adr is defined%}
+                    <span>{{ form_widget(form.vol4, {'attr': {'readonly': true,'class':'input-adr',value :adr, size:'40'}})}}</span>
+                {%else%}
+                    <span>{{ form_widget(form.vol4,{'attr': {'readonly': true, size:'40'}})}}</span>
+                {%endif%}
+            </td>
+            <td  class="col-xs-7">
+                {{ form_label(form.vol3)}} <span class=""></span>
+                {%if compAdr is defined%}
+                    <span>{{ form_widget(form.vol3, {'attr': {'readonly': true,'value' :compAdr, size:'40'}})}}</span>
+                {%else%}
+                    <span>{{ form_widget(form.vol3,{'attr': {'readonly': true, size:'40'}})}}</span>
+                {%endif%}
+            </td>             
+        </tr> 
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td  class="col-xs-4" >
+                <span class="">{{ form_label(form.vol5)}}</span>
+                {%if lDit is defined%}
+                    <span class="">{{ form_widget(form.vol5, {'attr': {'readonly': true,value :lDit, size:'40'}})}}</span>
+               {%else%}
+                    <span class="">{{ form_widget(form.vol5,{'attr': {'readonly': true, size:'40'}})}}</span>
+               {%endif%}
+            </td>
+            <td  class="col-xs-4">
+                <span class="">{{ form_label(form.cp)}}</span>
+                {%if cp is defined%} 
+                    <span>{{ form_widget(form.cp, {'attr': {'readonly': true ,'value' :cp}})}}</span>
+                {%else%}
+                    <span>{{ form_widget(form.cp,{'attr': {'readonly': true}})}}</span>
+                {%endif%}
+            </td>    
+        </tr> 
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td  class="col-xs-7">
+                <span class="">{{ form_label(form.numaboExt)}}</span>
+                {%if numaboExt is defined%} 
+                    <span>{{ form_widget(form.numaboExt, {'attr': {'readonly': true,'value' :numaboExt }})}}</span>
+                {%else%}
+                    <span class="e">{{ form_widget(form.numaboExt,{'attr': {'readonly': true}})}}</span>
+                {%endif%}
+                </td>
+                <td  class="col-xs-6" >
+                    <span class="">{{ form_label(form.commune)}}</span>
+                    {%if cm is defined%}
+
+                        <span>{{ form_widget(form.commune, {'value': cm,'disabled': true })}}</span>      
+                    {%else%}
+                        <span>{{ form_widget(form.commune,{'attr': {'disabled': true}})}}</span>
+                    {%endif%}
+                    <span>{{ form_widget(form.communeId,{'attr': {'value': cm}})}}</span>
+                </td>
+        </tr> 
+        <tr style="margin-bottom:15px" class="col-xs-14">
+            <td  class="col-xs-7">
+                <span class="">{{ form_label(form.depot)}}</span>
+                    {%if depo is defined%}
+                        <span>{{ form_widget(form.depot, {value : depo ,'disabled':true })}}</span>
+                    {%else%}
+                        <span>{{ form_widget(form.depot, {'disabled':true })}}</span>
+                    {%endif%}
+             </td>
+       
+             
+            <td  class="col-xs-4">
+                <span class="">{{ form_label(form.ville)}}</span>
+                {%if ville is defined%} 
+                    <span>{{ form_widget(form.ville, {'attr': {'readonly': true ,'value' :ville}})}}</span>
+                {%else%}
+                    <span>{{ form_widget(form.ville,{'attr': {'readonly': true}})}}</span>
+                {%endif%}
+            </td>   
+             
+           <td  class="col-xs-7">
+                <span></span>
+                <span>{{ form_widget(form.depotId, {value : depo })}}</span>   
+            </td>      
+        </tr> 
+        
+    </table>
+        <table class="table table-center left">
+            <thead>
+                <tr>
+                   <th  BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Demande</b></th>            
+                </tr>
+
+            </thead>
+            <tr style="margin-bottom:15px" class="col-xs-14">
+                <td  class="col-xs-7">
+                    <span class="">{{ form_label(form.crmCategorie)}}</span>
+                    <span>{{ form_widget(form.crmCategorie,{'disabled':true,'value':'2'})}}</span>
+                </td>
+                <td  class="col-xs-7">
+                    <span>{{ form_label(form.crmDemande)}}</span>
+                    <span>{{ form_widget(form.crmDemande)}}</span>
+                </td>
+           </tr>
+            <tr style="margin-bottom:15px" class="col-xs-14">
+                <td  class="col-xs-7">
+                    <span class="start-date">{{ form_label(form.dateDebut)}}</span>
+                    
+                    <span>{{ form_widget(form.dateDebut,{value: startDate|date('d/m/Y')})}}</span>
+                    <span id="tourneContainer">{%if tournee.mtj_id is defined %} Tournée : {{tournee.code}}{% endif%}</span>
+                </td>
+                   
+                <td  class="col-xs-7">
+                    <span>{{ form_label(form.dateFin)}} </span>
+                    
+                    <span>{{ form_widget(form.dateFin,{value: endDate|date('d/m/Y')})}}</span>
+                </td>
+            </tr>
+            <tr style="text-align:center">
+                <td colspan="6"><b>{{ form_label(form.cmtDemande) }}</b>&nbsp;&nbsp;{{ form_widget(form.cmtDemande)}}
+                    <button type="submit" class="btn-md btn-primary" >Valider</button>
+                </td>
+                <input type="hidden" value="{{action}}" name="action"/>
+                 <input id="abonneSocId" type="hidden" value="{{abonneSocId}}" name="abonneSocId"/>
+                <input type="hidden" value="{{curretCrmId}}" name="crmId"/>
+                <input type="hidden" value="{{action}}" name="action"/>
+                <input type="hidden" value="{{curretCrmId}}" name="crmId"/>
+                <input type="hidden" value="{%if dateMin is defined %}{{dateMin}}{% endif%}" name="dateMin"/>
+                <input type="hidden" value="{%if dateMax is defined%}{{dateMax}}{% endif%}" name="dateMax"/>
+                <input type="hidden" id="tourneContainerId" value="{%if tournee.mtj_id is defined %}{{tournee.mtj_id}}{% else %} L'abonné n'est pas associé à une tournée à cette date.{% endif%}" name="modele_tourneejour_id"> 
+            </tr>
+        </table>
+   </form>
+       
+    <table class="table table-center">
+        <thead>
+            <tr>
+               <th  BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Historique</b></th>            
+            </tr>
+                 {% if (allCrmByClient | length ==  1 and action !='update') or (allCrmByClient | length > 1)  %}
+            <tr>
+                <th width="10%">N° Demande</th>
+                <th width="10%">Date Réclamation</th>
+                <th width="15%">Categorie</th>
+                <th width="15%">Demande/info</th>                      
+                <th width="10%">Réponse</th>
+                <th width="10%">Date de réponse</th>
+            </tr>
+        </thead>
+        {%if crmReperage is not empty%}
+            {% for crmRep in crmReperage %} 
+            <tr> 
+                    <td>-</td>
+                    <td>{{crmRep.dateExport|date('d/m/Y h:i')}}</td>
+                    <td>Repérage</td>
+                    <td>Nb. exemplaire(s): {{crmRep.qte}}</td>
+                    <td>Topage : {{crmRep.topage}}
+                        {%if crmRep.qualif.libelle is defined and crmRep.qualif.libelle != ""%}</br><strong>{{crmRep.qualif.libelle}}</strong>{%endif%}
+                        {%if crmRep.cmtReponse != "" %}</br><strong>{{crmRep.cmtReponse}}</strong>{%endif%}
+                    </td>
+                    <td>{%if crmRep.dateReponse is not null%}{{crmRep.dateReponse|date('d/m/Y')}}{%endif%}</td>
+            </tr>
+            {% endfor %} 
+        {%endif%}
+       {% if allCrmByClient is not empty   %}
+            {% for allCrmByClient in allCrmByClient %} 
+            {% if  allCrmByClient.id != curretCrmId %} 
+                <tr> {% if allCrmByClient.crmDemande.crmCategorie.id == 1 %}
+                        <td>
+                            {# certaine reclamation n'ont pas de depot_id....?? #}
+                            {% if allCrmByClient.depot is null  %}
+                                 <a href="{{path('crm_edit_and_validate',{'cId': allCrmByClient.crmDemande.crmCategorie.id,'sId':allCrmByClient.societe.id,'dpId':0,'crmId': allCrmByClient.Id})}}" >
+                                      {{allCrmByClient.id}}
+                                 </a>
+                            {% else %}   
+                                 <a href="{{path('crm_edit_and_validate',{'cId': allCrmByClient.crmDemande.crmCategorie.id,'sId':allCrmByClient.societe.id,'dpId':allCrmByClient.depot.id,'crmId': allCrmByClient.Id})}}" >
+                                      {{allCrmByClient.id}}
+                                 </a>
+                            {% endif %}   
+                        </td>
+                    {%else%}
+                        <td>
+                            <a href="{{path('crm_create_rem',{'crmId': allCrmByClient.Id})}}" >
+                                {{allCrmByClient.id}}
+                            </a>
+                        </td>
+                    {%endif%}
+                    <td>{{allCrmByClient.dateCreat|date('d/m/Y')}}</td>
+                    <td>{{allCrmByClient.CrmDemande.CrmCategorie.libelle}}</td>
+                    <td>{{allCrmByClient.CrmDemande.libelle}}<br/>{{allCrmByClient.cmtDemande}}</td>
+                    <td>
+                        {% if allCrmByClient.CrmReponse is not empty %}
+                        {{allCrmByClient.CrmReponse.libelle}}<br/>{{allCrmByClient.cmtReponse}}
+                        {% endif %}
+                    </td>
+                    <td>{% if allCrmByClient.CrmReponse is not empty %}{{allCrmByClient.dateReponse|date('d/m/Y')}}{% endif %}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+              {% endif %}
+        {% endif %}
+        {% if ((allCrmByClient | length  == 0 ) or (curretCrmId is not empty and allCrmByClient | length == 1)) and crmReperage is empty  %}
+            <tr>
+                 <td style="text-align:left"><b>Il n'y a aucun historique disponible</b></td>
+            </tr>
+        {% endif %}
+    </table>
+     <table class="table table-center ">
+        <thead>
+            <tr>
+             <th BGCOLOR="#E1DDE1" colspan="5" style="font-size: 20px;"><b>Historique des services</b></th>          
+            </tr>
+        </thead>
+        <tr>
+            <td colspan="5" align="left">
+                <b>
+                    {% if datesDistribution is not empty %}
+                        Jours où ce client a potentiellement été servi : 
+                    {% else %}
+                        Aucun service.
+                    {% endif %}
+                </b>
+            </td>
+        <tr>    
+            
+        {% set nbLigne = (datesDistribution|length/5)|round(0,'floor') %}
+        {% if datesDistribution%5 != 0 %}
+            {% set nbLigne = nbLigne|round(0,'floor') +1 %}
+        {% endif %}
+        {% for i in 0..nbLigne %}
+            <tr>
+                {% for dateDistrib in datesDistribution|slice(i*5, 5) %}
+                     <td  style="text-align: left;">{{dateDistrib.date_distrib |localizeddate('full','none','fr')}}
+                {% endfor %}
+            </tr>
+        {% endfor %}    
+        
+    </table>
+</div>
+
+<script type="text/javascript">  
+    function end_Range(){
+    var chosenDate = $("#ams_distributionbundle_crmdetail_dateDebut").datepicker("getDate");                  
+        if (chosenDate == null ){
+            $("#ams_distributionbundle_crmdetail_dateDebut").focus();
+        } else {
+         
+            $("#ams_distributionbundle_crmdetail_dateFin").datepicker("option", "minDate", new Date (chosenDate));
+        };
+    };
+
+    $(document).ready(function() {
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        /*$("form input#ams_distributionbundle_crmdetail_dateDebut").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            onSelect: end_Range,     
+        });*/
+        
+        
+        
+        $("#ams_distributionbundle_crmdetail_dateDebut").datepicker({
+            dateFormat: 'dd/mm/yy',
+             maxDate: new Date(),
+            firstDay:1
+        }).attr("readonly","readonly");
+        
+        
+
+        $("#ams_distributionbundle_crmdetail_dateFin").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            beforeShow: end_Range,
+            firstDay:1
+        }).attr("readonly","readonly");
+        
+      
+   
+   
+        var $depot = $('#ams_distributionbundle_crmdetail_depotId');
+        var $debut =  $('#ams_distributionbundle_crmdetail_dateDebut');
+        var  $abonne = $('#abonneSocId');
+        
+        $debut.on('change', function() { ajaxgetTournee(); });
+  
+
+        function ajaxgetTournee()  {
+           
+            var depot_id = $depot.val();
+            var debut =  $debut.val();
+            var abonne_id = $abonne.val();
+            if(depot_id!=''  && debut!='' ) {
+                $.ajax({
+                    url: "{{path('crm_get_tourne_by_abonne_depot_date')}}",
+                    data: 'abonne_id='+ abonne_id + '&depot_id='+ depot_id +  '&debut='+debut ,
+                    dataType: 'json',
+                    success: function(data) {
+                         if(data.length > 0 && data[0].mtj_id > 0) {
+                           $("#tourneContainer").text(" Tournée : " + data[0].code);
+                           $("#tourneContainerId").val(data[0].mtj_id) ;    
+                        }else{
+                             $("#tourneContainer").text("L'abonné n'est associé à une tournée à cette date.")
+                        }
+                    }
+                });
+            }
+        }
+
+    }); 
+
+   
+
+    
+</script>
+{%endblock%}

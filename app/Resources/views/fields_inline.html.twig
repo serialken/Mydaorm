@@ -1,0 +1,22 @@
+{% use "form_div_layout.html.twig" %}
+    
+{% block form_row %}
+{% spaceless %}
+    {{ form_label(form) }}&nbsp;&nbsp;{{ form_widget(form) }} &nbsp;
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block hidden_row %}
+{% spaceless %}
+            {{ form_widget(form) }}
+{% endspaceless %}
+{% endblock hidden_row %}
+
+{% block form_widget_compound %}
+{% spaceless %}
+    
+        {{ block('form_rows') }}
+        
+    
+{% endspaceless %}
+{% endblock form_widget_compound %}

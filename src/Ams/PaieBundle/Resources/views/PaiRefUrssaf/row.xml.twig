@@ -1,0 +1,9 @@
+{% for row in curseur %}
+    <row id ="{{row.id}}">  
+        <cell>{{row.prd_caract_id}}</cell>
+        <cell>{{row.produit_id}}</cell>
+        <cell>{{row.type_id}}</cell>
+        <cell>{{row.type_urssaf}}</cell>
+        <cell>{{row.date_modif|date('d/m/Y')}}</cell>
+    </row> 
+{% endfor %}

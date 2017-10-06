@@ -1,0 +1,827 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+{% block title %}Cartographie - Affichage des tournées{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ web_files_root_dir }}js/carto/skins/htc.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/carto/carto.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/carto/print.css" type="text/css" media="print" />
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/webui-popover.css" type="text/css" media="screen" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {% javascripts output='js/compresse/core.js'
+                                'js/carto/proj4js-combined.js' 
+                                'js/carto/defs/EPSG27572.js' 
+                                'js/carto/htc-2.4.3.js' 
+                                'js/carto/mroad-map.js' 
+                                'js/jquery.multisortable.js'
+                                'js/webui-popover.js'
+                                'js/jquery.print.js'
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% include 'AmsCartoBundle:Default:htc_script_aff_tournees.js.twig' %}
+{% endblock%}
+
+{% block body %}
+    <style>
+        .form_param{display:inline-block}
+        .form_param label{}
+        .form_param input{}
+    </style>
+    {#    <div id="mapTools"><a id="zboxBtn">Zoom</a></div>#}
+    <div class="overlay-help"></div>
+    <div id="mapNotifications">
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Erreur</strong> Aucune adresse n'a été trouvée pour ce point. Veuillez en essayer un autre.
+        </div>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Erreur!</strong> Une erreur a été détectée dans le service de cartographie. Veuillez essayer à  nouveau dans un instant.
+        </div>
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Astuce:</strong> Pour désigner un nouveau point de livraison, veuillez cliquez sur l'endroit voulu à  l'intérieur de la carte.
+        </div>
+        <div id="cartoNotifEmptyDiv">
+            <div class="alert alert-defaultLoad"></div>
+        </div>
+    </div>
+    <div id="mapContainer">
+        <div id="infosMapPoint">
+            <p class="infosCarte">
+                <span class="glyphicon glyphicon-print" id="printMap" title="Imprimer la carte..."></span><span class="glyphicon glyphicon-picture"></span><strong>Affichage:</strong> <span id="nbTourneesAff">{{ jsonTbl | length}}</span> tournée<span id="plurielTourneesAff">{% if jsonTbl | length > 1 %}s{% endif %}</span>
+                <span class="glyphicon glyphicon-sort-by-order"></span><strong>Ordre dans les tournées</strong>
+                <a class="btn btn-success btn-xs btn-show" title="Afficher les numéros d'ordre dans la tournée">On</a>
+                <a class="btn btn-danger btn-xs btn-hide" title="Masquer les numéros d'ordre dans la tournée" disabled="disabled">Off</a>
+            </p>
+            <div id="mapLegende">
+                <table class="legende">
+                    <tr>
+                        <td><img src="{{ web_files_root_dir }}images/carto/circle-16-black.png" alt="icone représentant les arrêts de type abonné"/></td>
+                        <td>Abonné</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/triangle-16-black.png" alt="icone représentant les arrêts de type lieu de vente"/></td>
+                        <td>Lieu de vente</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/target-16-black.png" alt="icone représentant les arrêts de type repérage"/></td>
+                        <td>Repérage</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/star-16-black.png" alt="icone représentant les arrêts de type démarrage"/></td>
+                        <td>Démarrage</td>
+                    </tr>
+                </table>
+            </div>
+            <p class="infosPoint">
+                <span class="glyphicon glyphicon-screenshot"></span><strong>Infos point:</strong> 
+                <em>Longitude:</em><span id="nouvPointX"></span> <em>Latitude:</em> 
+                <span id="nouvPointY"></span> 
+                <a id="newP2L_lnk" data-maxdistance="10" data-urlcreapoint="{{url('adresse_point_livraison')|raw}}" data-urlgeows="{{path('ams_carto_rgeocodingjson')}}" title="Créer un nouveau point de livraison à  cet endroit" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-pushpin"></span>Nouveau point de livraison</a>
+                <a id="cancelNewP2L_lnk" title="Annuler" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Annuler</a>
+            </p>
+        </div>
+        <div id="map" data-defaultCursorUrl="{{web_files_root_dir}}js/carto/skins/img/grab.cur"></div>     
+    </div>
+    <div id="mapDatas" style="width:20%;">
+        {% if jsonTbl|length > 0 %}
+            <h3>Distribution du {{ date_tournee }}</h3>
+            <p><span class="tDepotNamePHolder"></span><br/><span class="depotTourneeDatas"></span></p>
+            <p><button type="button" class="btn btn-primary btn-xs" id="findAboBtn" title="Cliquer ici pour ouvrir le formulaire de recherche d'abonné"><i class="glyphicon glyphicon-search white"></i>Trouver un abonné</button></p>
+            {% for tournee in jsonTbl %}
+                <script>
+                    var tourneeCurrent = {{tournee| raw}};
+                            jsonTourneesAffTbl.push(tourneeCurrent);
+                </script>
+                <div id="tourneeInfos_{{loop.index0}}" class="tourneeInfos">
+                    <div class="windowTools">
+                        {% if loop.index0 == 0 %}
+                            <span class="glyphicon glyphicon-minus"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-plus"></span>
+                            <script>
+                                $(document).ready(function () {
+                                    $('#tourneeInfos_{{loop.index0}} .infosContent .tourneeDatasDetails').hide();
+                                });
+                            </script>
+                        {% endif %}
+                    </div>
+                    <div class="infosContent">                
+                        <h4>Tournée <span class="idTourneeDatas"></span></h4>
+                        <div class="tourneeDatasDetails">
+                            <p style="display:none;">
+                                <strong>ID tournée:</strong>&nbsp;<span class="id2TourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>De</strong>&nbsp;<span class="heureDebutTourneeDatas"></span>&nbsp;
+                                <strong>à </strong>&nbsp;<span class="heureFinTourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>Temps de conduite :</strong>&nbsp;<span class="tempsConduiteTourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>Temps de visite :</strong>&nbsp;<span class="tempsVisiteTourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>Durée totale:</strong>&nbsp;<span class="dureeTourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>Nombre d'arrêts:</strong>&nbsp;<span class="nbStopsTourneeDatas"></span>
+                            </p>
+                            <p>
+                                <strong>Nombre d'abonnés:</strong>&nbsp;<span class="nbAbonne"></span>
+                            </p>
+                            <p>
+                                <strong>Distance:</strong>&nbsp;<span class="distanceTourneeDatas"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="toolbar">
+                        <!-- Début de changement de l'ordre de la tournée -->
+                        <a class="updateMyData" data-tourneeid="" data-tourneecode="" data-tourneedate=""> <span class="updateData glyphicon glyphicon-refresh"></span>&nbsp;</a>
+                        <a class="toolTurnChangeOrder" data-tourneeid="" data-tourneecode="" data-fetchurl="{{url('ams_carto_infostourneejson')}}"><span class="glyphicon glyphicon-sort"></span>&nbsp;</a>
+                        <!-- Fin  de changement de l'ordre de la tournée -->
+                        {% if jsonTbl|length > 1 %}
+                            <!-- Début de basculement d'abonnés vers une autre tournée -->
+                            <a class="moveAbo" data-tourneeid="" data-tourneecode="" data-tourneedate=""> <span class="glyphicon glyphicon-transfer"></span>&nbsp;</a>
+                            <!-- Fin de basculement d'abonnés vers une autre tournée -->
+                        {% endif %}
+                        {% if typeAction == 'nouveaupoint' %}
+                            <!-- Début d'ajout de point de livraison dans la tournée -->
+                            <a class="toolAddPoint" data-tourneeIndex="{{loop.index0}}"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;</a>
+                            <!-- Fin d'ajout de point de livraison dans la tournée -->
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            <div id="pointInfos">
+                <div class="infosContent">
+                    <h4>Point de livraison n°<span id="pointLivraisonTourneeInfos"></span></h4>
+                    <p align="center">(position #<span id="ordreClientTourneeInfos"></span> dans la tournée)</p>
+
+                    <div id="multi_abonnes_infos_block"><span class="glyphicon glyphicon-user"></span> <span id="nbAbosPoint"></span> abonné<span id="nbAbosPointPluriel"></span> <span class="glyphicon glyphicon-barcode"></span> <span id="nbProduitsPoint"></span> produits</div>
+                    <div id="multi_abonnes_infos_carousel" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                            <li data-target="#multi_abonnes_infos_carousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#multi_abonnes_infos_carousel" data-slide-to="1"></li>
+                            <li data-target="#multi_abonnes_infos_carousel" data-slide-to="2"></li>
+                        </ol>
+
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner">
+                            <div class="item active" id="aboInfos_0">
+                                <h5></h5>
+                                <img src="" class="typeClient"/>&nbsp;<span class="nomAbonne"></span> <span class="typeAbonne"></span>
+                                <p class="adresse1Abonne"></p>
+                                <img class="logoProduit" src="" alt="">
+                                <p class="titreProduit"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="multi_abonnes_controls_block">
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#multi_abonnes_infos_carousel" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#multi_abonnes_infos_carousel" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                    </div>
+
+                    {#<p>
+                        <strong>Type:</strong>&nbsp;<span id="typeClientTourneeInfos"></span><br/>
+                        <strong>Client:</strong>&nbsp;<span id="nomClientTourneeInfos"></span>&nbsp;(<span id="idClientTourneeInfos"></span>)
+                        <br/>
+                        <strong>Adresse:</strong>&nbsp;<span id="adresseClientTourneeInfos"></span>
+                        <br/><br/>
+                        <strong>Heure:</strong>&nbsp;<span id="heureArretTourneeInfos"></span><br/>
+                        <strong>Durée arret:</strong>&nbsp;<span id="dureeArretTourneeInfos"></span><br/><br/>
+                        <strong>Trajet:</strong>&nbsp;<span id="trajetArretTourneeInfos"></span>m<br/>
+                        <strong>Trajet cumulé:</strong>&nbsp;<span id="trajetCumulTourneeInfos"></span>km<br/>
+                    </p>#}
+                </div>
+                <div class="toolbar">
+                    <!-- Début de l'affichage des clients à  cette adresse -->
+                    <a id="toolPointListCustomers"><span class="glyphicon glyphicon-list"></span>&nbsp;</a>
+                    <!-- Fin de l'affichage des clients à  cette adresse -->
+                    <!-- Début ajout de client à  cette adresse -->
+                    <a id="toolPointAddCustomer"><span class="glyphicon glyphicon-plus"></span>&nbsp;</a>
+                    <!-- Fin ajout de client à  cette adresse -->
+                    <!-- Début de changement de tournée -->
+                    <a id="toolPointChangeTurn" data-placement="left" data-toggle="popover" title="Changer de tournée" data-content="Déplacer ce point de livraison vers une autre tournée."><span class="glyphicon glyphicon-share"></span>&nbsp;</a>
+                    <!-- Point livraison rejet -->
+                    <a id="rejectPointLivraison" data-placement="left" data-toggle="popover" title="point en rejet" data-content="Déplacer ce point de livraison vers une autre tournée."><span class="glyphicon glyphicon-retweet"></span>&nbsp;</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="amsModal" class="modal fade bs-example-modal-lg"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Déplacer ce point vers une autre tournée</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well">
+                        <div id="modalAlerte">
+                            {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+                        </div>                        
+                        <form id="moveTourneeForm">
+                            Tournée actuelle: <span class="infoFormTourneeActuelle"></span><br/>
+                            <label for="selectTournee">Tournée de destination</label>:
+                            <select id="selectTournee" name="selectTournee">
+                                <option value="">Choisissez la tournée...</option>
+                            </select>
+                            <br/>
+                            {#                            <label for="dateTournee">Date</label>:
+                                                        <input class="date" name="dateTournee" id="dateTournee" value=""/><br/><br/>#}
+                            <button type="submit" class="btn btn-primary btn-xs" id="movePointToTourBtn" data-fetchurl="{{ path('ams_carto_gettournees')}}" data-posturl="{{path('ams_carto_basculerpointtournee')}}" disabled>Déplacer</button>
+                        </form>
+                        <form id="sortTourneeForm">
+                            <p class="titreFormModale">Réorganiser les arrêts au sein de la tournée <span class="infoFormTourneeActuelle"></span> 
+                                <img style="float:right;cursor:pointer;height:25px" id ="expEcel" src="{{ asset('images/excel.png') }}"  alt="Export excel"   onmouseover="affPopoverLien(this);"
+                                     data-description="Export excel du résultat de la recherche ." data-content="Exporter les données présentent dans le tableau au format xls." /> 
+                            </p>
+                            <div class="switch-wrapper">
+                                <span class="legend"> Afficher uniquement les points à livrer </span>
+                                <input type="checkbox" value="0" >
+                            </div>
+                            <ol style="margin-top:50px" class="listeArrets" data-urlordre="{{path('ams_carto_order_tournee_detail')}}"></ol>
+                            <input type="hidden" name="codeTournee" value=""/>
+                            <input type="hidden" name="idTournee" value=""/>
+                            <input type="hidden" name="fetchUrl" value=""/>
+                            <button type="submit" class="btn btn-primary btn-xs" id="sortTourBtn" data-fetchurl="{{ path('ams_carto_gettournees')}}" data-posturl="{{path('ams_carto_basculerpointtournee')}}">Enregistrer l'ordre</button>
+                            <button class="btn btn-default btn-xs" id="cancelSortTourBtn" data-dismiss="modal" >Annuler</button>
+                        </form>
+                        <div id="sortOrderInStopForm">
+                            <p class="titreFormModale">Réorganiser les arrêts<span class="infoFormTourneeActuelle"></span></p>
+                            <div class="listeArretsContainer">
+                                <ol class="listeArrets" data-urlordre="{{path('ams_carto_get_tournee_by_order')}}"></ol>
+                            </div>
+                            <button id="submit_order_stop" class="btn btn-primary btn-xs">Enregistrer l'ordre</button>
+                            <button class="btn btn-default btn-xs" id="cancelSortTourBtn" data-dismiss="modal" >Annuler</button>
+                        </div>
+                    </div>
+                    <img src="/images/ajaxLoader.gif" style="display:none;" class="ajaxLoader" id="loaderMoveSinglePt">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {# Modale du formulaire de recherche d'abonné #}  
+    <div id="amsModalSearch" class="modal fade bs-example-modal-lg" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Trouver un abonné</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <strong>Info:</strong> Effectuez une <strong>recherche par nom</strong> OU <strong>par numéro d'abonné</strong> afin de localiser un abonné sur la carte.
+                    </div>
+                    <div class="well">
+                        <div>
+                            <div id="searchNumAbo">
+                                <p><strong>Recherche par numéro d'abonné:</strong></p>
+                                <form>
+                                    <select id="searchAboByNum">
+                                        <option>Sélectionnez un abonné</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div id="searchNameAbo">
+                                <p><strong>Recherche par nom:</strong></p>
+                                <form>
+                                    <select id="searchAboByName">
+                                        <option>Sélectionnez un abonné</option>
+                                    </select>
+                                </form>
+                            </div>
+
+                            <div id="results">
+                                <p class="produit"></p>
+                                <p><span class="nom"></span> (<span class="id"></span>)</p>
+                                <p class="adresse"></p>
+                                <p class="ville"></p>
+                                <p><button type="button" class="btn btn-success btn-sm" id="showAboBtn" title="Cliquer ici pour voir l'abonné sur la carte"><i class="glyphicon glyphicon-map-marker"></i>Localiser</button></p>
+                            </div>
+                            <div>
+                                <button class="btn btn-default btn-xs" id="closeBadMapPointsBtn" data-dismiss="modal" >Fermer</button>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modal qui gére le déplacement de n points d'une tournée A vers une tournée B  #}
+    <div id="amsModal3" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" id="closeHeaderBtn" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Déplacer des points vers une autre tournée</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well">
+                        <div id="infoMoveMultPoints" class="alert alert-info" role="alert">
+                            Selectionnez les points à  déplacer a l'aide d'un Ctrl + clic, et ensuite glissez déplacez les points séléctionnés vers la tournée de destination.
+                        </div>
+                        <div id="modalAlerteMovePoints" class="alert alert-defaultLoad" role="alert"></div>
+                        <form id="chooseTourneeForm">
+                            Tournée actuelle: <span data-tourneeid="" class="infoChooseFormTourneeActuelle"></span> </br>
+                            <label for="selectTourneeMove">Tournée de destination</label>:
+                            <select id="selectTourneeMove" name="selectTourneeMove">
+                                <option value="">Choisissez la tournée...</option>
+                            </select>
+                            <br/>
+                            <button type="submit" class="btn btn-primary btn-xs" id="validateChoiceTourneeBtn">Valider</button>
+                        </form>
+                        <form id='moveMultPointsForm'>
+
+                            <div id='listeTourneeOr' >
+                                Tournée <span id="tourneeOrigine"></span> (Origine)
+                                <ol class="listeArrets"></ol>
+                            </div>
+                            <div id='listeTourneeDest' >
+                                Tournée <span id="tourneeDestination"></span> (Destination)
+                                <ol class="listeArrets" data-urlordre=""></ol>
+                            </div>
+
+                            <div class="clear"></div>
+                            <input type="hidden" name="codeTourneeOr" value=""/>
+                            <input type="hidden" name="idTourneeOr" value=""/>
+                            <input type="hidden" name="codeTourneeDest" value=""/>
+                            <input type="hidden" name="idTourneeDest" value=""/>
+
+                        </form>
+                    </div>
+                    <button id="validateMoveMultPointsBtn" class="btn btn-primary btn-xs" data-posturl="{{ path('ams_carto_movepoint_changeorder_tournee') }}">Valider</button>
+                    <img id="loaderMoveMultPt" class="ajaxLoader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                    <button id="cancelMoveMultPointsBtn" class="btn btn-danger btn-xs" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+
+    {% if points_ecartes | length > 0 %}
+        <div id="amsModal2" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+            <div class="ams-modal modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="amsModalLabel">Des points en erreur ont été détectés</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="well">
+                            <p class="mapErrPointsMsg">Les points suivants ont été supprimés de la carte<br/>car les coordonnées qui leur sont rattachées posent probléme:</p>
+                            <ul>
+                                {% for point in points_ecartes%}
+                                    <li>{{ point.a_adresse}} {{ point.cp}} {{ point.ville}}, point de livraison nÂ°{{ point.point_livraison_id}} <em>({{ point.code_modele_tournee}})</em></li>
+                                    {% endfor %}
+                            </ul>
+                            <button class="btn btn-default btn-xs" id="closeBadMapPointsBtn" data-dismiss="modal" >Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#amsModal2').modal('show');
+            });
+        </script>
+    {% endif %}
+
+    {% if tournees_vides is not null %}
+        {% set aTourneesVides = [] %}
+        <div id="amsModal4" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+            <div class="ams-modal modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="amsModalLabel">Tournées vides intégrées</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <strong>Info:</strong> Au moins une tournée vide a été sélectionnée en plus de celle(s) affichée(s) sur la carte.
+                        </div>
+                        <div class="well">
+                            <div class="notif_liste_tournees_vides">Le panneau de droite ne liste <strong>que les tournées contenant des clients à livrer</strong>.<br/>Les tournées vides n'y sont donc pas affichées.<br/><br/>Vous pouvez néanmoins basculer des points depuis ces tournées vers la tournée <span class="liste_tournees"></span>.</div>
+                            <button class="btn btn-default btn-xs" id="closeBadMapPointsBtn" data-dismiss="modal" >Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for tourneeVide in tournees_vides %}
+            {#            {% set aTourneesVides = aTourneesVides|merge([tourneeVide]) %}#}
+            <script type="text/javascript">
+                var oTourneeVideInfo = {
+                    id: '{{tourneeVide.getId()}}',
+                    code: '{{tourneeVide.getCode()}}'
+                }
+                tournees_vides.push(oTourneeVideInfo);
+            </script>
+        {% endfor %}
+
+        <script type="text/javascript">init_tournees_vides();</script>
+    {% endif%}  
+
+
+
+
+    <script type="text/javascript" src="http://olance.github.io/jQuery-switchButton/jquery.switchButton.js"></script>
+
+    <script type="text/javascript">
+
+        $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+        $("form input.date").datepicker({
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1
+        }).attr("readonly", "readonly");
+
+        {% if typeAction == 'nouveaupoint' %}
+            // showFlashAlert('#mapNotifications div.alert-info', 10000);
+        {% endif %}
+
+            // Permet de stocker les informations sur les tournées affichées
+            tourneesAfficheesTbl = {};
+        {% for tournee in jsonTbl %}
+            var tournee = {{tournee| raw}};{#            console.log({{tournee| raw}}); #}
+                    tourneesAfficheesTbl[tournee.properties.tCode] = tournee.properties.tId;
+        {% endfor %}
+            // On ajoute toutes les options au sélecteur
+            for (trn in tourneesAfficheesTbl) {
+                var o = new Option(trn, tourneesAfficheesTbl[trn]);
+                var oClone = new Option(trn, tourneesAfficheesTbl[trn]);
+                $(o).html(trn);
+                $(oClone).html(trn);
+                $('#selectTourneeMove').append(o);
+                $('#selectTournee').append(oClone);
+            }
+
+            // Ajout des options pour les tournées vides
+            if (tournees_vides.length > 0) {
+                for (var i in tournees_vides) {
+                    // Modifications du sélécteur de tournées pour le basculement de point
+                    $('#selectTournee').append('<option value="' + tournees_vides[i].id + '">' + tournees_vides[i].code + '</option>');
+                    $('#selectTourneeMove').append('<option value="' + tournees_vides[i].id + '">' + tournees_vides[i].code + '</option>');
+                }
+            }
+
+        {#      function countVar(class,Firstdirection,secondDirection){
+                var countVar = $('.'+class).length);
+                if(countVar == 1)
+        
+        
+      }#}
+
+          function enablePopover(numOpen, numClose) {
+              $('.tourneeInfos .glyphicon-minus').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-minus').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-minus').description}}',
+                  placement: 'left',
+                  multi: true
+              });
+              $('.tourneeInfos .glyphicon-plus').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-plus').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-plus').description}}',
+                  placement: 'left',
+                  multi: true
+              });
+              if (numOpen > 1)
+                  $('.tourneeInfos .glyphicon-plus').eq(1).webuiPopover('show');
+              else
+                  $('.tourneeInfos .glyphicon-plus').eq(0).webuiPopover('show');
+
+              $('.tourneeInfos .glyphicon-minus').eq(0).webuiPopover('show');
+          }
+
+          function enableSingleTourneePopover() {
+              $(".tourneeInfos .glyphicon-sort").webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-sort').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-sort').description}}',
+                  placement: 'bottom',
+                  multi: true
+              });
+              $('.tourneeInfos .glyphicon-refresh').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-refresh').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-refresh').description}}',
+                  placement: 'left',
+                  multi: true
+              });
+              $('.tourneeInfos .glyphicon-map-marker').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-map-marker').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-map-marker').description}}',
+                  placement: 'top-right',
+                  multi: true,
+                  width: 150
+              });
+
+              $('.tourneeInfos .glyphicon-map-marker').eq(0).webuiPopover('show');
+              $('.tourneeInfos .glyphicon-refresh').eq(0).webuiPopover('show');
+              $('.tourneeInfos .glyphicon-sort').eq(0).webuiPopover('show');
+          }
+
+          function enableMultiTourneePopover(numOpen, numClose) {
+              $(".tourneeInfos .glyphicon-sort").webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-sort').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-sort').description}}',
+                  placement: 'bottom-left',
+                  multi: true
+              });
+              $('.tourneeInfos .glyphicon-refresh').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-refresh').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-refresh').description}}',
+                  placement: 'top-left',
+                  multi: true
+              });
+              $('.tourneeInfos .glyphicon-transfer').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-transfer').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-transfer').description}}',
+                  placement: 'top-right',
+                  multi: true,
+                  width: 150
+              });
+
+              $('.tourneeInfos .glyphicon-map-marker').webuiPopover({
+                  title: '{{ attribute(infoBulles,'glyphicon-map-marker').title}}',
+                  content: '{{ attribute(infoBulles,'glyphicon-map-marker').description}}',
+                  placement: 'right',
+                  multi: true,
+                  width: 150
+              });
+              var firstClass = $(".tourneeInfos").first().find('.glyphicon').attr('class');
+              $('.tourneeInfos .glyphicon-map-marker').eq(1).webuiPopover('show');
+
+              $('.tourneeInfos .glyphicon-sort').eq(1).webuiPopover('show');
+              if (numClose > 1)
+                  $('.tourneeInfos .glyphicon-transfer').eq(1).webuiPopover('show');
+              else
+                  $('.tourneeInfos .glyphicon-transfer').eq(0).webuiPopover('show');
+              if (numOpen == 1) {
+                  if (/minus/i.test(firstClass)) {
+                      $('.tourneeInfos .glyphicon-refresh').eq(0).webuiPopover('show');
+                  }
+                  else {
+                      $('.tourneeInfos .glyphicon-map-marker').eq(0).webuiPopover('show');
+                      $('.tourneeInfos .glyphicon-map-marker').eq(1).webuiPopover('destroy');
+                      $('.tourneeInfos .glyphicon-refresh').eq(1).webuiPopover('show');
+                      $('.tourneeInfos .glyphicon-transfer').eq(1).webuiPopover('show');
+                      $('.tourneeInfos .glyphicon-transfer').eq(0).webuiPopover('destroy');
+                  }
+              }
+              else
+                  $('.tourneeInfos .glyphicon-refresh').eq(0).webuiPopover('show');
+
+          }
+
+          function disablePopover() {
+              $('.tourneeInfos .glyphicon-minus,.tourneeInfos .glyphicon-plus,\n\
+            .tourneeInfos .glyphicon-sort,.tourneeInfos .glyphicon-refresh,\n\
+            .tourneeInfos .glyphicon-transfer,.tourneeInfos .glyphicon-map-marker').webuiPopover('destroy');
+              return false;
+          }
+
+          function setShowHideAbonne() {
+              var action = $('.switch-button-label').attr('class');
+              if (action.indexOf(" on") > -1) {
+                  $('.non-livrer,#sortTourBtn').hide();
+                  $("#sortTourneeForm .listeArrets").multisortable("disable");
+              }
+              else {
+                  $('.non-livrer,#sortTourBtn').show();
+                  $("#sortTourneeForm .listeArrets").multisortable("enable");
+              }
+          }
+          function activeFisrtRejectMethod() {
+              $("input[name=reject_method]:first").click();
+          }
+
+          $(function () {
+
+              $("#rejectPointLivraison").click(function () {
+                  var pointLivraisonId = $('#pointLivraisonTourneeInfos').html();
+                  $('#amsModalLabel').html('Modification du point de livraison');
+                  $('#amsModal .infoFormTourneeActuelle').hide();
+                  $('#amsModal #sortTourneeForm').hide();
+                  $('#amsModal #sortOrderInStopForm').hide();
+                  $('#amsModal #moveTourneeForm').hide();
+                  $('.updatePointLivraisonId').remove();
+                  var interfacePointLivraisonId = '\
+                <div class="updatePointLivraisonId"> \
+                <div class="label label-info" style="padding:5px;display:block;margin-bottom:10px;font-size:12px">Voulez-vous modifier le point de livraison </div>\
+                <div style="position:relative"> \
+                  <div style="width:45%"> \
+                    <div class="label label-default" style="padding:5px;display:block;margin-bottom:10px;cursor:pointer"><input type="radio" name="reject_method" value="1" style="float:left;margin-top:-1px"> Par adresse</div> \
+                    <label style="width:80px;display:block;float:left;text-align:right"> Adresse : </label> <input type="text" name="adresse_rejet" value="' + adresseAbonne + '" > <br />\
+                    <label style="width:80px;display:block;float:left;text-align:right">Code Postal : </label> <input type="text" name="zip_rejet" value="' + zipAbonne + '" > <br /> \
+                    <label style="width:80px;display:block;float:left;text-align:right"> Ville : </label> <input type="text" name="city_rejet" value="' + cityAbonne + '"> <br />\
+                    <input type="button" value="Appliquer" id="valid_reject_adress" class="btn btn-default btn-sm" style="margin:10px 0"/> \
+                  </div> \
+                  <div style="width:45%;position:absolute;top:0;left:50%">\
+                    <div class="label label-default" style="padding:5px;display:block;margin-bottom:10px;cursor:pointer"> <input type="radio" name="reject_method" value="2" style="float:left;margin-top:-1px"> Par coordonées</div> \
+                    <label style="width:80px;display:block;float:left;text-align:right"> Longitude : </label> <input type="text" name="longitude_rejet" placeholder="2.xxx">  <br /> \
+                    <label style="width:80px;display:block;float:left;text-align:right"> Latitude : </label> <input type="text" name="latitude_rejet" placeholder="48.xxxx"> <br /><br /> \
+                    <input type="button" value="Appliquer" id="valid_reject_coords" class="btn btn-default btn-sm"/>\
+                  </div> \
+                </div> \
+                <div class="label label-default" style="padding:5px;display:block;margin-bottom:10px;cursor:pointer"> <input type="radio" name="reject_method" value="3" style="float:left;margin-top:-1px"> Via la carte</div> \
+                <input type="button" value="Annuler" class="btn btn-default close-modal" /> <input type="button" value="Valider" class="btn btn-danger valid-rejet" /> \
+              </div>\
+              ';
+                  $('.modal-body .well').append(interfacePointLivraisonId);
+                  $('#amsModal').modal('show');
+                  activeFisrtRejectMethod();
+              });
+
+              $('#amsModal').on('hide.bs.modal', function () {
+                  $('.updatePointLivraisonId').hide();
+              });
+
+              $("body").delegate("input[name=reject_method]", "change", function () {
+
+                  if ($(this).val() == 1) {
+                      $('input[name=adresse_rejet],input[name=zip_rejet],input[name=city_rejet]').removeAttr('disabled');
+                      $('input[name=latitude_rejet],input[name=longitude_rejet]').attr('disabled', 'disabled');
+                  }
+                  else if ($(this).val() == 2) {
+                      $('input[name=latitude_rejet],input[name=longitude_rejet]').removeAttr('disabled');
+                      $('input[name=adresse_rejet],input[name=zip_rejet],input[name=city_rejet]').attr('disabled', 'disabled');
+                  }
+                  else {
+                      $('input[name=adresse_rejet],input[name=zip_rejet],input[name=city_rejet]').attr('disabled', 'disabled');
+                      $('input[name=latitude_rejet],input[name=longitude_rejet]').attr('disabled', 'disabled');
+                      $('#amsModal').modal('hide');
+                      getPointInfos();
+                  }
+              });
+
+              $("body").delegate(".label", "click", function () {
+                  $('input[name=reject_method]', this).trigger("change");
+                  $('input[name=reject_method]', this).attr("checked", true);
+              });
+
+              $("body").delegate("#valid_reject_coords", "click", function () {
+                  ptCorrectifRnvp.init = 'coords';
+                  ptCorrectifRnvp.x = $('input[name=longitude_rejet]').val();  //longitude
+                  ptCorrectifRnvp.y = $('input[name=latitude_rejet]').val();
+                  getAdressForPoint();
+              });
+              $("body").delegate(".close-modal", "click", function () {
+                  $('#amsModal').modal('hide');
+              });
+
+              $("body").delegate(".valid-rejet", "click", function () {
+                  $('#message_error').remove();
+                  $.ajax({
+                      type: "POST",
+                      url: "{{path('ams_carto_updatepointlivraison')}}",
+                      data: {
+                          address: $('input[name=adresse_rejet]').val(),
+                          city: $('input[name=city_rejet]').val(),
+                          zip: $('input[name=zip_rejet]').val(),
+                          long: $('input[name=longitude_rejet]').val(),
+                          lat: $('input[name=latitude_rejet]').val(),
+                          pointLivraison: $('#pointLivraisonTourneeInfos').html(),
+                          tourneeId: point_selectionne_data['aTourneeId'],
+                          dateDistrib: point_selectionne_data['dateDistrib']
+                      },
+                      success: function (data) {
+                          $('.modal-body .updatePointLivraisonId').prepend('<div id="message_error">' + data.Message + '</div>');
+                          window.location.replace('{{path('ams_carto_affichertournees')}}');
+
+                      },
+                      error: function () {
+                      }
+                  });
+              });
+
+              $("body").delegate("#valid_reject_adress", "click", function () {
+                  $.ajax({
+                      type: "POST",
+                      url: "{{path('ams_carto_geocodingjson')}}",
+                      data: {
+                          adress: $('input[name=adresse_rejet]').val(),
+                          city: $('input[name=city_rejet]').val(),
+                          zip: $('input[name=zip_rejet]').val()
+                      },
+                      success: function (data) {
+                          $('input[name=longitude_rejet]').val(data.x);
+                          $('input[name=latitude_rejet]').val(data.y);
+                      },
+                      error: function () {
+                      },
+                      dataType: 'json'
+                  });
+              });
+
+              $("input[type=checkbox]").switchButton({
+                  on_label: 'oui',
+                  off_label: 'non'
+              });
+
+              $(document).on('click', ".toolTurnChangeOrder", function () {
+                  if ($('input[type=checkbox]:checked').length) {
+                      $('input[type=checkbox]').click();
+                      $('.switch-button-label').each(function () {
+                          if ($(this).html() == 'non')
+                              $(this).click();
+                      });
+                  }
+              });
+
+              $(document).on('change', "input[type=checkbox]", function () {
+                  setShowHideAbonne();
+              });
+
+              /** PRINT ADRESSE TOURNEE**/
+              $(document).on("click", "#expEcel", function () {
+                  var tournee = $('.titreFormModale .infoFormTourneeActuelle').html();
+                  var aAdresse = new Array();
+                  $("#sortTourneeForm li span").each(function () {
+                      aAdresse.push($(this).html());
+                  });
+
+                  $.ajax({
+                      url: "{{path('ams_carto_export_adress_to_excel')}}",
+                      type: 'POST',
+                      data: {tournee: tournee, aAdresse: aAdresse},
+                      success: function (data) {
+                          window.location.href = "{{path('ams_carto_get_file_export')}}";
+                      }
+                  });
+
+              });
+
+              /** ACTIVATION DE L'AIDE**/
+              $('.open-help').addClass('active');
+              var index = $(".glyphicon-plus").index('span');
+
+              /** ACTIVATION DE L'AIDE**/
+              $('.open-help').addClass('active');
+              var index = $(".glyphicon-plus").index('span');
+              var numTournee = $('.tourneeInfos').length;
+
+              $('.open-help').click(function () {
+                  var numInfoTourneeOpen = $('.tourneeInfos .glyphicon-plus').length;
+                  var numInfoTourneeClose = $('.tourneeInfos .glyphicon-minus').length;
+
+                  $('.overlay-help').addClass('active');
+                  enablePopover(numInfoTourneeOpen, numInfoTourneeClose);
+                  if (numTournee == 1) {
+                      enableSingleTourneePopover();
+                  }
+                  else {
+                      enableMultiTourneePopover(numInfoTourneeOpen, numInfoTourneeClose);
+                  }
+                  return false;
+              });
+
+              $('.close-help').click(function () {
+                  $('.overlay-help').removeClass('active');
+                  disablePopover();
+              });
+
+              $('.updateMyData').on('click', function () {
+                  $('#mapNotifications .alert.alert-info').html('<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><strong>Recalcul de la tournée en cours...</strong> Veuillez patienter jusqu\'au rechargement complet de la page. <img src="{{web_files_root_dir}}images/loading.gif"/>');
+                  // Affichage d'un message pour faire patienter l'utilisateur
+                  showFlashAlert('#mapNotifications .alert.alert-info', 25000);
+
+                  var code = $('> span', this).attr('title');
+                  var date = $(this).attr('data-tourneedate');
+                  $.ajax({
+                      url: "{{path('ams_carto_update_tournee')}}",
+                      type: 'POST',
+                      data: {code: code, date: date, depot_id: depot_id},
+                      success: function (data) {
+                          var redirect = "{% if typeAction == 'nouveaupoint' %}{{path('ams_carto_creerpoint')}}{%else%}{{path('ams_carto_affichertournees')}}{%endif%}";
+                          window.location.replace(redirect);
+                      },
+                      error: function (xhr, ajaxOptions, thrownError) {
+                          $('#amsModalLabel').html('Une erreur est survenue.');
+                          $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+                      }
+                  });
+              });
+
+              // Affiche l'icone d'impression
+              console.log($('#map_slider'));
+              $('#map_slider').append('<div>TEST</div>');
+          });
+    </script>
+{% endblock %}
+
+{% block js_load %} init(); {% endblock %}

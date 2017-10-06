@@ -1,0 +1,24 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+{%set droit_acces=acces_data_grid%}
+<rows>
+  <head>      
+    <column id="date_parution" type="{%if droit_acces == true%}dhxCalendar{%else%}ro{%endif%}" width="100" align="left"> date </column>
+    <column id="produit_id"  type="{%if droit_acces ==true%}coro{%else%}ro{%endif%}"  width="200">Titre{{comboProduit|raw}}</column>
+    <column id="evenement_id"  type="{%if droit_acces ==true%}coro{%else%}ro{%endif%}"  width="100">Evénement{{comboEvenement|raw}}</column>
+    <column id="libelle" type="{%if droit_acces ==true%}ed{%else%}ro{%endif%}" width='*' align="left"> Libellé </column>
+    <column id="zone_distribution" type="{%if droit_acces ==true%}ed{%else%}ro{%endif%}" width='*' align="left">zoneDistribution</column>
+    {%if droit_acces ==true%}<column type="ed" width='*' align="left">Action</column>{%endif%}
+  </head> 
+  {% for parution in parutions %}
+        <row  id="{{parution.id}}">
+            <cell>{{parution.dateParution|date('d/m/Y')}}</cell>
+            <cell>{{parution.produit.id}}</cell>
+            <cell>{{parution.evenement.id}}</cell>
+            <cell>{{parution.libelle}}</cell>
+            <cell>{{parution.zoneDistribution}}</cell>
+            {%if droit_acces ==true%} 
+                <cell type="ro"><![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]>    </cell>
+            {%endif%}
+        </row>
+    {% endfor %}
+</rows>

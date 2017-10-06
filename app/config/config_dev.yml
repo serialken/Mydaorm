@@ -1,0 +1,47 @@
+imports:
+    - { resource: parameters_dev.yml }
+    - { resource: config.yml }
+    - { resource: mroad_dev.ini }
+
+framework:
+    router:
+        resource: "%kernel.root_dir%/config/routing_dev.yml"
+        strict_requirements: true
+    profiler: { only_exceptions: false }
+
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
+
+monolog:
+    handlers:
+        main:
+            type:  rotating_file
+            max_files: 10
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+#        chromephp:
+#            type:  chromephp
+#            level: info
+        swift:
+            type:       swift_mailer
+            from_email: error@mroad.com
+            to_email:   tidiane.camara@amaury.com
+            subject:    Une erreur critique est survenue
+            level:      error
+            
+#fire_php: ~
+
+#assetic:
+#    use_controller: false
+
+#swiftmailer:
+#    delivery_address: me@example.com
+
+
+#twig:
+#    globals:
+#        param: "@param"
+
+assetic:    
+    bundles:        [ AmsSilogBundle, AmsCartoBundle,AmsHorspresseBundle ]

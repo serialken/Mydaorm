@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrPrmParametres" table="TR_PRM_PARAMETRES">
+    <id name="prmAttr" type="string" column="PRM_ATTR" length="25">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="prmValeur" type="string" column="PRM_VALEUR" length="255" nullable="false"/>
+    <field name="prmDesc" type="string" column="PRM_DESC" length="150" nullable="false"/>
+  </entity>
+</doctrine-mapping>

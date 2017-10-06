@@ -1,0 +1,30 @@
+<rows>
+    <head>      
+        <column type="ro" width="300" align="left"> Dépôt </column>
+        <column type="ro" align="center" width="100"> Insee </column>
+        <column type="ro" align="center" width="100"> Cp </column>
+        <column type="ro" align="left" > Ville </column>
+        <column type="ro" align="center"  >Flux</column>
+        <column type="ro" align="center" >Date Début</column>
+        <column type="ro" align="center">Date Fin</column> 
+        <afterInit>
+             <call command="attachHeader"><param>#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter</param></call>
+         </afterInit>
+    </head> 
+    {% for repartition in repartitions %}
+      {% if repartition.rg_date_fin |date('d/m/Y') <= "now"|date("d/m/Y") %}
+        {% set color = 'style="background-color:red"' %}
+      {% else %}
+        {% set color = '' %}
+      {% endif %}
+      <row {{color|raw}}>
+          <cell>{{repartition.depot_libelle}}</cell>
+          <cell>{{ repartition.insee }}</cell>
+          <cell>{{ repartition.cp }}</cell>
+          <cell>{{ repartition.commune_libelle }}</cell>
+          <cell>{{repartition.flux_id}}</cell>
+          <cell>{% if repartition.rg_date_debut != null %}{{ repartition.rg_date_debut |date('d/m/Y') }}{% endif %}</cell>
+          <cell>{% if repartition.rg_date_fin|date('Y-m-d') != "2078-12-31" %}{{ repartition.rg_date_fin |date('d/m/Y') }}{% endif %}</cell>
+       </row>
+    {% endfor %}
+ </rows>

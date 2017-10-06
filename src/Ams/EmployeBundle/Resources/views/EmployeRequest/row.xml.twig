@@ -1,0 +1,20 @@
+{% for r in rows %}
+<row{# id ="{{r.id}}"#}{{m.locked(false)}}>  
+    {% for h in head %}
+{#
+    <cell>{{row.journal_id}}</cell>
+    <cell><![CDATA[{{m.lienJournal(row.journal_id,row.msg)}}]]></cell>
+    <cell>{{row.groupe_id}}</cell>
+    <cell>{{row.numero}}</cell>
+    <cell>{{row.code}}</cell>    
+    <cell>{{row.libelle}}</cell>    
+    <cell>{{row.employe_id}}</cell>    
+    <cell>{%if row.employe_id!=''%}<![CDATA[{{m.lienEmploye()}}]]>{%endif%}</cell>
+    <cell>{{row.codeDCS}}</cell>    
+    <cell>{{row.actif}}</cell>
+    {{m.cellSupprime(isModif,row.id)}}
+#}
+        <cell>{{r[h.id]}}</cell>
+    {% endfor %}
+</row> 
+{% endfor %}

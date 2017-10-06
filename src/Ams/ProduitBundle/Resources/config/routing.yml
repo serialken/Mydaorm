@@ -1,0 +1,15 @@
+AmsProduitBundle_caract:
+    resource: "@AmsProduitBundle/Resources/config/routing/prd_caract.yml"
+    prefix:   /caract/
+    
+AmsSilogBundle_societe:
+    resource: "@AmsProduitBundle/Resources/config/routing/societe.yml"
+    prefix: /societe
+    
+AmsSilogBundle_produit:
+    resource: "@AmsProduitBundle/Resources/config/routing/produit.yml"
+    prefix: /produit
+    
+AmsSilogBundle_type_produit:
+    resource: "@AmsProduitBundle/Resources/config/routing/type_produit.yml"
+    prefix: /type_produit

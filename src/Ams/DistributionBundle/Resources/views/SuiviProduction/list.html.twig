@@ -1,0 +1,118 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Suivi De Production{% endblock %}
+{% block body %}
+    <style></style>
+    {# Formulaire de de selection de la date  #}
+    <div class="well" style="position:relative;">
+        <form method="post" name="formSuiviProd" id="formSuiviProd" action="{{path('suivi_production_vue_generale')}}" style="margin-bottom: 15px;">
+            <table>
+                <tr>
+                    <td>
+                        {{ form_label(form.DateParution) }} : &nbsp;&nbsp;
+                        {{ form_widget(form.DateParution, {'attr': {'value': dateParution}, 'id': 'DateParution', 'name': 'DateParution'})}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;
+                        <button type="submit" class="btn-small btn-primary" >
+                            <i class="glyphicon glyphicon-search white"></i>	Rechercher
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        {# affichage du nombre de lignes du tableau #}
+        <div id="infoSuiviProd" class="alert alert-info" role="alert">...</div>
+        <button type="button" class="btn-small btn-primary" onclick="reloadGrid(this);" onmouseover="affPopoverLien(this);" data-content="Ce lien permet de mettre à jour les données présentes dans le tableau.">
+            <i class="glyphicon glyphicon-refresh"></i>  Rafraîchir
+        </button>
+    </div>
+    {# Affichage du bloc des msg  #}
+    <div id="listeSuiviProdNotifications">
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Vos modifications ont été enregistrées avec succés.
+        </div>
+    </div>
+    {# Affichage de la grid #}
+    <div  style='position:relative; height:700px; width:100%;'>
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                    <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                        Chargement ...
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="recinfoArea"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script src="{{asset('js/jquery.toaster.js')}}"></script>
+    <script>
+
+        $(document).ready(function() {
+            $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+            $("form input#DateParution").datepicker({
+                dateFormat: 'dd/mm/yy',
+            }).attr("readonly", "readonly");
+            // On masque les alertes par défaut
+            $('#listeSuiviProdNotifications .alert').hide();
+        });
+        
+
+        /** Initialisation **/
+        MyGrid = new dhtmlXGridObject('gridbox');
+        MyGrid.setImagePath("{{dhtmlx_img }}");
+
+        MyGrid.setHeader("Date d'édition, Libelle Edition, Route, Libelle Route, Depôt, Paquet Prev., Paquet Eject., Etat Pqt, Exemplaire(s) Prev., Exemplaire(s) Eject., Etat Ex");
+        MyGrid.attachHeader(",#select_filter,#select_filter,#select_filter,#select_filter,,,#select_filter,,,#select_filter");
+        MyGrid.enableAutoWidth(true);
+        MyGrid.setColAlign("center,center,center,center,center,center,center,center,center,center,center");
+        MyGrid.init();
+
+        /** Evenement de chargement de la page **/
+        MyGrid.attachEvent("onXLS", function() {
+            document.getElementById('cover').style.display = 'block';
+            $('#infoSuiviProd').html('Veuillez patientez pendant le chargement du tableau ...');
+        });
+        MyGrid.attachEvent("onXLE", function() {
+            document.getElementById('cover').style.display = 'none';
+            var res = "Résultat de la recherche: <strong>" + MyGrid.getRowsNum() + " </strong> ligne(s)";
+            $('#infoSuiviProd').html(res);
+        });
+        MyGrid.attachEvent("onFilterEnd", function() {
+            var res = "Résultat de la recherche: <strong>" + MyGrid.getRowsNum() + " </strong> ligne(s)";
+            $('#infoSuiviProd').html(res);
+        });
+
+        MyGrid.setSkin("dhx_skyblue");
+        MyGrid.enableSmartRendering(false);
+{#        MyGrid.enableSmartRendering(true);#}
+
+        /** Pagination */
+        MyGrid.enablePaging(true, 30, 3, "recinfoArea");
+        MyGrid.setPagingSkin("toolbar", "dhx_skyblue");
+
+        /** descativation de la generation automatique d'infos bulles **/
+        MyGrid.enableTooltips("false");
+
+        /** Chargement au format XML **/
+        MyGrid.loadXML("{{path('suivi_production_vue_generale_xml')}}");
+
+
+        function reloadGrid() {
+            {#MyGrid.clearAndLoad("{{path('suivi_production_vue_generale_xml')}}");#}
+            {# Ne marche pas si enable Smart rendering est activé         #}
+            MyGrid.updateFromXML("{{path('suivi_production_vue_generale_xml')}}",true,true);
+            {#    MyGrid.loadXML("{{path('suivi_production_vue_generale_xml')}}")#}
+{#            MyGrid.clearAll();#}
+{#            MyGrid.load("{{path('suivi_production_vue_generale_xml')}}");#}
+        }
+    </script>
+
+{% endblock %}
+

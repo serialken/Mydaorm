@@ -1,0 +1,18 @@
+{#{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+#}
+{% extends 'AmsSilogBundle::layout_dashboard.html.twig' %}
+{% block title %}Dépôts{% endblock %}
+ 
+{% block sidebar %}
+    {% include 'AmsSilogBundle:Depot:menuDepot.html.twig' %}
+{% endblock %}
+
+{% block dashboard %}
+    <div class="liste societes tab-content" id="liste_depots" style="overflow: hidden;">
+        {% include 'AmsSilogBundle:Depot:listeDepots.html.twig' %}
+        <div class="societe tab-pane fade" id="societe_0">            
+        </div>
+    </div>
+{% endblock %}

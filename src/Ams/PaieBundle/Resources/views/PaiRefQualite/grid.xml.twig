@@ -1,0 +1,31 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="societe_id"     type="coro" width="*"   align="left"     sort="sortCombo">Societe{{m.combo(comboSociete)}}</column> 
+        <column id="emploi_code"    type="coro" width="*"   align="left"     sort="sortCombo">Emploi{{m.combo(comboEmploi)}}</column> 
+        <column id="qualite"        type="ed"   width="80"  align="center"  sort="str">Qualité</column> 
+        <column id="libelle"        type="ed"   width="*"   align="left"     sort="str">Libellé</column> 
+        <column id="borne_inf"      type="edn"  width="70"  align="right"   sort="int">Inférieur</column> 
+        <column id="borne_sup"      type="edn"  width="70"  align="right"   sort="int">Supérieur</column> 
+        <column id="valeur"         type="edn"  width="80"  align="right"   sort="int">Valeur</column> 
+        <column id="prime"          type="ch"   width="50"  align="center"   sort="int">Prime</column> 
+        <column id="envoiNG"        type="ch"   width="50"  align="center"   sort="int">Envoi NG</column> 
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(false)}}>  
+            <cell>{{row.societe_id}}</cell>
+            <cell>{{row.emploi_code}}</cell>
+            <cell>{{row.qualite}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.borne_inf}}</cell>
+            <cell>{{row.borne_sup}}</cell>
+            <cell>{{row.valeur}}</cell>
+            <cell>{{row.prime}}</cell>
+            <cell>{{row.envoiNG}}</cell>
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+

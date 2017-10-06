@@ -1,0 +1,85 @@
+<div class="societe tab-pane fade {{ active is defined ? active : '' }}" id="societe_{{ societe.id }}">
+    <div class="" style="text-align:left;">
+        <h1 class="page-header" style="text-align:left;">
+            Société 
+            {% if societe.image.webPath is defined %}
+                <img src="{{ asset( societe.image.webPath)}}" alt="{{ societe.image.name }}">
+            {% endif %}
+        </h1>
+    </div>
+   <div id="flashAlerteSuppSociete_{{societe.id}}">
+        {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+    </div>
+    <div class="" style="text-align:left;">
+        <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Libellé</th>
+          <th>Date</th>
+          <th>Etiquette</th>
+          <th>Produit par défaut</th>
+          <th>Traitement</th>
+        </tr>
+      </thead>
+      <tbody id="details_societe_{{ societe.id}}">
+           <tr>
+              <td>{{ societe.code }}</td>
+              <td>{{ societe.libelle }}</td>
+              <td>{{ societe.dateDebut|date('d/m/Y') }}</td>
+              <td><input type="checkbox"  name="{{ societe.id}}" id="{{ societe.id}}" onclick="ajoutEtiquette($(this),'{{ societe.id}}');" {%if societe.etiquette==true%} checked="true"{%else%}{%endif%}/></td>
+              <td>
+                    {% if societe.produitDefaut.id is defined %}
+                            {{ societe.produitDefaut.libelle }}
+                    {% else %}
+                            N/D
+                    {% endif %}
+              </td>
+              <td>
+                <a href="#" data-toggle="modal" data-target="#amsModal" data-description="Modification des informations" data-content="Ce lien permet de modifier les informations liés à la société."  onmouseover="affPopoverLien(this);" onClick="ChargeModal('{{ path('societe_modification_ajax') }}',{{societe.id}});"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+{#                <a href="#" data-description="Suppression d'une société" data-content="Ce lien permet de supprimer une société. Attention car la suppression est définitive !!!!"  onmouseover="affPopoverLien(this);" onclick="suppConfirmSociete('{{path('societe_suppression', {'societeId':societe.id})}}', '{{societe.id}}', '{{societe.libelle}}');"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>#}
+                  <span class="text-muted deleteData" style="display: block;" onclick="suppConfirmSociete('{{path('societe_suppression', {'societeId':societe.id})}}', '{{societe.id}}', '{{societe.libelle}}');" onmouseover="affPopoverLien(this);" data-description="Suppression d'une société" data-content="Ce lien permet de supprimer une société. Attention car la suppression est définitive !!!!" ><span class="glyphicon glyphicon-remove"></span> Supprimer</span>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+    <div id="ajoutProduit_{{societe.id}}" style="text-align:left;">
+    <h2 class="sub-header" style="text-align:left;">Produits de la société </h2>
+        <span style=""><a href="#" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('produit_creation_ajax') }}',{{societe.id}});"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter produit</a></span>
+    </div>
+    <div id="flashAlerteSuppProduit_{{societe.id}}">
+        {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Logo</th>
+            <th>Code</th>
+            <th>Libellé</th>
+            <th>Date</th>
+            <th>Code Société</th>
+            <th>Code Produit</th>
+            <th>Code SPR</th>
+            <th>Passe</th>
+            <th>Type</th>
+            <th>Flux</th>
+            <th>Dépent de</th>
+            <th>Traitement</th>
+          </tr>
+        </thead>
+        <tbody id="produit_societe_{{ societe.id}}">
+          {% include 'AmsProduitBundle:Produit:liste_produits.html.twig' %}
+        </tbody>
+      </table>
+    </div>
+</div>
+<script>
+/* Opérations lancées au chargement de la page */
+    $(document).ready(function() {
+        // On masque les alertes par défaut
+        $('#flashAlerteSuppProduit_{{societe.id}} .alert').hide();
+        $('#flashAlerteSuppSociete_{{societe.id}} .alert').hide();
+    });
+</script>

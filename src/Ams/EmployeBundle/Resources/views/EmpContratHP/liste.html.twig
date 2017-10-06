@@ -1,0 +1,66 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreActif" {{app.request.cookies.get('MRoad_filtreActif')}}/>Afficher seulement les contrats actifs</span>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['actif'            ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['matricule'        ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_debut'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_fin'         ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['rc'               ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_dimanche','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_dimanche','Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_lundi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_lundi'   ,'Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_mardi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_mardi'   ,'Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_mercredi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_mercredi','Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_jeudi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_jeudi'   ,'Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_vendredi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_vendredi','Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut_samedi','Début'                   ,'#select_filter'   ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_samedi'  ,'Durée'                    ,'#numeric_filter'  ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_mensuel' ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['polyvalent'       ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['xta_rcactivte'    ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['xta_rcmetier'     ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['xta_rcactivhpre'  ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['commentaire'      ,null                       ,null               ,isCommentaire      ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('emp_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();   
+    }
+    function dhtmlxgridOnLoad(){
+        showOrHideActif();
+        $('#filtreActif').on('change', function() {
+            showOrHideActif();
+        });
+    }
+    function showOrHideActif(){
+        if($('#filtreActif').attr('checked') == 'checked') {
+            grid.filterBy(0, "1" ,true);
+            $.cookie('MRoad_filtreActif', 'checked');
+       } else {
+            grid.filterBy(0,"");
+            grid.filterByAll();
+            $.cookie('MRoad_filtreActif', 'false');
+       }
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        return (cInd==25);
+    }
+    </script>
+{% endblock %}

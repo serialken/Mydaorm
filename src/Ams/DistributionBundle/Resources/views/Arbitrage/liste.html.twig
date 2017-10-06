@@ -1,0 +1,423 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Arbitrage{% endblock %}
+{% block body %}
+<style>
+	#formArbitrage button{margin-top:10px}
+	.objbox{height:543px !important}
+	#gridbox{height:645px !important}
+	.filterArbitrage{font-weight:bold;font-size:16px;cursor:pointer;}
+	#formArbitrageFilter table ,#formArbitrage table ,.tabDateArbitrage{width:80%;margin:0 auto}
+	.tabDateArbitrage label{margin-bottom:0}
+	#formArbitrageFilter label {width:90px}
+	#formArbitrageFilter td,#formArbitrage td ,.tabDateArbitrage td{text-align:left}
+	#form_cmtReponseArbitrage{height:53px;width:70%;resize: none;}
+	.saveRecursive{text-align:left;font-weight:bold;font-size:16px;cursor:pointer;} 
+	.saveRecursive span{font-weight:normal;font-size:13px} 
+	#formArbitrageFilter .toggle{display:none}
+	.alert-perso{color:#3170B1;cursor:pointer}
+	.modal-cpt-distrib{color:#3170B1;cursor:pointer}
+</style>
+  <div id="record_dialog" class="emv-dialog">
+         <div class="floater"></div>
+         <div class="frame">
+             <div class="header" id="popoLoad">Enregistrement des données</div>
+             <div id="msg_confirm">
+                 <div align="center">
+                    <img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br>
+                    <span>Veuillez patientez...</span><br>
+                </div>
+             </div>
+             <div class="footer"><span id="validButton" class="emv-button" style="display:none">OK</span></div>
+         </div>
+    </div>
+	{#<div class="well" style="position:relative;min-height:155px">#}
+		{% for flashMessage in app.session.flashbag.get('arbitrage_limite') %}
+    <div class="alert alert-danger">
+        {{ flashMessage }}
+    </div>
+   {% endfor %}
+   
+   
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"> Filtres
+                <span data-toggle="collapse" data-target="#panel-filtre" class="plus-minus"> -/+ </span></h4>
+            </div>
+            <div class="panel-body collapse in" id ="panel-filtre">
+                <table class="tabDateArbitrage">
+                    <tr>
+                     {# <td class="filterArbitrage"> Filtre par date d'arbitrage : </td> #}
+                      <td class="toggle">{{ form_label(form.DateDemArbitrageMin) }} : {{ form_widget(form.DateDemArbitrageMin,{'attr': {'value': app.session.get('DateDemArbitrageMin')}})}} </td>
+                      <td  style="width:30%"> &nbsp;</td>
+                      <td class="toggle">{{ form_label(form.DateDemArbitrageMax) }} : {{ form_widget(form.DateDemArbitrageMax,{'attr': {'value': app.session.get('DateDemArbitrageMax')}})}} </td>
+                      <td class="toggle"> <button type="submit" class="btn-small btn-primary" > <i class="glyphicon glyphicon-search white"></i>	Filtrer</button> </td>
+                    </tr>
+              </table>
+            </div>
+        </div>           
+   
+        {% if isModif %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title"> Enregistrement en masse <small>(Toutes les réclamations non traitées ci-dessous seront mises à jour)</small>
+                    <span data-toggle="collapse" data-target="#panel-enregistrement" class="plus-minus"> -/+ </span></h4>
+                </div>
+                <div class="panel-body collapse out" id ="panel-enregistrement">
+                    <table width="100%" >  
+                        <tr class="toggle">
+                          <td style="width:10%"> </td>
+                          <td> 
+                              {{ form_label(formFilter.motif) }} : {{ form_widget(formFilter.motif)}} {{ form_errors(formFilter.motif)}} 
+                              <div id="motifError"> </div>
+                          </td>
+                       
+                          <td> 
+                              {{ form_label(formFilter.imputation) }} : {{ form_widget(formFilter.imputation)}} {{ form_errors(formFilter.imputation)}}
+                              <div id="imputationError"> </div>
+                          </td>
+                          <td> 
+                                <label> Réponse :</label>
+                                <select name="reponse" id= "form_reponse">
+                                        <option value="0"> -- Choississez -- </option>
+                                        <option value="1"> Oui</option>
+                                        <option value="2"> Non</option>
+                                </select> 
+                                <div id="reponseError"> </div>
+                          </td>
+                        </tr>
+                        <tr class="toggle">
+                          <td style="width:10%"> </td>
+                          <td colspan="2">
+                                  {{ form_label(formFilter.cmtReponseArbitrage) }}  {{ form_widget(formFilter.cmtReponseArbitrage)}} 
+                                  <input type="hidden" id= "idArbitrageTab" name="idArbitrageTab" value=""/>
+                                  <input type="hidden" name="filter" value="1"/>
+                          </td>
+                          <td> <button  onclick="setReponseValeur()" class="btn-small btn-primary" ><i class="glyphicon glyphicon-floppy-save "></i> Lancer l'enregistrement en masse</button>
+                             
+                    </tr>
+                    </table>
+                </div>
+            </div>  
+        {% endif %}
+                      
+     
+  <div class="row margin-bottom20">
+    <div class="col-md-5 text-center">
+                
+     <button type="submit" class="btn-small btn-primary"  onclick="senDataAndUpdate();" >
+     <i class="glyphicon glyphicon-floppy-save "></i> Valider les modifications</button>
+    </div>
+    <div class="col-md-3 nb_result text-center">
+        <span > 0 </span>  Résultat(s)
+    </div>
+    <div class="col-md-3">
+        <a href="{{path('arbitrage_xls')}}" class="generate_xls" style="float:right;">
+           <button  class="btn-small btn-primary"  >
+            <i class="glyphicon glyphicon-floppy-open"></i> Export excel</button>
+           
+        </a>
+    </div>
+    
+</div>
+	
+	<div  style='position:relative; height:700px; width:100%;'>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                        Chargement ...
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><div id="recinfoArea"></div>	</td>
+            </tr>
+          </table>  
+	</div>
+ </td>
+
+<script>
+  $.cookie("dateRange", 0, { path: '/' });
+  $('body.modal-open').on('click',function(e){
+	      	 e.defaultPrevented ;
+	      	 return false;
+	      });
+              
+  function end_Range(){
+    var chosenDate = $("#form_DateDemArbitrageMin").datepicker("getDate");                  
+    if (chosenDate == null ){
+        $("#form_DateDemArbitrageMin").focus();
+    } else {
+
+        $("#form_DateDemArbitrageMax").datepicker("option", "minDate", new Date (chosenDate));
+    };
+  }
+
+  function getData(crmId){
+    var url = "{{path('crm_edit_and_validate', {'crmId': 'tmp_var'})|raw}}";
+    url = url.replace('tmp_var', crmId);
+
+    $.ajax({
+      url: url,
+      type: "GET",
+      async : false,
+      success: function(data) {
+       data = data.split('<body>');
+       data = data[1].split('</body>');
+      $('#amsModal').html(data[0]);
+      $('#amsModal').modal({backdrop:true});
+      $('.no-border a.btn-primary').hide();
+      $('.mainbg,#breadcrumb,.interface .navigation,button').hide();
+      $('.interface button#closeButton').show()	;         }
+    });
+    
+    $('.interface button#closeButton').on('click',function(){
+      $('#amsModal').modal('hide');
+    });
+    
+    $('#amsModal').on('hidden.bs.modal', function () {
+      $('.mainbg,#breadcrumb,.interface.navigation,button').show();
+    });
+  }
+
+  function getCptrDistribData(depId, date){
+    var url = "{{path('compte_rendu_modif_tournee', {'id': 'tmp_var','date':'tmp_var2','flux':'0','isGridReadOnly':true})|raw}}";
+    url = url.replace('tmp_var', depId);
+    url = url.replace('tmp_var2', date);
+
+    $.ajax({
+    url: url,
+    type: "GET",
+    async : false,
+    success: function(data) {
+      data = data.split('<body>');
+      data = data[1].split('</body>');
+       $('#amsModal').html(data[0]);
+       $('#amsModal').modal({backdrop:true});
+       $('#massiveEditForm').hide();
+       $('div.well button').hide();
+        $('body.modal-open').attr("readonly", "readonly");
+       $('.mainbg,#breadcrumb,.interface .navigation,button').hide();
+       $('.interface #closeButton').show();
+       $('#ams_distributionbundle_filtreouverture_flux').prev().hide().end().hide();
+       $('#ams_distributionbundle_filtreouverture_filtre').attr('disabled',true);
+      }
+    });
+
+    $('.interface #closeButton').on('click',function(){
+      $('#amsModal').modal('hide');
+    });
+    
+    $('#amsModal').on('hidden.bs.modal', function () {
+      $('.mainbg,#breadcrumb,.interface.navigation,button').show();
+    })
+  }
+		
+  $(document).ready(function() {
+    
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("#form_DateDemArbitrageMin").datepicker({
+        dateFormat: 'dd/mm/yy',
+        onSelect: end_Range,     
+    }).attr("readonly","readonly");
+
+    $("#form_DateDemArbitrageMax").datepicker({
+        dateFormat: 'dd/mm/yy',
+        beforeShow: end_Range,
+        firstDay:1
+    }).attr("readonly","readonly");
+	    
+  });  
+      	
+
+	var reload = false;
+	grid = new dhtmlXGridObject('gridbox');
+	grid.setImagePath("{{dhtmlx_img }}");
+	grid.enableMultiselect(true);
+        grid.enableTooltips("false,false,false,false,false,false,false,false,false,false,false,false,false,false,false");
+        
+	grid.init();
+
+	grid.attachEvent("onXLS", function() {
+		document.getElementById('cover').style.display = 'block';
+	});
+	
+	grid.attachEvent("onXLE", function() {
+          document.getElementById('cover').style.display = 'none';
+          var num = grid.getRowsNum();
+	  $('.nb_result span').html(num);
+          dp = new dataProcessor("{{path('arbitrage_dhtmlx')}}");
+          dp.init(grid);
+          grid.splitAt(6);
+          grid.setColumnHidden(0,true);
+          dp.setUpdateMode("off");
+      
+          var tmp = '';	
+          for(var j =  0 ;j < grid.getRowsNum(); j++){
+
+                  if(j == (grid.getRowsNum() - 1))
+                          tmp += grid.cellByIndex(j,0).getValue() ;
+                  else
+                          tmp += grid.cellByIndex(j,0).getValue()+"_" ;
+                      
+          
+          }	
+          $('input[name=idArbitrageTab]').val(tmp);
+
+          $('.tabDateArbitrage button[type=submit]').click(function(){
+                  $.cookie("minDateArbitrage", $('#form_DateDemArbitrageMin').val(), { path: '/' });
+                  $.cookie("maxDateArbitrage", $('#form_DateDemArbitrageMax').val(), { path: '/' });
+                  $.cookie("dateRange", 1, { path: '/' });
+                  window.location.replace("{{path('arbitrage_vue_generale') }}");
+          });
+
+          grid.attachEvent("onRowSelect",function(rowId,cellIndex){
+            var value = this.cellById(rowId,cellIndex).getValue();
+            if (/alert-perso/i.test(value)){
+                    var res = value.split('id="');
+                    var res = res[1].split('"');
+                    var id = res[0];
+                    getData(id);
+            }
+            if (/modal-cpt-distrib/i.test(value)){
+                    var res = value.split('data-dep-id="');
+                    var res = res[1].split('"');
+                    var depId = res[0];
+                    var res = value.split('data-date="');
+                    var res = res[1].split('"');
+                    var date = res[0];
+                    getCptrDistribData(depId, date);
+            }
+          })
+	});
+
+
+	grid.attachEvent("onFilterEnd", function(elements){
+          var num = grid.getRowsNum();
+          $('.nb_result span').html(num);
+          var tmp = '';	
+          for(var j =  0 ;j < grid.getRowsNum(); j++){
+            if(j == (grid.getRowsNum() - 1))
+                    tmp += grid.cellByIndex(j,0).getValue() ;
+            else
+                    tmp += grid.cellByIndex(j,0).getValue()+"_" ;
+          }
+          $('input[name=idArbitrageTab]').val(tmp);
+	});
+
+    
+	grid.setSkin("dhx_skyblue");
+	grid.enableSmartRendering(true);
+    
+	/** Pagination */
+	grid.enablePaging(true, 50, 3, "recinfoArea");
+	grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+	/** INSERT VIEW XML FORMAT **/
+        grid.load("{{path('arbitrage_vue_generale_xml',{'dateRange':dateRange}) }}");
+        
+        $('#upDateRepArbitrage').on('click', function(e){
+         	e.preventDefault();
+         	$(this).hide();
+         	$('#record_dialog').show();//return false;
+         	var idArbitrageTab = $('#idArbitrageTab').val();
+         	$.ajax({
+	        	url: "{{path('arbitrage_vue_generale')}}",
+	        	type: "POST",
+	        	dataType :'json',
+	        	data : { idArbitrageTab : idArbitrageTab },
+            	cache: false,
+	        	success: function(data) {
+	        		if(data.msg = 'success'){
+	        			$('#msg_confirm').html("<div align='center' style='padding:15px;color:green'><img src='{{ asset('images/ok-icon.png') }}' alt='OK' title='OK' id='ok'><br>Vos données ont bien été enregistrées!</div>");
+	        			location.reload();
+	        		}else{
+	        			$('#msg_confirm').html("<div align='center' style='padding:15px;color:red'><img src='{{ asset('images/error-icon.png') }}' alt='OK' title='OK' id='ok'><br>Une erreur est survenue lors l'enregistrement des données.<br/>code erreur :"+xhr.status+" </div>");
+                        $('#validButton').show();
+	        		}
+	        		
+	        	},
+	        	error: function(xhr, ajaxOptions, thrownError) {
+                $('#msg_confirm').html("<div align='center' style='padding:15px;color:red'><img src='{{ asset('images/error-icon.png') }}' alt='OK' title='OK' id='ok'><br>Une erreur est survenue lors l'enregistrement des données.<br/>code erreur :"+xhr.status+" </div>");
+                $('#validButton').show();
+            }
+	        });
+ 
+
+         });
+
+    $('#validButton').on('click', function(){
+       $('#record_dialog').hide();
+    });
+    
+    
+    
+    function senDataAndUpdate(){    
+       dp.sendData();  
+       dp.attachEvent("onAfterUpdate", function(id, action, tid, response){
+            var date = new Date(Date.now()).toLocaleString();
+            grid.cellById(id,1).setValue("Oui");
+            grid.cellById(id,8).setValue(date);
+            
+         });
+    }
+    
+    
+    function setReponseValeur(){
+       var ids = grid.getAllRowIds();
+       var temp = new Array();
+       var temp = ids.split(',');
+       var motif = document.getElementById('form_motif').value;
+       var imputation = document.getElementById('form_imputation').value;
+       var reponse = document.getElementById('form_reponse').value;
+       var commentaire = document.getElementById('form_cmtReponseArbitrage').value;
+ 
+        if(motif == "" ) {
+            bootbox.alert({
+                message: "Veuillez choisir le motif.",
+                size: 'small'
+            });
+            document.getElementById("form_motif").style.backgroundColor = "#D93600";   
+           return false;
+        }
+        else if(imputation == "") {
+            bootbox.alert({
+                message: "Veuillez choisir une imputation.",
+                size: 'small'
+            });
+            document.getElementById("form_imputation").style.backgroundColor = "#D93600";   
+             return false;
+        }
+        else if(reponse == 0) {
+           bootbox.alert({
+                message: "Veuillez choisir une réponse.",
+                size: 'small'
+            });
+           document.getElementById("form_reponse").style.backgroundColor = "#D93600";   
+            return false;
+        }
+        document.getElementById("form_motif").style.backgroundColor = "#FFFFFF";  
+        document.getElementById("form_imputation").style.backgroundColor = "#FFFFFF";    
+        document.getElementById("form_reponse").style.backgroundColor = "#FFFFFF";   
+        for(var i=0; i < temp.length; i++) {  
+           if (grid.cellById(temp[i],1).getValue() == "Non") { 
+            grid.cellById(temp[i],2).setValue(motif);
+            grid.cellById(temp[i],3).setValue(imputation);
+            grid.cellById(temp[i],4).setValue(commentaire);
+            grid.cellById(temp[i],5).setValue(reponse);
+            grid.enableMarkedCells(true);
+            dp.setUpdated(temp[i],true,"updated");
+            dp.sendData();
+            
+            var date = new Date(Date.now()).toLocaleString();
+            grid.cellById(temp[i],1).setValue("Oui");
+            grid.cellById(temp[i],8).setValue(date);
+        } 
+      
+       }
+    }
+    
+</script>
+
+{% endblock %}

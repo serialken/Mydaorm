@@ -1,0 +1,84 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        Modification du fichier <strong>{{ document.name }}</strong>
+    {% endblock %}
+    
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerte">
+                </div>
+                <form {{ form_enctype(form) }} method="post" id="formFichier" action="{{ path('fichier_update',{ 'param1': document.id }) }}">
+                  {{ form_widget(form) }}
+                  
+                  <br>
+                  
+                  <div class="progress progress-striped">
+                    <div class="progress-bar progress-bar-info" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0" role="progressbar" style="width: 0%">
+                      0%
+                    </div>
+                  </div>
+                  
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_fichier_form"/>
+                  </div>
+                </form>  
+            </div> 
+            <script type="text/javascript">   
+                $(document).ready(function() {
+                    
+                    var refreshFileList = false;
+                    
+                    // Rafraichie la liste quand on ferme la modal (si refreshFileList = true )
+                    $('#amsModal').on('hide.bs.modal', function (e) {
+                        if (refreshFileList) {
+                            location.reload();
+                        }
+                    })
+                    
+                    // Affiche la progression du transfert de fichier
+                    function progressHandlingFunction(e){
+                        if(e.lengthComputable){
+                            $('.progress-bar').attr({
+                                'aria-valuenow':e.loaded,
+                                'aria-valuemax':e.total
+                            });
+                            var progressWidth = Math.round((e.loaded * 100)/e.total) + "%";
+                            $('.progress-bar').html(progressWidth);
+                            $('.progress-bar').width(progressWidth);
+                        }
+                    };
+                    
+                    // Traitement lors de l'enregistrement du formulaire
+                    $('#formFichier').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                            url: $(this).attr('action'),
+                            type: $(this).attr('method'),
+                            xhr: function() {  // Custom XMLHttpRequest
+                                var myXhr = $.ajaxSettings.xhr();
+                                if(myXhr.upload){ // Check if upload property exists
+                                    // For handling the progress of the upload
+                                    myXhr.upload.addEventListener('progress',progressHandlingFunction, false); 
+                                }
+                                return myXhr;
+                            },
+                            data: new FormData(this),
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function(data) {
+                                  $('#amsModal').html(data.modal);
+                                  $('#modalAlerte').html(data.alert);
+                                  refreshFileList = true;
+                            },
+                            error: function(data) {
+                                 alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+                            }
+                          });
+                        return false;
+                     });
+                 });
+            </script>  
+    {% endblock %}

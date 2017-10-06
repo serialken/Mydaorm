@@ -1,0 +1,70 @@
+{% extends '::modal.html.twig' %}
+{% block modalCss %}
+<style>
+        .modal-dialog {
+        width: 1000px; 
+        height: 100px;
+        margin: 100px auto;
+    }
+    
+  #listeGeocode {
+    overflow: scroll;
+    height: 200px;
+}
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4> Gestion des Groupes de dépôts.</h4>
+{% endblock %}
+{% block modalContenu %}
+ <div class="well">
+    <form method="post"  id="formGroupeDepot" action="{{sAction}}"  >    
+        {{ form_widget(form) }} 
+         <BR>
+            <table>
+                <tr>
+                    <td > <input type="submit" value="Valider" class="btn btn-primary" /></td>
+                </tr>
+            </table>
+    </form>
+        <div  id="inputForm"> </div>   
+ </div>
+    <script type="text/javascript">
+
+         $(document).ready(function() {
+              $('#formGroupeDepot').submit(function(e) {
+                  e.preventDefault();
+                  $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                  $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    cache: false,
+                    success: function(data) {
+                          $('#amsModal').html(data);
+                          $('#amsModal').on('hidden.bs.modal', function () {
+                              self.parent.location.reload();
+                          });
+                          $('#amsModal').modal('hide');
+                    },
+                    error: function(data) {
+                         alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+                    },
+                  });
+                  return false; //
+              });
+           });
+        $('#form_dep_code').multiselect2side({
+                selectedPosition: 'right',
+                moveOptions: false,
+                labelsx: '',
+               labeldx: '',
+               autoSort: true,
+               autoSortAvailable: true
+         });
+
+      </script>     	
+{% endblock %}
+				
+                
+

@@ -1,0 +1,50 @@
+{% extends '::modal.html.twig' %}
+{% block modalTitre %}
+    Caractéristiques du produit {{ produit.libelle }}
+{% endblock %}
+{% block modalContenu %}
+    <div class="well">
+        {% if produit.ProduitType %}
+            <div id="modalAlerte">
+            </div>
+            <form method="post" class="formProduit" id="formPrdCaract" action="{{ path('produit_detail_ajax', {'param1':produit.id}) }}">         
+              {{ form_widget(form) }}
+              <br/>
+              <div id="inputForm">
+                  <input type="submit" value="Valider" class="btn btn-primary" id="submit_form"/>
+              </div>
+            </form>
+        {% else %}
+            Vous devez attribuer un type au produit pour pouvoir lui associer des caractérisitiques
+        {% endif %}
+    </div>
+    <script type="text/javascript">   
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        
+        $("form input.date").datepicker({
+             dateFormat: 'dd/mm/yy', 
+             firstDay:2,
+         }).attr("readonly","readonly"); 
+        
+        $(document).ready(function() {
+             $('#formPrdCaract').submit(function(e) {
+                 e.preventDefault();
+                 $('#inputForm').html("<img class='ajax_loader_gif' src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                 $.ajax({
+                   url: $(this).attr('action'),
+                   type: $(this).attr('method'),
+                   data: $(this).serialize(),
+                   cache: false,
+                   success: function(data) {
+                        $('#amsModal').html(data.modal);
+                        $('#modalAlerte').html(data.alert);
+                   },
+                   error: function(data) {
+                        alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+                   }
+                 });
+                 return false;
+             });
+         });
+    </script>
+{% endblock %}

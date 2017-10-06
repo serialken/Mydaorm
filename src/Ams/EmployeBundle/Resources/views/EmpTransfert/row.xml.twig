@@ -1,0 +1,13 @@
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}>  
+    <cell>{{row.flux_id}}</cell> 
+    <cell>{{row.depot_org_id}}</cell> 
+    <cell>{{row.contrat_id}}</cell>
+    <cell>{{row.date_debut|date('d/m/Y')}}</cell>
+    <cell>{{row.date_fin|date('d/m/Y')}}</cell>
+    <cell>{{row.depot_dst_id}}</cell> 
+    <cell>{{row.commentaire}}</cell>
+    {{m.cellSupprime(isDelete and row.isDelete)}}
+</row> 
+{% endfor %}
+

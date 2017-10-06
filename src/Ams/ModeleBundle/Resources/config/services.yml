@@ -1,0 +1,12 @@
+parameters:
+    ams.repository.modelerequest.class: Ams\ModeleBundle\Repository\ModeleRequestRepository
+    ams.metadata.modelerequest.class: Doctrine\ORM\Mapping\ClassMetadata
+
+   
+services:           
+    ams.repository.modelerequest:
+        class:     %ams.repository.modelerequest.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.modelerequest]
+    ams.metadata.modelerequest:
+        class:     %ams.metadata.modelerequest.class%
+        arguments: [Ams\ModeleBundle\Repository\ModeleRequest]

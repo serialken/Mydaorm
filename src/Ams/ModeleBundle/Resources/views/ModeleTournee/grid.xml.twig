@@ -1,0 +1,18 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"     type="ro"   hidden="true">journal_id</column>
+        <column id="lien_journal"   type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="groupe_id"      type="coro" width="50"  align="center"  sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="numero"         type="edn"  width="50"  align="center"  sort="int">Numéro</column> 
+        <column id="code"           type="ro"   width="100" align="center"  sort="str">Code</column> 
+        <column id="libelle"        type="ed"   width="*"   align="left"    sort="str">Libellé</column> 
+        <column id="employe_id"     type="coro" width="*"   align="left"    sort="sortCombo">Titulaire{{comboEmploye|raw}}</column>
+        <column id="lien_planning"  type="ro"   width="30"  align="center"  sort="na"></column> 
+        <column id="codeDCS"        type="ed"   width="70"  align="center"  sort="str">CodeDCS</column> 
+        <column id="actif"          type="ch"   width="50"  align="center"  sort="str">Actif</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% include 'AmsModeleBundle:ModeleTournee:row.xml.twig' %}
+ </rows>
+

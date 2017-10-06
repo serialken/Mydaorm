@@ -1,0 +1,49 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['date_distrib' ,'#text_filter'             ,null               ,isNotEmpty         ,'{{date_distrib}}'     ,null                   ,null              ,'onChangeDate(rId,cInd,nValue)'],
+['employe_id'   ,'#select_filter'           ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['incident_id'  ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['commentaire'  ,null                       ,null               ,isCommentaire      ,null                   ,null                   ,null              ,null],
+['incidence'    ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['lock'         ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+    }
+   function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+         if (rowIsInserted) return true;
+        if (cInd==0 || cInd==1) return false; // date_distrib,tournee_id
+        return true;
+    }
+    
+    function onChangeDate(rId,cInd,nValue){
+        if(nValue instanceof Date) {
+            ajaxReloadEmployeDate(nValue.toISOString().substring(0,10));
+        }
+    }
+    function ajaxReloadEmployeDate(date_distrib){
+        if (date_distrib!='') {
+            ajaxReloadComboFilter(grid.getCombo(1),"ajax-pai-incident-employe-date",{ date_distrib: date_distrib });
+        }
+     }
+    /* Utilisé seulement si on peut modifier la date
+    function dhtmlxgridBeforeSelect(new_row,old_row) {
+        if (new_row!=old_row) {
+            ajaxReloadTournee(grid.cellById(new_row,2).getValue());
+        }
+        return true;
+        }*/
+</script>
+
+
+{% endblock %}

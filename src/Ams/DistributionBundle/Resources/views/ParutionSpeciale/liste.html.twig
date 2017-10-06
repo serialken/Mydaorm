@@ -1,0 +1,187 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Opérations spéciales{% endblock %}
+
+{% block body %} 
+    <div id="flashAlert">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                Vos modifications ont été enregistrées avec succés.
+            </div>
+    </div>
+    <script>
+    $(document).ready(function() {
+        $('#flashAlert .alert').hide();
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("#form_date_debut").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        $("#form_date_fin").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        
+    });     
+   </script>
+    
+    
+    
+ 
+            {# Affichage du bloc des msg et infos supplementaires #}
+        <table cellspacing="0" cellpadding="0" width="100%" heigth="50%">
+            <tr>
+                <td>
+                    <div id="infoRes" class="alert alert-info" role="alert">Veuillez patientez pendant le chargement de la liste...</div>
+                </td>
+            </tr>
+            <tr>
+                {% if acces == true %}
+                <td text class="link" nowrap="nowrap" >
+                     <a text-align="left" href ="#"   class="nyroModal" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('calendrier_operation_special_add') }}');" onmouseover="affPopoverLien(this);" data-description="Rajouter un Jour" data-content="Ce lien permet de rajouter une opération spéciale." >
+                         <span class="glyphicon glyphicon-save"></span> Ajouter une opération spéciale
+                     </a>      
+                </td>
+                {% endif %}
+            </tr>
+        </table>
+    
+       <div class="bloc">
+         <div class="well liste_distrib">   
+            <form method="post"  action="{{ path('calendrier_operation_speciale')}}" >   
+                {% form_theme form '::fields_inline.html.twig' %}
+                {{ form_widget(form) }}
+                <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/> 
+            </form>
+        </div>
+            {# Affichage de la grid #}
+        <div  style='position:relative; height:700px; width:100%;'>
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                        <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; width:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                            Chargement ...
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="recinfoArea"></div>
+                    </td>
+                </tr>
+            </table>  
+        </div>
+
+        <script>
+            /** Initialisation  */
+            grid = new dhtmlXGridObject('gridbox');
+            grid.setImagePath("{{dhtmlx_img }}");
+            grid.setHeader("Date Parution, Produit, Evenement, Libelle, Zone distribution, Action");
+            grid.init();
+
+            grid.attachEvent("onXLS", function() {
+                document.getElementById('cover').style.display = 'block';
+            });
+
+            grid.attachEvent("onXLE", function() {
+                document.getElementById('cover').style.display = 'none';
+                document.getElementById('cover').style.display = 'none';
+                var res = "Liste des opérations spéciales<strong>( " + grid.getRowsNum() + " )</strong>";
+                $('#infoRes').html(res);
+                $(function(){
+
+                  $('body').delegate(".btn-annuler","click",function(){
+                   $('.close').click();
+                  });
+
+                  $('body').delegate(".btn-danger","click",function(){
+                   var rowId = $(this).attr('id');
+                    $('.close').click();
+                    grid.deleteRow(rowId);
+                    grid.setRowHidden(rowId,true);
+                  });
+                });
+              });
+      
+        grid.attachEvent("onRowSelect",function(rowId,columnIndex){
+
+       if(columnIndex == 5){
+          $('#amsModal').modal('show');
+          $('#amsModal #amsModalLabel').html('Suppession Parution Spéciale');
+          $('#amsModal .modal-body').html('Etes-vous sur de vouloir supprimer cette imputation? <br />\n\
+                                          <div class="btn btn-xs btn-info btn-annuler"> Annuler </div> \n\
+                                          <div id="'+rowId+'" style="width:50px" class="btn btn-xs btn-danger"> Oui </div>\n\
+                                         ');
+        }
+      });
+
+
+            grid.setSkin("dhx_skyblue");
+            grid.enableSmartRendering(true);
+
+            /** pagination */
+            grid.enablePaging(true, 20, 3, "recinfoArea");
+            grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+            // pour desactiver la generation automatique d'infos bulles
+            grid.enableTooltips("false");
+
+            grid.loadXML("{{path('grid_operation_speciale_xml', {'id':id ,'produit_id':produit_id, 'date_debut':date_debut, 'date_fin': date_fin})|raw }}");
+            
+   
+             dp = new dataProcessor("{{path('operation_speciale_update_delete')}}");
+             dp.enableDataNames(true);
+             dp.setVerificator('3', isNotEmpty);
+             dp.setVerificator('4', isNotEmpty);
+             dp.init(grid);
+    
+      
+        </script>
+
+{% endblock %}
+
+{#
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block title %}Liste parutionSpeciale{% endblock%}
+{% block js %}
+    {{ parent() }}
+
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+        ['Date Parution' ,null ,null   ,isValidDate  ,null ,null ,null ,null],
+        ['Produit'  , null ,'#select_filter_strict' , null, '{{produit_id}}' , null, null, null],
+        ['Evenement', null, null, null, null, null, null, null],
+        ['Libelle Court', null, null, null, null, null, null, null],
+        ['Libelle', null, null, null, null, null, null, null],
+        ['Conditionnement', null, null, null, null, null, null, null],
+        ['Zone distribution', null, null, null, null, null, null, null],
+        ['Suppression', '#ismodif', '#ismodif', null, null, '{{m.lienSupprime()}}', 'removeRow(rId)', null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid_operation_speciale_xml', {'id':id ,'produit_id':produit_id, 'date_debut':date_debut, 'date_fin': date_fin})|raw }}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        
+        dp.setTransactionMode("POST",true); //set mode as send-all-by-post
+	dp.setUpdateMode("off");
+        initDataProcessor();
+    }
+    
+    
+        
+   function isValidDate(value){
+        if (checkDateInpuWithTodays(value) == false) {
+            bootbox.alert("Merci de saisir une date postérieure à la date du jour.").find("div.modal-dialog").addClass("smallWidth");
+            return false;
+        }
+        return true;
+    }
+
+    </script>
+{% endblock %}
+   #}
+    
+

@@ -1,0 +1,113 @@
+{% extends '::modal.html.twig' %}  
+{% block modalCss %}
+<link rel="stylesheet" type="text/css" href="{{asset ('js/dhtmlxSuite/dhtmlx_pro_full/dhtmlx.css') }}">
+<style>
+        .modal-dialog {
+        width: 1000px; 
+        height: 100px;
+        margin: 100px auto;
+    }
+    
+  #listeGeocode {
+    overflow: scroll;
+    height: 200px;
+    div.gridbox_dhx_skyblue .dhtmlx_invalid{background-color:#FAD9DD}
+    div.gridbox_dhx_skyblue .dhtmlx_ecart10{background-color:#F4FA58}
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4>Modification des comptes rendus de distribution</h4>
+{% endblock %}
+{% block modalContenu %}
+
+<div id='modifDistrib' class="well">
+  
+    <div class="row">
+      <div>
+          <div  style='position:relative; height:700px; width:100%;'>
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <div id="gridbox_modal"  style="width:100%; height:500px!important; background-color:white;overflow:hidden"></div>
+                         <div id="cover_modal" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                                 Chargement ...
+                          </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="recinfoArea"><form><input id="modifButton" value="Enregistrer" type="button"></form></div>
+                    </td>
+                </tr>
+            </table>  
+          </div>
+      </div>
+    </div>
+
+<script type="text/javascript">   
+    function calculateFooterValues(stage){
+        if(stage && stage!=2) 
+            return true;
+        $("#nr_q").html(sumColumn(2))
+        $("#sr_q").html(sumColumn(3))
+        return true;
+    }
+    function sumColumn(ind){
+            var out = 0;
+            for(var i=0;i< grid_modal.getRowsNum();i++){
+                    out+= parseFloat(grid_modal.cells2(i,ind).getValue())
+            }
+            return out;
+    }
+    
+    $('#modifButton').click(function() {
+        
+        total_abo = $("#nr_q").html();
+        total_diff = $("#sr_q").html();
+        id_cptr = {{cptr_distribution_id}};
+        row_id = {{row_id}};
+        date = '{{affichage_date}}';
+        id_depot = {{id_depot}};
+        tournee = '{{tournee}}';
+        
+        $('#amsModal').modal('hide');
+        grid.cells(row_id,3).setValue('<a href="#" data-toggle="modal" data-target="#amsModal" onclick="modifDistribRow( \''+date+'\', \''+id_depot+'\', \''+tournee+'\', \''+row_id+'\')" >'+total_abo+'</a>');
+        grid.cells(row_id,4).setValue('<a href="#" data-toggle="modal" data-target="#amsModal" onclick="modifDistribRow( \''+date+'\', \''+id_depot+'\', \''+tournee+'\', \''+row_id+'\')" >'+total_diff+'</a>');
+        myDataProcessor.setUpdated(row_id,true);
+        //
+    });
+    
+    
+    
+    grid_modal = new dhtmlXGridObject('gridbox_modal');
+    grid_modal.setImagePath("{{dhtmlx_img }}");
+
+    grid_modal.setHeader("Soc,Produits,Nb. ex. non livré abo,Nb. ex. non livré diff");
+    grid_modal.setColumnIds("societe,produit,nb_ex_abo,nb_ex_diff");
+    grid_modal.setColTypes("ro,ro,ed,ed");
+    
+    grid_modal.init();
+    
+    grid_modal.attachEvent("onXLS", function() {
+        $('#cover_modal').show();
+    });
+    grid_modal.attachEvent("onXLE", function() {
+        $('#cover_modal').hide();
+    });
+    
+    grid_modal.attachEvent("onEditCell",calculateFooterValues)
+    
+    grid_modal.setSkin("dhx_skyblue");
+    
+    grid_modal.attachFooter("Total,,<div id='nr_q'>0</div>,<div id='sr_q'>0</div>",["text-align:left;"])
+    
+    grid_modal.loadXML("{{path('compte_rendu_liste_exemplaires_non_distribues',{'date':affichage_date, 'id_cptr': cptr_distribution_id})|raw}}", calculateFooterValues);
+    
+    myDataProcessor_modal = new dataProcessor("{{path('compte_rendu_liste_exemplaires_non_distribues_sauvegarde',{'date':affichage_date, 'id_cptr': cptr_distribution_id})|raw}}");
+    myDataProcessor_modal.setTransactionMode("POST",true); //set mode as send-all-by-post
+    myDataProcessor_modal.enableDataNames(true);
+    myDataProcessor_modal.init(grid_modal);
+    
+    
+</script>  
+{% endblock %}

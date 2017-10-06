@@ -1,0 +1,12 @@
+<ul class="nav nav-sidebar">
+    <li class="">
+        <a data-toggle="modal" data-target="amsModal" href="#" >Jours fériés</a>
+    </li>
+</ul>
+<ul class="nav nav-sidebar">
+    {% for event in day.events %}
+        <li class="">
+            <a data-toggle="modal" data-target="amsModal" href="#" >{{ event.titre }}</a>
+        </li>
+    {% endfor %}
+</ul>

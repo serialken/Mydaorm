@@ -1,0 +1,120 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+     <a href="{{path('emargement_activite')}}"><img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Export Excel" >Emargement</a>
+
+    {% if isAlim %}
+        <span  style="float:right;">
+            <input type="button" value="Supprimer" onclick='suppression();'>&nbsp;
+            <input type="button" value="Alimenter" onclick='alimentation();'>
+        </span>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE                ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT           ,ONCHANGE
+['journal_id'           ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['>Journal'             ,null                       ,null               ,null               ,null                   ,'{{m.lienJournal()}}'  ,'goJournal(rId)'   ,null],
+['depot_id'             ,null                       ,null               ,isNotEmpty         ,'{{depot_id}}'         ,null                   ,null               ,null],
+['flux_id'              ,null                       ,null               ,isNotEmpty         ,'{{flux_id}}'          ,null                   ,null               ,null],
+['date_distrib'         ,null                       ,null               ,isNotEmpty         ,'{{date_distrib}}'     ,null                   ,null               ,null],
+['activite_id'          ,'#select_filter'           ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+['>Planning'            ,null                       ,null               ,null               ,null                   ,'{{m.lienEmploye()}}'  ,'goPlanning(rId)'  ,null],
+['employe_id'           ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null               ,null],
+['heure_debut'          ,null                       ,null               ,isTimeOrNull       ,null                   ,null                   ,null               ,null],
+['heure_debut_calculée' ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['duree'                ,null                       ,null               ,isDureeMax10OrNull ,null                   ,null                   ,null               ,null],
+['duree_nuit'           ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['duree_garantie'       ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['nbkm_paye'            ,'#numeric_filter'          ,null               ,isKm2OrNull        ,null                   ,null                   ,null               ,null],
+['transport_id'         ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null               ,null],
+['descriptif'           ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['commentaire'          ,null                       ,null               ,isCommentaire      ,null                   ,null                   ,null               ,null],
+['old_employe_id'       ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['est_pleiades'         ,null                       ,null               ,null               ,'0'                    ,null                   ,null               ,null],
+['lock'                 ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{activite_id}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+        
+        grid.attachEvent("onXLE", function(){   
+            var  total_duree = 0;
+            var  total_nuit = 0;
+            var  total_garantie = 0;
+             grid.forEachRow(function(id){
+                total_duree += MyGetMinutes(grid.cellById(id,10).getValue());
+                total_nuit += MyGetMinutes(grid.cellById(id,11).getValue());
+                total_garantie += MyGetMinutes(grid.cellById(id,12).getValue());
+            });
+            grid.setFooterLabel(10, Minute2Time(total_duree));
+            grid.setFooterLabel(11, Minute2Time(total_nuit));
+            grid.setFooterLabel(12, Minute2Time(total_garantie));
+        });
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (grid.cellById(rId,18).getValue()==1 && !(cInd==8 || cInd==10 || cInd==13 || cInd==14 || cInd==16)) return false; // groupe_id, tournee_id, employe_id
+        return true;
+    }
+
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,0).getValue());
+    }
+    function goPlanning(rId){
+        goLinkGrid("{{path('pai_planning')|raw}}"+"?employe_id=",grid.cellById(rId,7).getValue());
+    }
+        
+    function alimentation(){
+        dhtmlx.confirm({
+                type:"confirm-warning",
+                text:"Attention, vous allez perdre toutes vos modifications sur la journée en cours.<br/>Voulez-vous vraiment faire l'alimentation ?",
+                ok:"Oui",
+                cancel:"Non",
+                callback:function(result) { if (result===true) confirmedAlimentation(); }
+                });
+     }
+    function confirmedAlimentation(){
+        ajaxMessage("Alimentation en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-alimentation-pai-activite",
+            type: "GET",
+            data: { est_hors_presse: {{est_hors_presse?1:0}} },
+            success: function(data) { 
+                ajaxSucces("Alimentation terminée"); 
+                onLoadGrid();
+             },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+    function suppression(){
+        dhtmlx.confirm({
+                type:"confirm-warning",
+                text:"Attention, vous allez supprimer toutes les activités sur la journée en cours.<br/>Voulez-vous vraiment faire la suppression ?",
+                ok:"Oui",
+                cancel:"Non",
+                callback:function(result) { if (result===true) confirmedSuppression(); }
+                });
+     }
+    function confirmedSuppression(){
+        ajaxMessage("Suppression en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-suppression-pai-activite",
+            type: "GET",
+            data: { est_hors_presse: {{est_hors_presse?1:0}} },
+              success: function(data) { 
+                ajaxSucces("Suppression terminée"); 
+                onLoadGrid();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+    </script>
+{% endblock %}

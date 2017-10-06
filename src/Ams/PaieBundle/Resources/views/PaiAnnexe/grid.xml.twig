@@ -1,0 +1,41 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="date_distrib"   type="ro"   width="70"  align="center"  sort="sortDate">Date</column>
+        <column id="libelle"        type="ro"   width="*"   align="center"  sort="str">Libellé</column> 
+        <column id="qte"            type="ron"  width="80"  align="right"   sort="int"  format="0.00">Nombre</column> 
+        <column id="taux"           type="ron"  width="80"  align="right"   sort="int"  format="0.00000">Taux</column>
+        <column id="val"            type="ron"  width="80"  align="right"   sort="int"  format="0.00000">Montant</column> 
+        <column id="duree_tournee"  type="ron"  width="50"  align="center"  sort="str">Durée Tournée</column> 
+        <column id="duree_activite" type="ron"  width="50"  align="center"  sort="str">Durée Activité</column> 
+        <column id="duree_autre"    type="ron"  width="50"  align="center"  sort="str">Durée Autre</column>
+        <column id="duree_totale"   type="ron"  width="50"  align="center"  sort="str">Durée Totale</column> 
+        {% if flux_id==1 %}<column id="duree_nuit"     type="ron"  width="50"  align="center"  sort="str">Durée Nuit</column>{% endif %}
+        <column id="nbkm_paye"      type="ron"  width="80"  align="right"   sort="int">Kilomètres payés</column> 
+        <column id="nbrec_abonne" type="ro"   width="80"  align="right"   sort="int">Réclamation Abonné</column> 
+        {% if flux_id==1 %}<column id="nbrec_diffuseur" type="ro"   width="80"  align="right"   sort="int">Réclamation Diffuseur</column>{% endif %}
+        <column id="nb_incident"    type="ro"   width="80"  align="right"   sort="int">Incidident</column>
+      </head>      
+    {% set prev_date_distrib="" %}
+    {% for row in curseur %}
+        <row locked="true">  
+            <cell>{% if prev_date_distrib!=row.date_distrib and row.date_distrib!='2999-01-01' %}{{row.date_distrib|date('d/m')}}{% endif %}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.qte}}</cell>
+            <cell>{{row.taux}}</cell>
+            <cell>{{row.val}}</cell>
+            <cell>{{row.duree_tournee}}</cell>
+            <cell>{{row.duree_activite}}</cell>
+            <cell>{{row.duree_autre}}</cell>
+            <cell>{{row.duree_totale}}</cell>
+            {% if flux_id==1 %}<cell>{{row.duree_nuit}}</cell>{% endif %}
+            <cell>{{row.nbkm_paye}}</cell>
+            <cell>{{row.nbrec_abonne}}</cell>
+            {% if flux_id==1 %}<cell>{{row.nbrec_diffuseur}}</cell>{% endif %}
+            <cell>{{row.nb_incident}}</cell>
+        </row>  
+        {% set prev_date_distrib=row.date_distrib %}
+     {% endfor %}
+ </rows>
+
+

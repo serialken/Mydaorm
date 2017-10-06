@@ -1,0 +1,38 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"         type="ro"   hidden="true"></column>
+        <column id="lien_journal"       type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="tournee_id"         type="ro"   hidden="true"></column> 
+        <column id="activite_id"        type="ro"   hidden="true"></column> 
+        <column id="date_distrib"       type="ro"   width="70"  align="center"  sort="sortDate">Date</column>
+        <column id="jour_id"            type="coro" width="80"  align="left"    sort="int">Jour{{comboJour|raw}}</column>
+        <column id="libelle"            type="coro" width="*"   align="left"    sort="sortCombo">Libellé</column> 
+        <column id="nbkm"               type="ed"   width="50"  align="right"   sort="int">Transport *</column> 
+        <column id="nbkm_paye"          type="ed"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="transport_id"       type="coro" width="80"  align="center"  sort="sortCombo">#cspan{{comboTransport|raw}}</column> 
+        <column id="heure_debut"        type="ed"   width="50"  align="center"  sort="str">Heure de début</column> 
+        <column id="duree_totale"       type="ro"   width="70"  align="center"  sort="str">Durée</column> 
+        <column id="duree_nuit"         type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_tournee"      type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_activite"      type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_supplement"   type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_reperage"     type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="nbcli"              type="ro"   width="70"  align="right"   sort="int">Quantité</column> 
+        <column id="nbtitre"            type="ro"   width="70"  align="right"   sort="int">#cspan</column> 
+        <column id="nbadr"              type="ro"   width="70"  align="right"   sort="int">#cspan</column> 
+        <column id="nbspl"              type="ro"   width="70"  align="right"   sort="int">#cspan</column> 
+        <column id="nbprod"             type="ro"   width="70"  align="right"   sort="int">#cspan</column> 
+        <column id="nbrep"              type="ro"   width="70"  align="right"   sort="int">#cspan</column> 
+        <column id="commentaire"        type="txt"  width="*"   align="left"    sort="str">Commentaire</column>
+{#        <beforeInit> 
+            <call command="attachFooter"><param>,,,,Total,,,#stat_total,#stat_total,,,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total,</param></call>
+        </beforeInit> 
+#}    </head> 
+    {% include 'AmsPaieBundle:PaiResumeEmploye:row.xml.twig' %}
+</rows>
+
+
+
+
+

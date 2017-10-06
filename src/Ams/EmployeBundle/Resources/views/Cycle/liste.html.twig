@@ -1,0 +1,48 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreActif" {{app.request.cookies.get('MRoad_filtreActif')}}/>Afficher seulement les cycles actifs</span>
+{% endblock %} 
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//      IDX_ENTETE      ,IDX_HEADER1        ,IDX_HEADER2        ,IDX_VERIFICATOR    ,IDX_LNK_BEFOREINSERT ,IDX_LINK_AFTERINSERT    ,IDX_FUNC_ONSELECT  
+['actif'            ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['matricule'        , '#text_filter'            ,null               ,null               ,null                   ,null                   ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_debut'       ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_fin'         ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['dimanche'         ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['lundi'            ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['mardi'            ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['mercredi'         ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['jeudi'            ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['vendredi'         ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+['samedi'           ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        initDateIntervalFiltre();
+    }
+    function dhtmlxgridOnLoad(){
+        showOrHideActif();
+        $('#filtreActif').on('change', function() {
+            showOrHideActif();
+        });
+    }
+    function showOrHideActif(){
+        if($('#filtreActif').attr('checked') == 'checked') {
+            grid.filterBy(0, "1" ,true);
+            $.cookie('MRoad_filtreActif', 'checked');
+       }
+       else{
+            grid.filterBy(0,"");
+            grid.filterByAll();
+            $.cookie('MRoad_filtreActif', 'false');
+       }
+    }
+</script>
+{% endblock %}

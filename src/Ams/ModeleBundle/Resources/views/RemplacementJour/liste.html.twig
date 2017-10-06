@@ -1,0 +1,27 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//      IDX_ENTETE      ,IDX_HEADER1                ,IDX_HEADER2        ,IDX_VERIFICATOR    ,IDX_LNK_BEFOREINSERT   ,IDX_LINK_AFTERINSERT    ,IDX_FUNC_ONSELECT  
+['remplacant_id'        ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['date_debut'           ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+['date_fin_prevue'      ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['date_fin'             ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['jour_id'              ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['code'                 ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['date_distrib'         ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['employe_id'           ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['duree'                ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['nbcli'                ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['valrem'               ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['valrem_moyen'         ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{remplacement_id}}");
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        {% if is_new %} Création de société {% else %} Modification de la société {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerte">
+                </div>
+                <form method="post" class="formSociete" id="formSociete" action="{{ is_new ? path('societe_creation_ajax') : path('societe_modification_ajax',{'param1': societe.id })}}" {{ form_enctype(societeForm) }} >          
+                  {{ form_widget(societeForm) }}
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                  </div>
+                </form>
+            </div> 
+            <script type="text/javascript">    
+               $(document).ready(function() {
+                    $('#formSociete').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                          url: $(this).attr('action'),
+                          type: $(this).attr('method'),
+                          data: $(this).serialize(),
+                          cache: false,
+                          success: function(data) {
+                              {% if is_new %}            
+                                $('#ulMenuSociete').prepend(data.ul);                                
+                                $('.societe.tab-pane').removeClass('active in');
+                              {% else %}                               
+                                $('.societe.tab-pane.active.in').remove();                                
+                              {% endif %}
+                                $('#liste_societes').prepend(data.background);
+                                $('#amsModal').html(data.modal);
+                                $('#modalAlerte').html(data.alert);
+                                setTimeout( "$('#amsModal').modal('hide');",5000 );
+                          },
+                          error: function(data) {
+                               alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                          },
+                        });
+                        return false; //
+                    });
+                });
+            </script>  
+    {% endblock %}

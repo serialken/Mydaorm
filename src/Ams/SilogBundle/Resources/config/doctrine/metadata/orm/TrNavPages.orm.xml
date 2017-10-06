@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrNavPages" table="TR_NAV_PAGES">
+    <id name="pagId" type="integer" column="PAG_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="pagIdRoute" type="string" column="PAG_ID_ROUTE" length="45" nullable="false"/>
+    <field name="pagDescCourt" type="string" column="PAG_DESC_COURT" length="25" nullable="false"/>
+    <field name="pagDescAriane" type="string" column="PAG_DESC_ARIANE" length="50" nullable="true"/>
+    <field name="pagDescription" type="string" column="PAG_DESCRIPTION" length="255" nullable="true"/>
+    <field name="pagType" type="string" column="PAG_TYPE" nullable="false"/>
+    <field name="pagActive" type="string" column="PAG_ACTIVE" nullable="false"/>
+    <field name="pagParent" type="string" column="PAG_PARENT" length="45" nullable="true"/>
+    <field name="pagMenu" type="string" column="PAG_MENU" nullable="false"/>
+    <field name="pagRang" type="integer" column="PAG_RANG" nullable="true"/>
+    <field name="pagDefaut" type="string" column="PAG_DEFAUT" length="45" nullable="true"/>
+  </entity>
+</doctrine-mapping>

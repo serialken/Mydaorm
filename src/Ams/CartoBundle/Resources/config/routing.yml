@@ -1,0 +1,100 @@
+ams_carto_demo:
+    pattern:  /carto/demo
+    defaults: { _controller: AmsCartoBundle:Default:demo }
+    
+ams_carto_demo2:
+    pattern:  /carto/demo2
+    defaults: { _controller: AmsCartoBundle:Default:demo2 }
+    
+ams_carto_demo3:
+    pattern:  /carto/demo3
+    defaults: { _controller: AmsCartoBundle:Default:demo3 }
+    
+ams_carto_jsondemo:
+    pattern:  /carto/jsondemo
+    defaults: { _controller: AmsCartoBundle:Carto:jsondemo }
+    
+ams_carto_rgeocodingjsondemo:
+    pattern:  /carto/rgeocodingdemo
+    defaults: { _controller: AmsCartoBundle:Default:mockreversegeocoding }
+    
+ams_carto_searcharoundemo:
+    pattern:  /carto/sarounddemo
+    defaults: { _controller: AmsCartoBundle:Carto:testsearcharound }
+    
+ams_carto_rgeocodingjson:
+    pattern:  /carto/rgeocoding/{lon}/{lat}
+    defaults: { _controller: AmsCartoBundle:Carto:reversegeocoding, lon:0, lat:0 }
+    
+ams_carto_geocodingjson:
+    pattern:  /carto/geocoding
+    defaults: { _controller: AmsCartoBundle:Carto:geocoding }
+    
+ams_carto_updatepointlivraison:
+    pattern:  /carto/update-pointlivraison
+    defaults: { _controller: AmsCartoBundle:Carto:updatePointLivraison }
+    
+ams_carto_infostourneejson:
+    pattern:  /carto/infostourneesopenlayers/{iTourneeJourId}/{sDate}/{iFluxId}/{iPos}
+    defaults: { _controller: AmsCartoBundle:Carto:infostourneesopenlayers, iTourneeJourId:0 , sDate: 01-01-2012, iFluxId:0, iPos:0}
+    
+ams_carto_gettournees:
+    pattern:  /carto/tournees/{codeDepot}/{date}
+    defaults: { _controller: AmsCartoBundle:Carto:gettournees, codeDepot: 1, date: 01-01-2012 }
+    
+ams_carto_voirtournees:
+    pattern:  /carto/voirtournees
+    defaults: { _controller: AmsCartoBundle:Carto:voirtournees }
+    
+ams_carto_nouveaupoint:
+    pattern:  /carto/voirtournees/nouveaupoint
+    defaults: { _controller: AmsCartoBundle:Carto:voirtournees, typeaction: nouveaupoint }
+    
+ams_carto_creerpoint:
+    pattern:  /carto/voirtournees/creerpoint
+    defaults: { _controller: AmsCartoBundle:Carto:affichertournees, typeaction: nouveaupoint} 
+    
+ams_carto_affichertournees:
+    pattern:  /carto/affichertournees
+    defaults: { _controller: AmsCartoBundle:Carto:affichertournees }
+    
+ams_carto_basculerpointtournee:
+    pattern:  /carto/basculerpointtournee
+    defaults: { _controller: AmsCartoBundle:Carto:basculerpointtournee }
+    
+ams_carto_order_tournee_detail:
+    pattern:  /carto/order_tournee_detail
+    defaults: { _controller: AmsCartoBundle:Carto:orderTourneeDetail }
+    
+ams_carto_tournee_xml: 
+    pattern:    /carto/grid
+    defaults:    { _controller: "AmsCartoBundle:Carto:grid" } 
+     
+ams_carto_list_tournee_xml: 
+    pattern:    /carto/list_tournee
+    defaults:    { _controller: "AmsCartoBundle:Carto:gridListTournee" }
+      
+ams_carto_get_tournees_by_modele_tournee: 
+    pattern:    /carto/get_tournee
+    defaults:    { _controller: "AmsCartoBundle:Carto:getTourneeByCode" }  
+    
+ams_carto_update_tournee: 
+    pattern:    /carto/update
+    defaults:    { _controller: "AmsCartoBundle:Carto:updateData" }
+    
+ams_carto_get_tournee_by_order: 
+    pattern:  /carto/tournee_by_order
+    defaults: { _controller: AmsCartoBundle:Carto:getTourneeByOrder}
+
+ams_carto_movepoint_changeorder_tournee: 
+    pattern:  /carto/move_change_tournee
+    defaults: { _controller: "AmsCartoBundle:Carto:movePointChangeOrderTournee" }
+    
+ams_carto_export_adress_to_excel: 
+    pattern:  /carto/export_adress_to_excel
+    defaults: { _controller: "AmsCartoBundle:Carto:exportAdressToExcel" }
+    
+ams_carto_get_file_export: 
+    pattern:  /carto/file_export
+    defaults: { _controller: "AmsCartoBundle:Carto:getFileExport" }
+    

@@ -1,0 +1,19 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+     <head>      
+        <column id="type_id"            type="coro"         width="80" align="left"    sort="sortCombo">Type{{comboType|raw}}</column>
+        <column id="employe_id"         type="coro"         width="200" align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column>
+        <column id="annexe"             type="ro"           width="70"  align="center"  sort="str">Annexe</column> 
+        <column id="tournee_id"         type="coro"         width="80"  align="center"  sort="str">Tournée</column>
+        <column id="date_requete"       type="ro"           width="80"  align="center"  sort="sortDate">Requête</column> 
+        <column id="date_application"   type="ro"           width="80"  align="center"  sort="sortDate">Application</column> 
+        <column id="demandeur_id"       type="coro"         width="*"   align="left"    sort="sortCombo">Demandeur{{comboUtilisateur|raw}}</column>
+        <column id="date_demande"       type="ro"           width="120" align="center"  sort="sortDateTime">Demande</column> 
+        <column id="valideur_id"        type="coro"         width="*"   align="left"    sort="sortCombo">Valideur{{comboUtilisateur|raw}}</column>
+        <column id="date_validation"    type="ro"           width="120" align="center"  sort="sortDateTime">Validation</column> 
+        <column id="date_refus"         type="ro"           width="120" align="center"  sort="sortDateTime">Refus</column> 
+        <column id="commentaire"        type="ro"           width="*"   align="left"    sort="str">Commentaire</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% include 'AmsModeleBundle:Etalon:row.xml.twig' %}
+ </rows>

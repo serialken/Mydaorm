@@ -1,0 +1,69 @@
+    <div class="depot tab-pane fade active in" id="societe_">
+        <h1 class="page-header">Aucun dépôt affiché </h1>
+    </div>
+    {% if depots|length > 0 %} 
+        {% for depot in depots %}        
+            {% include 'AmsSilogBundle:Depot:tabDepot.html.twig' %}
+        {% endfor %}
+    {% endif %}
+<script>
+    $(document).ready(function() {
+        $('.alert').hide();
+        {#if ({{ct}} == 0){
+           // $('gridbox_{{depot.id}}').hide;
+        }#}
+    });
+    
+    function initGridCommune(id) {
+        /** Initialisation  */
+        
+        gridCommune = new dhtmlXGridObject('gridbox_' + id); 
+        gridCommune.setImagePath("{{dhtmlx_img}}");
+        gridCommune.setHeader("Centre,Code INSEE,Ville,Date Début,Date Fin,");
+        gridCommune.setInitWidths("*,*,*,*,*,32");
+        gridCommune.attachHeader(",#text_filter,#select_filter,#select_filter,#select_filter");
+        gridCommune.setColAlign("center,center,center,center,center,");
+        gridCommune.init();
+        
+        gridCommune.attachEvent("onXLS", function() {
+            document.getElementById('cover_' + id).style.display = 'block';
+        });
+        gridCommune.attachEvent("onXLE", function() {
+            document.getElementById('cover_' + id).style.display = 'none';
+            //var num = gridCommune.getRowsNum();
+            //$('.full.title span').html(num);
+        });
+        
+        gridCommune.setSkin("dhx_skyblue");
+        gridCommune.enableSmartRendering(true);
+           
+        /** pagination */
+        gridCommune.enablePaging(true, 20, 3, "recinfoArea");
+        gridCommune.setPagingSkin("toolbar", "dhx_skyblue");
+
+        // pour desactiver la generation automatique d'infos bulles
+        gridCommune.enableTooltips("false");
+
+        var url = "{{path('depot_grid_commune')}}" + "?id=" + id;
+        //console.log(url);
+
+        gridCommune.loadXML(url);
+    };
+    
+    function del_r(depot,commune){
+        
+        $.ajax({
+            url: '{{path('depot_delete_commune_ajax')}}',
+            type: 'POST',
+            data: {'depot': depot, 'commune': commune},
+            success: function(data) {
+                var url = "{{path('depot_grid_commune')}}" + "?id=" + data;
+                gridCommune.clearAll();
+                gridCommune.loadXML(url);
+            },
+            error: function(data) {
+                 alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+            }
+        });
+    };
+</script>

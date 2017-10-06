@@ -1,0 +1,28 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="depot_id"       type="ro"   hidden="true">Dépot</column>
+        <column id="flux_id"        type="ro"   hidden="true">Flux</column> 
+        <column id="code"           type="ed"   width="*"   align="left"    sort="str">Code *</column> 
+        <column id="libelle"        type="ed"   width="*"   align="left"    sort="str">Libellé *</column> 
+        <column id="heure_debut"    type="ed"   width="70"  align="center"  sort="str">Heure Début *</column> 
+        <column id="heure_fin"      type="ed"   width="70"  align="center"  sort="str">Heure Fin</column> 
+        {{m.columnAjout(isModif)}}
+    </head>      
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.depot_id}}</cell>
+            <cell>{{row.flux_id}}</cell>
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.heure_debut}}</cell>
+            <cell>{{row.heure_fin}}</cell>
+            {{m.cellSupprime(isModif)}}
+        </row> 
+    {% endfor %}
+ </rows>
+
+
+
+
+

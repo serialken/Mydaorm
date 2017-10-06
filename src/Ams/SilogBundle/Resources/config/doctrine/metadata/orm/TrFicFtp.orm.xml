@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrFicFtp" table="TR_FIC_FTP">
+    <id name="ftpCode" type="string" column="FTP_CODE" length="40">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="ftpFtpSrv" type="string" column="FTP_FTP_SRV" length="45" nullable="false"/>
+    <field name="ftpLogin" type="string" column="FTP_LOGIN" length="45" nullable="false"/>
+    <field name="ftpMdp" type="string" column="FTP_MDP" length="45" nullable="false"/>
+    <field name="ftpRepertoire" type="string" column="FTP_REPERTOIRE" length="45" nullable="true"/>
+    <field name="ftpRepSauvegarde" type="string" column="FTP_REP_SAUVEGARDE" length="255" nullable="true"/>
+  </entity>
+</doctrine-mapping>

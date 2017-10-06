@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="FSrcDetailsCasTmp" table="F_SRC_DETAILS_CAS_TMP">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="tmpCasDateDistrib" type="date" column="TMP_CAS_DATE_DISTRIB" nullable="false"/>
+    <field name="tmpCasDateParution" type="date" column="TMP_CAS_DATE_PARUTION" nullable="false"/>
+    <field name="tmpCasFicId" type="integer" column="TMP_CAS_FIC_ID" nullable="true"/>
+    <field name="tmpCasNumParution" type="string" column="TMP_CAS_NUM_PARUTION" length="20" nullable="true"/>
+    <field name="tmpCasNumAbonneExt" type="string" column="TMP_CAS_NUM_ABONNE_EXT" length="20" nullable="false"/>
+    <field name="tmpCasQte" type="integer" column="TMP_CAS_QTE" nullable="true"/>
+    <field name="tmpCasVol1" type="string" column="TMP_CAS_VOL1" length="38" nullable="true"/>
+    <field name="tmpCasVol2" type="string" column="TMP_CAS_VOL2" length="38" nullable="true"/>
+    <field name="tmpCasVol3" type="string" column="TMP_CAS_VOL3" length="38" nullable="true"/>
+    <field name="tmpCasVol4" type="string" column="TMP_CAS_VOL4" length="38" nullable="true"/>
+    <field name="tmpCasVol5" type="string" column="TMP_CAS_VOL5" length="38" nullable="true"/>
+    <field name="tmpCasCp" type="string" column="TMP_CAS_CP" length="5" nullable="true"/>
+    <field name="tmpCasVille" type="string" column="TMP_CAS_VILLE" length="45" nullable="true"/>
+    <field name="tmpCasCodeInsee" type="string" column="TMP_CAS_CODE_INSEE" length="5" nullable="true"/>
+    <field name="tmpCasTypePortage" type="string" column="TMP_CAS_TYPE_PORTAGE" length="1" nullable="true"/>
+    <field name="tmpCasDivers1" type="string" column="TMP_CAS_DIVERS1" length="45" nullable="true"/>
+    <field name="tmpCasInfoComp1" type="string" column="TMP_CAS_INFO_COMP1" length="20" nullable="true"/>
+    <field name="tmpCasInfoComp2" type="string" column="TMP_CAS_INFO_COMP2" length="32" nullable="true"/>
+    <field name="tmpCasDivers2" type="string" column="TMP_CAS_DIVERS2" length="32" nullable="true"/>
+    <field name="tmpAboNumaboSoc" type="string" column="TMP_ABO_NUMABO_SOC" length="60" nullable="true"/>
+    <field name="tmpRnvId" type="integer" column="TMP_RNV_ID" nullable="true"/>
+    <field name="tmpSprCode" type="string" column="TMP_SPR_CODE" length="20" nullable="true"/>
+    <field name="tmpPrdCode" type="string" column="TMP_PRD_CODE" length="20" nullable="true"/>
+    <field name="tmpSocCode" type="string" column="TMP_SOC_CODE" length="10" nullable="true"/>
+    <many-to-one field="tmpCasSprCodeExt" target-entity="TrPrdSousProduits">
+      <join-columns>
+        <join-column name="TMP_CAS_SPR_CODE_EXT" referenced-column-name="SPR_CODE_EXT"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="tmpCasSocCodeExt" target-entity="TrPrdSousProduits">
+      <join-columns>
+        <join-column name="TMP_CAS_SOC_CODE_EXT" referenced-column-name="SPR_SOC_CODE_EXT"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="tmpCasPrdCodeExt" target-entity="TrPrdSousProduits">
+      <join-columns>
+        <join-column name="TMP_CAS_PRD_CODE_EXT" referenced-column-name="SPR_PRD_CODE_EXT"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

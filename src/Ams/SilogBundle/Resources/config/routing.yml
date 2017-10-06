@@ -1,0 +1,65 @@
+
+AmsSilogBundle_depot:
+    resource: "@AmsSilogBundle/Resources/config/routing/depot.yml"
+    prefix: /depot
+    
+AmsSilogBundle_admin_groupedepot:
+    resource: "@AmsSilogBundle/Resources/config/routing/groupedepot.yml"
+    prefix:   /admin/
+
+AmsSilogBundle_admin_utilisateur:
+    resource: "@AmsSilogBundle/Resources/config/routing/utilisateur.yml"
+    prefix:   /admin/
+    
+AmsSilogBundle_admin_profil:
+    resource: "@AmsSilogBundle/Resources/config/routing/profil.yml"
+    prefix:   /admin/profil
+
+AmsSilogBundle_authentification_navigation:
+    resource: "@AmsSilogBundle/Resources/config/routing/authentification_navigation.yml"
+    prefix:   /
+
+
+AmsSilogBundle_admin_categorie:
+    resource: "@AmsSilogBundle/Resources/config/routing/categorie.yml"
+    prefix:   /admin/categorie
+    
+AmsSilogBundle_admin_sous_categorie:
+    resource: "@AmsSilogBundle/Resources/config/routing/souscategorie.yml"
+    prefix:   /admin/souscategorie
+    
+AmsSilogBundle_admin_page:
+    resource: "@AmsSilogBundle/Resources/config/routing/page.yml"
+    prefix:   /admin/page
+
+AmsSilogBundle_admin_motif: 
+    resource: "@AmsSilogBundle/Resources/config/routing/motif.yml"
+    prefix:   /admin/motif
+    
+AmsSilogBundle_admin_imputation: 
+    resource: "@AmsSilogBundle/Resources/config/routing/imputation.yml"
+    prefix:   /admin/imputation
+    
+AmsSilogBundle_admin_imprimante: 
+    resource: "@AmsSilogBundle/Resources/config/routing/imprimante.yml"
+    prefix:   /admin/imprimante
+    
+AmsSilogBundle_admin_documents: 
+    resource: "@AmsSilogBundle/Resources/config/routing/documents.yml"
+    prefix:   /admin/document
+    
+AmsSilogBundle_admin_type_info_portage: 
+    resource: "@AmsSilogBundle/Resources/config/routing/info_portage.yml"
+    prefix:   /admin/info_portage
+    
+AmsSilogBundle_admin_message: 
+    resource: "@AmsSilogBundle/Resources/config/routing/messages.yml"
+    prefix:   /admin/messages-infos
+    
+AmsSilogBundle_admin_repartition: 
+    resource: "@AmsSilogBundle/Resources/config/routing/repartition.yml"
+    prefix:   /admin/repartition
+    
+AmsSilogBundle_faq:
+    pattern:  /faq
+    defaults: { _controller: "AmsSilogBundle:Statique:faq" }

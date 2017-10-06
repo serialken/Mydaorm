@@ -1,0 +1,9 @@
+<a href="{{ path('_ams_accueil_defaut') }}" class="level0">Accueil</a> > 
+{% if categorieLink is defined %}
+    <a href="{{ path(categorieLink ,{'slug':categorieLib|lower,'categorieId': categorieId }) }}" class="level0">{{categorieLib}}</a> > 
+    {% if ssCategorieLink != pageLink %}
+        <a href="{{ path(ssCategorieLink)}}" class="level0">{{ssCategorieLib}}</a> > 
+    {% endif %}
+    {{pageLib}}  <SPAN style="float: right; position:relative"> <a href= "{{pageWiki}}" target="_blank"> Aide?</a> </SPAN>
+{% endif %}
+

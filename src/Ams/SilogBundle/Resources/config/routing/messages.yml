@@ -1,0 +1,12 @@
+admin_message:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:Message:index" }
+    
+admin_message_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:Message:grid" }
+    
+admin_message_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:Message:MessagesCrud" }
+

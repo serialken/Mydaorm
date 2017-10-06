@@ -1,0 +1,30 @@
+souscategorie:
+    pattern:  /
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:index" }
+
+souscategorie_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:show" }
+
+souscategorie_new:
+    pattern:  /new
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:new" }
+
+souscategorie_create:
+    pattern:  /create
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:create" }
+    requirements: { _method: post }
+
+souscategorie_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:edit" }
+
+souscategorie_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:update" }
+    requirements: { _method: post|put }
+
+souscategorie_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "AmsSilogBundle:SousCategorie:delete" }
+    requirements: { _method: post|delete }

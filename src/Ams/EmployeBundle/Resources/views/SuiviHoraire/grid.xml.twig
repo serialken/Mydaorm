@@ -1,0 +1,45 @@
+{% import 'AmsEmployeBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="matricule"              type="ro"   width="100" align="center"    sort="str">Matricule</column> 
+        <column id="employe_id"             type="coro" width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="emploi_id"              type="coro" width="100" align="left"    sort="sortCombo">Emploi{{comboEmploi|raw}}</column>
+        <column id="date_debut"             type="ro"   width="70"  align="center"  sort="sortDate">Début</column> 
+        <column id="date_fin"               type="ro"   width="70"  align="center"  sort="sortDate">Fin</column> 
+        <column id="nbheures_garanties"     type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures contrat garanties</column>
+        <column id="nbjours_cycle"          type="ron"  width="70"  align="right"   sort="int" format="0.00">Jours cycles</column>
+        <column id="horaire_moyen"          type="ron"  width="70"  align="right"   sort="int" format="0.00">Horaire moyen</column>
+        <column id="nbjours_travailles"     type="ron"  width="70"  align="right"   sort="int" format="0.00">Jours travaillés</column>
+        <column id="nbheures_a_realiser"    type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures contrat à réaliser</column> 
+        <column id="nbheures_realisees"     type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures réalisées</column> 
+        <column id="nbheures_delegation"    type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures délégation Hors Travail</column> 
+        <column id="nbheures_hors_presse"   type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures Hors-Presse</column> 
+        <column id="suivi_horaire"          type="ron"  width="70"  align="right"   sort="int" format="0.00">Suivi horaire</column> 
+        <column id="nbheures_garanties_majorees"   type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures garanties majorées</column> 
+        <column id="nbheures_garanties_apayer"   type="ron"  width="70"  align="right"   sort="int" format="0.00">Heures garanties à payer</column> 
+        <column id="projection_mensuelle"   type="ron"  width="70"  align="right"   sort="int" format="0.00">Projection mensuelle</column> 
+    </head>
+
+    {% for row in curseur %}
+        <row{{m.locked(false)}}>  
+            <cell>{{row.matricule}}</cell> 
+            <cell>{{row.employe_id}}</cell>
+            <cell>{{row.emploi_id}}</cell>
+            <cell>{% if row.date_debut is not null%}{{row.date_debut|date('d/m/Y')}}{% endif %}</cell>
+            <cell>{% if row.date_fin is not null%}{{row.date_fin|date('d/m/Y')}}{% endif %}</cell>
+            <cell>{{row.nbheures_garanties}}</cell>
+            <cell>{{row.nbjours_cycle}}</cell>
+            <cell>{{row.horaire_moyen}}</cell>
+            <cell>{{row.nbjours_travailles}}</cell>
+            <cell>{{row.nbheures_a_realiser}}</cell>
+            <cell>{{row.nbheures_realisees}}</cell>
+            <cell>{{row.nbheures_delegation}}</cell>
+            <cell>{{row.nbheures_hors_presse}}</cell>
+            <cell>{{row.suivi_horaire}}</cell>
+            <cell>{{row.nbheures_garanties_majorees}}</cell>
+            <cell>{{row.nbheures_garanties_apayer}}</cell>
+            <cell>{{row.projection_mensuelle}}</cell>
+        </row> 
+    {% endfor %}
+</rows>
+    

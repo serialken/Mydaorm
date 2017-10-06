@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrAboAbonnes" table="TR_ABO_ABONNES">
+    <id name="aboNumaboSoc" type="string" column="ABO_NUMABO_SOC" length="60">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="aboNumaboExt" type="string" column="ABO_NUMABO_EXT" length="50" nullable="false"/>
+    <field name="aboVol1" type="string" column="ABO_VOL1" length="100" nullable="true"/>
+    <field name="aboVol2" type="string" column="ABO_VOL2" length="100" nullable="true"/>
+    <many-to-one field="aboSocCode" target-entity="TrPrdSocietes">
+      <join-columns>
+        <join-column name="ABO_SOC_CODE" referenced-column-name="SOC_CODE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

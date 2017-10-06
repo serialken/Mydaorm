@@ -1,0 +1,30 @@
+page:
+    pattern:  /
+    defaults: { _controller: "AmsSilogBundle:Page:index" }
+
+page_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "AmsSilogBundle:Page:show" }
+
+page_new:
+    pattern:  /new
+    defaults: { _controller: "AmsSilogBundle:Page:new" }
+
+page_create:
+    pattern:  /create
+    defaults: { _controller: "AmsSilogBundle:Page:create" }
+    requirements: { _method: post }
+
+page_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "AmsSilogBundle:Page:edit" }
+
+page_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "AmsSilogBundle:Page:update" }
+    requirements: { _method: post|put }
+
+page_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "AmsSilogBundle:Page:delete" }
+    requirements: { _method: post|delete }

@@ -1,0 +1,166 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}{% if typeAction == 'nouveaupoint' %}Nouveau Point{% else %}Tournées{% endif %}{% endblock %}
+
+{% block body %}
+  <style>
+    .objbox{height:545px !important}
+    #gridbox{height:600px !important;}
+    .tmp_arrow{position:absolute;top:4.5px;right:3px}
+    .hdr tr:nth-child(2) td:nth-child(2){position:relative}
+  </style>
+  <div id="listeNotifications">
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <strong>Attention!</strong> Vous ne pouvez pas sélectionner plus de {{ nb_limite_de_tournees }} tournées non vides à afficher en même temps sur la carte
+    </div>        
+  </div>
+    
+  {% if tournees| length <= 0 %}
+    {% if step == 'validOK' %}
+      <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>Erreur</strong> Aucune tournée n'a été trouvée avec les critères saisis. Veuillez en essayer d'autres.
+      </div>
+    {% endif %}
+  {% endif %}
+		
+  <div class="well">
+    <form method="post" id="formSelectTournee"  action="{% if typeAction == 'nouveaupoint' %}{{path('ams_carto_nouveaupoint')}}{%else%}{{path('ams_carto_voirtournees')}}{%endif%}" >
+      {{ form_widget(form) }}
+      <table>
+        <tr>
+          <td>
+            <img class="ajaxLoader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+            <button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-search white"></i> Rechercher </button>
+          </td>
+        </tr>
+      </table>
+      {% if tournees| length > 0 %}
+          <strong>{{tournees|length}} tournée(s)</strong> trouvée(s) sur <strong>{{ depot_libelle }}</strong><br/>le {{ date| localizeddate('full', 'none','fr')  }} <em>(flux de {% if flux== 1 %}nuit{% else %}jour{% endif %})</em>
+      {% endif %}
+    </form>
+  </div>
+
+  <div id="grid_content" style='position:relative; height:700px; width:100%;'>
+    <form action="{% if typeAction == 'nouveaupoint' %}{{path('ams_carto_creerpoint')}}{%else%}{{path('ams_carto_affichertournees')}}{% endif %}" method="post"> 
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+            <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                    Chargement ...
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><div id="recinfoArea"></div></td>
+        </tr>
+      </table> 
+      <input type="hidden" name="hdepot_id" id="depot_id_h_fld" value="{{depot_code}}"/>
+      <input type="hidden" name="hdate" id="date_h_fld" value="{{date}}"/>
+      <input type="hidden" name="hflux" id="flux_h_fld" value="{{flux}}"/><br />
+      <button type='submit' class="btn btn-primary" disabled="disabled" ><i class="glyphicon glyphicon-map-marker white"></i> Afficher sur la carte </button>
+    </form>
+  </div>
+
+
+  <script type="text/javascript">
+
+    function newResult(){
+{#      return $('input:checkbox:checked').length;#}
+        // On compte le nombre de tournées pour lequelles il y a au moins un abonné
+        var tournees_selectionnnees = $('input:checkbox:checked');
+        var nb_tournees_non_vides = 0;
+        
+        $(tournees_selectionnnees).each(function(){
+            if ($(this).parent().siblings('.nb_abo').html() > 0){
+                nb_tournees_non_vides++;
+            }
+        });
+        
+        // Activation du bouton de recherche
+        if (nb_tournees_non_vides > 0){
+            $('div#grid_content button.btn-primary').removeAttr('disabled');
+        }
+        else{
+            $('div#grid_content button.btn-primary').attr('disabled','disabled');
+        }
+        
+        return nb_tournees_non_vides;
+    }
+    
+    function countCheck(id){
+      var limite_tournees = {{ nb_limite_de_tournees }};
+      if (newResult() > limite_tournees){
+        // this.checked = false; // On décoche la case
+        $('input[value='+id+']').removeAttr('checked');  
+        // Affichage d'un message d'erreur
+        showFlashAlert('#listeNotifications .alert-danger', 4000);
+        // Déplacement vers le haut de la page afin de voir le message d'erreur (utile dans le cas d'une très longue liste)
+        window.location.hash="listeNotifications"; 
+      }
+    }
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{dhtmlx_img }}");		
+    grid.init();
+    
+    grid.attachEvent("onXLS", function() {
+        document.getElementById('cover').style.display = 'block';
+    });
+    grid.attachEvent("onXLE", function() {
+      document.getElementById('cover').style.display = 'none';
+      $('.hdr tr:nth-child(2) td:nth-child(2)').append('<img class="tmp_arrow" src="{{web_files_root_dir}}js/dhtmlxSuite/dhtmlx_pro_full/imgs/sort_asc.gif">');
+      $('.hdr tr:nth-child(2) td').click(function(){
+        $('.tmp_arrow').hide();
+      });
+    });
+
+    grid.attachEvent("onRowSelect",function(rowId,cellIndex){
+      if(!cellIndex){
+        var value = this.cellById(rowId,cellIndex).getValue();
+        var id= value.split('value="');
+        id= id[1].split('"');
+        countCheck(id[0]);
+      }
+    });
+
+    grid.setSkin("dhx_skyblue");
+    grid.enableSmartRendering(true);    
+    /** INSERT VIEW XML FORMAT **/
+    grid.loadXML("{{path('ams_carto_tournee_xml')}}");
+    
+    $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+    $("form input.date").datepicker({
+        dateFormat: 'dd/mm/yy',
+        required: true,
+        firstDay: 1
+    }).attr("readonly", "readonly");
+
+    {% if step == 'new' %}
+        $("form input.date").datepicker("setDate", new Date());
+    {% endif %}
+            
+    $(document).ready(function(){
+      {% if tournees| length <= 0 %}
+       $('#grid_content').hide();
+      {% endif %}
+      {% if step != 'new' %}
+      // On enregistre les dates et dépots sélectionnés
+      var depot_id;
+      var date_id;
+      $('#ams_cartobundle_selectiontourneetype_depot').change(function(){
+          depot_id = $('#ams_cartobundle_selectiontourneetype_depot option:selected').val();
+          date = $('#ams_cartobundle_selectiontourneetype_date').val();
+          $('#depot_id_h_fld').val(depot_id);
+          $('#date_h_fld').val(date);
+      });      
+
+      $('#ams_cartobundle_selectiontourneetype_date').change(function(){
+          $('#ams_cartobundle_selectiontourneetype_depot').trigger('change');
+      });
+      $('#ams_cartobundle_selectiontourneetype_depot').trigger('change');
+
+      {% endif %}
+    });
+  </script>
+{% endblock %}

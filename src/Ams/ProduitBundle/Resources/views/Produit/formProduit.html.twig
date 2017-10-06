@@ -1,0 +1,341 @@
+{% extends '::modal.html.twig' %}
+
+    {% block modalTitre %}
+        {% if is_new %} 
+            Ajout produit pour la société <img src="{{asset('images/societes/')}}{{societe.code|upper }}.png"></img>
+        {% else %} 
+            Modification du produit 
+        {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            {# css pour l'affichage de la zone de liste deroulante avec des checkbox pour le libelle 'parents' du form #}
+            <style>
+                .multiselect {
+                    height:10em;
+                    border:solid 1px #c0c0c0;
+                    overflow:auto;
+                    width: 210px;
+                    margin-left: 54px;
+                }
+
+                .multiselect input, .multiselect label {
+                    display:block;
+                    text-align: left;
+                    margin-left: 7px;
+                    margin-right: 11px;
+                }
+                
+                .multiselect input {
+                    float: left;
+                }
+                 
+                .multiselect-on {
+                    color:#000000;
+                    background-color:white;
+                }
+      
+            </style>
+            <div class="well">
+                <div id="modalAlerte">
+                    {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+                </div>
+                <form method="post" class="formProduit" id="formProduit" action="{{ is_new ? path('produit_creation_ajax',{'param1':societe.id}) : path('produit_modification_ajax',{'param1': produit.id })}}">    
+                  {{ form_widget(produitForm) }}
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                  </div>
+                </form>  
+            </div> 
+            <script type="text/javascript">   
+                   $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                   $("form input.date").datepicker({
+                        dateFormat: 'dd/mm/yy', 
+                        firstDay:2
+                    }).attr("readonly","readonly"); 
+               $(document).ready(function() {
+                    $('#ams_produitbundle_produit_parents').addClass("multiselect");
+                    $(function() {
+                            $(".multiselect").multiselect();
+                       });
+                    $('.alert').hide();
+                    //$('#danger_sameParent .alert').hide();
+                    //$('#failed_checkVal .alert').hide();
+                    var checkSum = true;
+                    if ( '{{ is_new }}' == false) 
+                    {
+                        // je fais mon traitement pour rajouter les lignes existantes suivant les data en BDD
+                        {% if const|length > 0 %}
+                            formatBalise();
+                        {% endif %}
+                    }
+                    // A la validation du formulaire
+                    $('#formProduit').submit(function(e) {
+                        e.preventDefault();
+                        
+                        if ( '{{ is_new }}' == false) 
+                        {
+                            {%if produit is defined %}  
+                                //on verifie qu'il ne choisisse pas lui meme comme dependance
+                               selector = $('#ams_produitbundle_produit_parents input:checked');
+                               if (selector.length > 0) {
+                                   for (idx = 0; idx < selector.length; idx++) {
+                                       if(selector[idx].value == '{{produit.id}}') {
+                                           showModalFlashAlert('danger', 'un produit ne peut pas dependre de lui même.', 10000);
+                                           return false;
+                                       }
+                                   }
+                               }
+                            {%endif%}
+                        }
+                        if (checkSum)
+                        {
+                             //si checksum = true donc pas d'erreur sur les champs rajoutés
+                             //on submit le formulaire
+                             $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                             $.ajax({
+                                    url: $(this).attr('action'),
+                                    type: $(this).attr('method'),
+                                    data: $(this).serialize(),
+                                    cache: false,
+                                    success: function(data) {
+                                        //console.log(data.background);
+                                        $('#amsModal').html(data.modal);
+                                        $('#modalAlerte').html(data.alert);
+                                        $('#produit_societe_{{ is_new ? societe.id : produit.societe.id }}').html('');
+                                        $('#produit_societe_{{ is_new ? societe.id : produit.societe.id }}').html(data.background);
+                                    },
+                                    error: function(data) {
+                                        alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+                                    }
+                                  });
+                                return false; 
+                         }
+                         else
+                         {
+                             showModalFlashAlert('warning', 'Veuillez respecter le type qui correspond au champ des caractéristiques produit.', 10000);
+                         }
+
+                    });
+
+                    /*
+                     * ******************************* Fonctions ***********************************
+                     */
+                     
+                    //  pour ajouter de champs supplementaires sur une action du select a la creation
+                    $('#ams_produitbundle_produit_produitType').change(function(e){
+                        idType = $('#ams_produitbundle_produit_produitType').val();
+                        // on verifie que le champ selectionné comporte une valeur sinon on supprime les lignes ajouté auparavant
+                        if ( idType > 0)
+                        {
+                            name = $('#ams_produitbundle_produit_produitType option:selected').text();
+                            //on verifie que le champ selectionné a des caractéristiques de type constante
+                             var tab = new Array();
+                             var idx = 0;
+                             //on stocke toutes les caracteristiques liée a l'objet selectionné
+                             {% for val in liste %}
+                                if (name === "{{val.titreLibelle}}" )
+                                {
+                                    tab[idx] = new Array("{{val.id}}", "{{val.constType}}", "{{val.constCode}}", "{{val.constLibelle}}");
+                                    idx++;
+                                }
+                             {% endfor %}
+                             if (tab.length > 0){
+                                 // on supprime les lignes précédemment ajouté et pour chaque caracteristique de type constante on ajouté un input 
+                                  $('.ams_produitbundle_ligne_ajout_caract').remove();
+                                 // on recupere le tr du select  le plus proche 
+                                 dernier = $(this).closest('tr');
+                                for (idx = 0; idx < tab.length; idx++)
+                                  {
+                                    id = tab[idx][0];
+                                    constType = tab[idx][1];
+                                    code = tab[idx][2];
+                                    libelle = tab[idx][3];
+                                    valeur = 0;
+                                    res = baliseAjout(id, constType, code, libelle, valeur);
+                                    //on rajoute la nouvelle ligne a la suite de la derniére ligne ajouté et on met la nouvelle ligne ajouté comme derniére ligne
+                                    dernier.after(res);
+                                    dernier = $('#ams_produitbundle_ligne_ajout_caract_' + id );
+                                  }
+                                  return true;
+                             } 
+                             else
+                             {
+                                 // on supprime ttes les lignes ajouté
+                                 // donc la valeur du select n'a pas de caract constante
+                                 $('.ams_produitbundle_ligne_ajout_caract').remove();
+                                 return true;
+                             }
+                        }
+                        else
+                        {
+                             // on supprime ttes les lignes ajouté
+                             // donc aucune valeur n'est selectionné comme produit type
+                            $('.ams_produitbundle_ligne_ajout_caract').remove();
+                            return true;
+                        }
+                        
+                    });
+                                  
+                    // pour formater les balises a la modification/creation
+                    function formatBalise()
+                    {
+                        var tab = new Array();
+                        var idx = 0;
+                        {% for val in const %}
+                            if("{{val.constType}}" == "chaine")
+                            {
+                                 tab[idx] = new Array("{{val.prdCaractId}}", "{{val.constType}}", "{{val.constCode}}", "{{val.constLibelle}}", "{{val.valString}}");
+                            }
+                            if("{{val.constType}}" == "entier")
+                            {
+                                tab[idx] = new Array("{{val.prdCaractId}}", "{{val.constType}}", "{{val.constCode}}", "{{val.constLibelle}}", "{{val.valInt}}");
+                            }
+                            if("{{val.constType}}" == "reel")
+                            {
+                                tab[idx] = new Array("{{val.prdCaractId}}", "{{val.constType}}", "{{val.constCode}}", "{{val.constLibelle}}", "{{val.valFloat}}");
+                            }
+                           idx++;
+                        {% endfor %}
+                        if (tab.length > 0){
+                                 // on supprime les lignes prÃ©cÃ©demment ajoutÃ© et pour chaque caracteristique de type constante on ajoute un input 
+                                  $('.ams_produitbundle_ligne_ajout_caract').remove();
+                                 // on recupere le tr du select c'est le plus proche 
+                                 dernier = $('#ams_produitbundle_produit_produitType').closest('tr');
+                                for (idx = 0; idx < tab.length; idx++)
+                                  {
+                                    id = tab[idx][0];
+                                    constType = tab[idx][1];
+                                    code = tab[idx][2];
+                                    libelle = tab[idx][3];
+                                    valeur = tab[idx][4];
+                                    res = baliseAjout(id, constType, code, libelle, valeur);
+                                    dernier.after(res);
+                                    dernier = $('#ams_produitbundle_ligne_ajout_caract_' + id );
+                                  }
+                                  return true;
+                             } 
+                             else
+                             {
+                                 $('.ams_produitbundle_ligne_ajout_caract').remove();
+                                 return true;
+                             }
+                    };
+                    
+                    // pour ajouter  des balises en dynamique sur le formulaire
+                    function baliseAjout(id, constType, code, libelle, valeur)
+                    {
+                        if (constType == "chaine"){
+                                ligne = '<tr class="ams_produitbundle_ligne_ajout_caract" id="ams_produitbundle_ligne_ajout_caract_' + 
+                                        id + '"> <th> <label for ="ams_produitbundle_ajout_caract_' + id + '">' + libelle + '</label> </th> <td style="position:relative"> <input name ="ajout_caract_' +
+                                        id +  '" id="ajout_caract_' + id + '"type="text"  data-id="' + id + '"data-type="' + constType + '" data-code="' + code + '" data-libelle="' +
+                                        libelle;
+                                if ( '{{ is_new }}' == false)
+                                {
+                                    ligne += '" value="' + valeur + '"/>' + '<span style="display:inline-block">' + constType + '</span></td> </tr>';
+                                }
+                                else
+                                {
+                                    ligne += '" placeholder="' + constType + '"/>' + '</td> </tr>';
+                                }
+                                return ligne;
+                        }
+                        else if ((constType == "reel") || (constType == "entier"))
+                        {
+                            ligne = '<tr class="ams_produitbundle_ligne_ajout_caract" id="ams_produitbundle_ligne_ajout_caract_' + 
+                                        id + '"> <th> <label for ="ams_produitbundle_ajout_caract_' + id + '">' + libelle + '</label> </th> <td style="position:relative"> <input name ="ajout_caract_' +
+                                        id +  '" id="ajout_caract_' + id + '" type="number" min="0" data-id="' + id + '"data-type="' + constType + '" data-code="' + code + '" data-libelle="' +
+                                        libelle;
+                               if ( '{{ is_new }}' == false)
+                                {
+                                    ligne += '" value="' + valeur + '"/>' + '<span style="display:inline-block">' + constType + '</span></td> </tr>';
+                                }
+                                else
+                                {
+                                    ligne += '" placeholder="' + constType + '"/>' + '</td> </tr>';
+                                }
+                               return ligne;
+                        }
+                    };
+                    
+                     // pour checker les valeurs sur mes champs rajoutées, elle met a jour le checkSum
+                    {#$('body').on("change",".ams_produitbundle_ligne_ajout_caract input",function(){
+                            input = $(this);
+                            valeur = input.val();
+                            console.log(valeur);
+                         if (input.attr('placeholder') === "chaine")
+                        {
+                            if (typeof input.val().valueOf() == 'string')
+                            { 
+                               // showFlashAlert('#success_checkVal .alert-success', 10000);
+                                checkSum = true;
+                            }
+                            else
+                            {
+                                // showFlashAlert('#failed_checkVal .alert-warning', 10000);
+                                checkSum = false;
+                            }
+                        }
+                         if (input.attr('placeholder') === "entier")
+                        {
+                            if(typeof input.val() == 'number')
+                            {
+                                    if(valeur % 1 === 0)
+                                    {
+                                      // showFlashAlert('#success_checkVal .alert-success', 10000);
+                                        checkSum = true;
+                                    } 
+                                    else
+                                    {
+                                     // showFlashAlert('#failed_checkVal .alert-warning', 10000);
+                                        checkSum = false;
+                                    }
+                            } 
+                            else
+                            {
+                                  // showFlashAlert('#failed_checkVal .alert-warning', 10000);
+                                    checkSum = false;
+                            }  
+                        }
+                        if (input.attr('placeholder') === "reel")
+                        {
+                            if(typeof input.val() == 'number')
+                            {
+                                   // showFlashAlert('#success_checkVal .alert-success', 10000);
+                                   checkSum = true;
+                            } 
+                            else
+                            {
+                                 // showFlashAlert('#failed_checkVal .alert-warning', 10000);
+                                    checkSum = false;
+                            }  
+                        }
+                        
+                       // showFlashAlert('#failed_checkVal .alert-warning', 10000);
+                        checkSum = false;
+  
+                    });#}
+                      
+                    //fonction pour surligner les champs dans ma zone de liste deroulante avec checkbox
+                    jQuery.fn.multiselect = function() {
+                        $(this).each(function() {
+                            var checkboxes = $(this).find("input:checkbox");
+                            checkboxes.each(function() {
+                                var checkbox = $(this);
+                                // Surligne les checkboxes preselectionné
+                                if (checkbox.prop("checked")) {
+                                    checkbox.parent().addClass("multiselect-on");
+                                }
+                                // Surligne les checkboxes sélectionné par l'utilisateur
+                                checkbox.click(function() {
+                                    if (checkbox.prop("checked"))
+                                        checkbox.parent().addClass("multiselect-on");
+                                    else
+                                        checkbox.parent().removeClass("multiselect-on");
+                                });
+                            });
+                        });
+                    };
+                });
+            </script>  
+    {% endblock %}

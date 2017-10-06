@@ -1,0 +1,65 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Dépôts{% endblock %}
+{% block body %}
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form' :form, 'route': 'repartition_global'} ))}}
+ <div class="" style="text-align:left;">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Nom</th>
+            <th>Adresse</th>
+            <th>Code Postal</th>
+            <th>Ville</th>
+            <th>Code INSEE</th>
+          </tr>
+        </thead>
+        <tbody>
+             <tr>
+                <td>{{ depot.code }}</td>
+                <td>{{ depot.libelle }}</td>
+                <td>{{ depot.adresse }}</td>
+                <td>{{ depot.commune.cp }}</td>
+                <td>{{ depot.commune.libelle }}</td>
+                <td>{{ depot.commune.insee }}</td>
+            </tr>
+        </tbody>
+      </table>
+      <a href="#" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('repartition_ajout_globale_ajax') }}',{{depot.id}});"><span class="glyphicon glyphicon-edit"></span> Ajouter une repartition par défaut</a>
+    </div>
+
+    <table cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <td class="content">
+                <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:300px; left:250px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                        Chargement ...
+                </div>
+            </td>
+        </tr>
+     </table>
+    <script>
+        grid = new dhtmlXGridObject('gridbox');
+        grid.setImagePath("{{dhtmlx_img }}");
+        grid.enableMultiselect(true);
+        grid.init();
+        grid.attachEvent("onXLS", function() {
+          document.getElementById('cover').style.display = 'block';
+        });
+
+        grid.attachEvent("onXLE", function() {
+          document.getElementById('cover').style.display = 'none';
+        });
+
+        grid.setSkin("dhx_skyblue");
+        grid.enableSmartRendering(true);  
+        grid.setColAlign("left,center,left,center,center,center");
+        grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+        var url = "{{path('repartition_grid_global')}}" + "?id=" + {{depot.id}};
+        
+        grid.loadXML(url);
+    
+    </script>
+    
+{% endblock %}

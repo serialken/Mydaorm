@@ -1,0 +1,144 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+       Ajouter une exception produit
+    {% endblock %}
+
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerteAddException">
+                     {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+                 </div>
+                <form method="post" class="form DepotCommune" id="formException" action="{{ path('repartition_store_exception') }}">           
+                    {{ form_widget(form) }}
+                  <br/>
+                  <div id="inputForm">
+                      <img class="ajax-loader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_form"/>
+                  </div>
+                </form>
+            </div>  
+            
+            {% javascripts output='js/compresse/core.js'
+                                'js/multiselect.min.js'        
+            %}
+            <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+
+                      
+            <script type="text/javascript">
+                
+                var today = new Date();
+                var minDate = new Date(today.getTime() + 5*24 * 60 * 60 * 1000);
+                $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                $("form input.date").datepicker({
+                     dateFormat: 'dd/mm/yy', 
+                     firstDay:1,
+                     minDate: minDate,
+                     defaultDate: minDate
+                 }).attr("readonly","readonly");
+                 
+               
+                 
+                  $('#ams_exception_commune').multiselect2side({
+                        selectedPosition: 'right',
+                        moveOptions: false,
+                        labelsx: '',
+                        labeldx: '',
+                        height:100,
+                        autoSort: true,
+                        autoSortAvailable: true
+                  });
+                 
+    
+
+                 $(document).ready(function() { 
+                    // à la sélection d'un departement chargement des communes
+                    var $departements = $('#ams_exception_dpt');
+                    var $communes_side1 = $('#ams_exceptionms2side__sx');
+                    var $communes_side2 = $('#ams_exceptionms2side__dx');
+                    var $produits = $('#ams_exception_produit');
+                    var $depotId = $('#ams_exception_depotId');
+                   
+                    $departements.on('change', function() {
+                        var dptId = $(this).val();
+                        $communes_side1.empty();
+                        $communes_side2.empty();
+                        var urlCommune = "{{path('repartition_list_prod_insee')}}" + "?dpt=" + dptId + "&prodId=" + $produits.val() + "&depotId=" + $depotId.val()  ; // commune du departement sans exception
+                         $.ajax({
+                                url: urlCommune,
+                                dataType: 'json',   
+                                success: function(json) {
+                                    $.each(json, function(indexExp, valeurExp) {  
+                                       if(indexExp == 'insees_dispos' ){
+                                            $.each(valeurExp, function(cle, valeur){
+                                                        $communes_side1.append('<option value="'+ valeur.id +'">'+ valeur.libelle +'</option>');
+                                            }); 
+                                       
+                                       }else if(indexExp == 'exceptions' ){
+                                            $.each(valeurExp, function(cle, valeur){
+                                                      $communes_side2.append('<option value="'+ valeur.id +'">'+ valeur.ville +'</option>');
+                                                });  
+                                      }
+                                    });
+                                }
+                            });     
+                    }); 
+                    
+                    $produits.on('change', function() {
+                        var prodId = $(this).val();
+                        $communes_side1.empty();
+                        $communes_side2.empty();
+                        var urlCommune = "{{path('repartition_list_prod_insee')}}" + "?dpt=" + $departements.val() + "&prodId=" + prodId; // commune du departement sans exception
+                         $.ajax({
+                                url: urlCommune,
+                                dataType: 'json',
+                              
+                                success: function(json) {
+                                    $.each(json, function(indexExp, valeurExp) {  
+                                       if(indexExp == 'insees_dispos' ){
+                                            $.each(valeurExp, function(cle, valeur){
+                                                        $communes_side1.append('<option value="'+ valeur.id +'">'+ valeur.libelle +'</option>');
+                                            }); 
+                                       
+                                       }else if(indexExp == 'exceptions' ){
+                                            $.each(valeurExp, function(cle, valeur){
+                                                      $communes_side2.append('<option value="'+ valeur.id +'">'+ valeur.ville +'</option>');
+                                                });  
+                                      }
+                                    });
+                                }
+                            });     
+                    });
+                    
+                    $('#modalAlerteAddException').hide();
+                    $('#formException').submit(function(e) {
+                          e.preventDefault();
+                          $('.ajax-loader').show();
+                          $.ajax({
+                            url: $(this).attr('action'),
+                            type: $(this).attr('method'),
+                            data: $(this).serialize(),
+                            cache: false,
+                            success: function(data) {
+                                var url = "{{path('repartition_grid_produit')}}" + "?id=" + {{depot.id}};
+                                $('#modalAlerteAddException').show();
+                                if (!data.errorTraitement) {        
+                                    $('.ajax-loader').hide();
+                                    showSelecteurFlashAlert('modalAlerteAddException','success', "Exception produit ajoutée avec succés.", 10000);  
+                                    grid.clearAll();
+                                    grid.loadXML(url);
+                                }
+                                else {
+                                    showSelecteurFlashAlert('modalAlerteAddException','danger', "Une erreur s'est produite!", 10000);
+                                }
+                                $('.ajax-loader').hide();
+                            },
+                            error: function(data) {
+                                 alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                            }
+                          });
+                          return false; //
+                      });
+                  });
+            </script>  
+    {% endblock %}

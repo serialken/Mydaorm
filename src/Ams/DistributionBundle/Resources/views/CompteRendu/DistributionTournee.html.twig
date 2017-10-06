@@ -1,0 +1,319 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import 'AmsAdresseBundle:DhtmlxGrid:macros.html.twig' as m %}
+
+{% block title %}Compte Rendu de Distribution des Dépôts{% endblock %}
+
+{% block body %}
+  <style>
+    #massiveEditForm{padding-left : 25px;}
+    #massiveEditForm label{margin-right : 15px;display:inline-block;float:left;text-align:left;width:180px}
+    #massiveEditForm select,#massiveEditForm input {float:left;}
+    .formAttachment{display:none}
+    .submit{float:left;margin-left:213px}
+    .popover_delete{float:left;cursor:pointer; line-height: 16px; margin-right: 4px;}
+    fieldset legend{width:auto;font-size:14px;margin-bottom:0}
+    fieldset {padding:0.35em 0.625em 0.75em;border:none;border-top:1px solid #c0c0c0}
+    .glyphicon-chevron-down{font-size:10px}
+    select[name=filter_attachment]{float:left}
+    fieldset .alert{padding:0;width:50%;margin:auto}
+    input[type="date"] {line-height: 16px;}
+    #gridbox{height : 680px !important}
+  </style>
+ <button id="closeButton" type="button" title="Close" style="">
+  <span aria-hidden="true">&times;</span>
+  <span class="hide">Close</span>
+</button>
+<h3>Saisie Compte Rendu de Distribution du Dépôt : {{depot_libelle}} </h3>
+<div class='well'>
+    <div class="row">
+        <div class="col-md-12">
+          <fieldset>
+            <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Filtre(s) &nbsp;</legend>
+            <form method="post" name="formFiltre" id="formFiltre" action="">
+                <table>
+                    <tr>
+                        <td>
+                            {{ form_label(form.filtre) }}&nbsp;&nbsp;{{ form_widget(form.filtre, {'value': affichage_date}) }}&nbsp;&nbsp;
+                            {{ form_label(form.flux) }}&nbsp;&nbsp;{{ form_widget(form.flux , {'value': flux}) }}
+                        </td>
+                        <td>
+                            &nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-xs" > <i class="glyphicon glyphicon-search white"></i> Rechercher </button>  
+                        </td>
+                        <td>
+                            &nbsp;&nbsp;
+                            <img id="excel" style="cursor:pointer;height:20px;" src="{{ asset('images/excel.png') }}" 
+                             alt="Imprimer" onclick="grid.toExcel({{m.urlExcel()}},'color',true)"/> 
+                        </td>
+                    </tr>
+               </table>
+            </form>
+          </fieldset>
+        </div>
+      
+    </div>
+    <div id="massiveEditForm" class="row">
+      <div class="col-md-12">
+        <form method="post" name="formAttachment" id="formAttachment" action="{{path('compte_rendu_distribution_modif_massive')}}">
+            <fieldset>
+              <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Saisie massive &nbsp;</legend>
+              <div class="alert alert-info">  Les données vides ou non renseigné, ne seront pas prise en compte. </div>
+              <select name="filter_attachment">
+                <option> </option>
+                <option value='1'> Retard/Non Liv           </option>
+                <option value='2'>  Type d'incident         </option>
+                <option value='3'>  Heure de fin de tournée </option>
+                <option value='4'> Incident Abonné          </option>
+                <option value='5'> Incident Diffuseur       </option>
+              </select>
+            </fieldset>
+
+          <table style="">
+            <tr class='formAttachment typeAnomalie'>
+              <td> 
+                <span class='popover_delete glyphicon glyphicon-remove-circle' data-content="Supprimer ce filtre de saisie" data-placement="top" data-toggle="popover" title="filtre de saisie massive"> </span>
+                {{ form_label(formAttachment.typeAnomalie) }} {{ form_widget(formAttachment.typeAnomalie) }}
+              </td>
+            </tr>
+
+            <tr class='formAttachment typeIncident'>
+              <td> 
+                <span class='popover_delete glyphicon glyphicon-remove-circle' data-content="Supprimer ce filtre de saisie" data-placement="top" data-toggle="popover" title="filtre de saisie massive"> </span>
+                {{ form_label(formAttachment.typeIncident) }} {{ form_widget(formAttachment.typeIncident) }} 
+              </td>
+            </tr>
+
+            <tr class='formAttachment heureFinDeTournee'>
+              <td> 
+                <span class='popover_delete glyphicon glyphicon-remove-circle' data-content="Supprimer ce filtre de saisie" data-placement="top" data-toggle="popover" title="filtre de saisie massive"> </span>
+                {{ form_label(formAttachment.heureFinDeTournee) }} {{ form_widget(formAttachment.heureFinDeTournee) }}
+              </td>
+            </tr>
+
+            <tr class='formAttachment cmtIncidentAb'>
+              <td> 
+                <span class='popover_delete glyphicon glyphicon-remove-circle' data-content="Supprimer ce filtre de saisie" data-placement="top" data-toggle="popover" title="filtre de saisie massive"> </span>
+                {{ form_label(formAttachment.cmtIncidentAb) }} {{ form_widget(formAttachment.cmtIncidentAb) }}
+              </td>
+            </tr>
+
+            <tr class='formAttachment cmtIncidentDiff'>
+              <td> 
+                <span class='popover_delete glyphicon glyphicon-remove-circle' data-content="Supprimer ce filtre de saisie" data-placement="top" data-toggle="popover" title="filtre de saisie massive"> </span>
+                {{ form_label(formAttachment.cmtIncidentDiff) }} {{ form_widget(formAttachment.cmtIncidentDiff) }}
+              </td>
+            </tr>
+
+            <tr class='formAttachment submit'>
+              <td> 
+                  <input type='hidden' name="date" value="{{affichage_date}}"/> 
+                  <input type='hidden' name="id_depot" value="{{depot_id}}"/> 
+                  <input type='hidden' name="flux" value="{{flux}}"/> 
+                  <input type='hidden' name="tourneeSelected"/> 
+                   <input type='hidden' id="greadReadOnLy" value="{{disabled}}"/> 
+                  <button class="btn btn-primary btn-sm"> Valider  </button></td>
+            </tr>
+
+          </table>
+        </form>
+      </div>
+    </div>
+    <div id ="message" style="color:red"></div>
+</div>  
+<div  style='position:relative; height:700px; width:100%;'>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div id="gridbox"  style="width:100%; height:800px!important; background-color:white;overflow:hidden"></div>
+                 <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                         Chargement ...
+                  </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="recinfoArea"></div>
+            </td>
+        </tr>
+    </table>  
+</div>
+
+<script src="{{ asset('js/dhtmlxSuite/dhtmlxGrid/codebase/excells/dhtmlxgrid_excell_dhxcalendar.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/compresse/core_bootstrap_3.js')}}"></script>
+<script>
+    $(function(){
+      $(".popover_delete").popover({ trigger: "hover" });
+      
+      $('.popover_delete').click(function(){
+        $(this).closest('tr').hide();
+        if ($('.formAttachment:visible').length <= 1)
+          $('.submit').hide(); 
+      });
+      
+      $('.submit').click(function(){
+         if (tourneeSelected.length < 1) {
+            alert("Merci de selectionner les tournées à impacter.");
+            return false;
+        }
+        $('#formAttachment').submit();
+      });
+      
+      $('select[name=filter_attachment]').change(function(){
+       var value = $(this).val();
+       switch(value) {
+        case "1":
+           $('.typeAnomalie').show();
+            break;
+        case "2":
+            $('.typeIncident').show();
+            break;
+        case "3":
+            $('.heureFinDeTournee').show();
+            break;
+        case "4":
+            $('.cmtIncidentAb').show();
+            break;
+        case "5":
+            $('.cmtIncidentDiff').show();
+            break;
+        default:
+             $('.submit').hide(); 
+            break;
+      }
+      
+      if ($('.formAttachment:visible').length >= 1)
+        $('.submit').show(); 
+      
+      });
+    });
+    var tourneeSelected = [];
+    
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("form input.date").datepicker({
+         dateFormat: 'yy-mm-dd', 
+         firstDay:1,
+        // maxDate: new Date(),
+     }).attr("readonly","readonly");
+    
+    function isDureee(value){
+   
+        if (!/^(([0-1][0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?)$/.test(value) && value!=''  ) {
+     
+            //document.getElementById('message').innerHTML=("Merci de saisir une heure valide sous la forme HH:MM");
+            bootbox.alert("Merci de saisir une heure valide sous la forme HH:MM").find("div.modal-dialog").addClass("smallWidth");
+            return false;
+        }else{
+            document.getElementById('message').innerHTML="";
+        }
+        return true;
+    }
+
+    /** Affichage du formulaire de modification */
+    function modifDistribRow(date_row, id_depot, tournee, row_id) {
+        grid.refreshFilters();
+        grid.filterBy(0,""); //unfilters the grid
+        grid._f_rowsBuffer = null; //clears the cache
+        var anomalieId = grid.cells2(parseInt(row_id)-1,grid.getColIndexById('retard_non_livraison')).getValue();
+        grid.filterByAll();
+
+        if(isNaN(anomalieId) || anomalieId == '' ){
+            bootbox.alert("Merci de saisir le type d'anomalie (colonne Retard/Non livraison) avant de saisir le nombre des abonnés non livrés").find("div.modal-dialog").addClass("smallWidth");
+            return false;
+        }
+
+        $.ajax({
+            url: "{{path('compte_rendu_distribution_modif')}}",
+            type: "GET",
+            data: { date_row : date_row , id_depot: id_depot, tournee_id: tournee, row_id: row_id},
+            success: function(data) {
+                $('#amsModal').html(data);
+                $('#amsModal').modal();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                $('#amsModalLabel').html('Une erreur est survenue.');
+                $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+            }
+        });
+    }
+    
+    function modifMassive() {
+        if (tourneeSelected.length < 1) {
+            alert("Merci de selectionner les tournées à impacter.");
+        } else {
+            $.ajax({
+                url: "{{path('compte_rendu_distribution_modif_massive')}}",
+                type: "POST",
+                data: {
+                    "tourneeIds" : tourneeSelected,
+                    "form" : $('#formCRMassif').serialize()
+                },
+                success: function(data) {
+                    $('#massiveEditForm').html(data);
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    $('#amsModalLabel').html('Une erreur est survenue.');
+                    $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+                }
+            });
+        }
+    }
+    
+    grid = new dhtmlXGridObject('gridbox');
+   // grid.attachHeader(["#rspan","#rspan","#rspan","#rspan","Abo","Diff","#rspan","#rspan","#rspan"]);
+    grid.attachHeader("#text_filter,#text_filter,#master_checkbox,#text_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#select_filter");
+    grid.setImagePath("{{dhtmlx_img }}");
+    grid.setDateFormat("%H:%i");
+
+    grid.init();
+    
+    grid.attachEvent("onCheckbox",function(id,ind,value){
+       var codeTournee = grid.cellById(id,1).getValue();
+        if (value) 
+          tourneeSelected.push(codeTournee);
+        else {
+        var indT = tourneeSelected.indexOf(codeTournee);
+        if (indT != -1) {
+            tourneeSelected.splice(indT,1)
+        }
+      }
+      $('input[name=tourneeSelected]').val(tourneeSelected);
+    return true;
+    });
+
+
+    grid.attachEvent("onCheck", function(rId,cInd,state){
+        var codeTournee = grid.cellById(rId,1).getValue();
+        
+        if (state) {
+            tourneeSelected.push(codeTournee);
+        } else {
+            var indT = tourneeSelected.indexOf(codeTournee);
+            if (indT != -1) {
+                tourneeSelected.splice(indT,1)
+            }
+        }
+        $('input[name=tourneeSelected]').val(tourneeSelected);
+    });
+    
+    grid.attachEvent("onXLS", function() {
+        document.getElementById('cover').style.display = 'block';
+    });
+    grid.attachEvent("onXLE", function() {
+        document.getElementById('cover').style.display = 'none';
+    });
+
+    grid.setSkin("dhx_skyblue");
+    var url = "{{path('compte_rendu_liste_tournee', {'id': depot_id , 'flux' :flux ,'date': affichage_date ,'isGridReadOnly': 'tmp_var' })}}";
+      var isGridReadOnly = $('#greadReadOnLy').val();
+      url = url.replace('tmp_var', isGridReadOnly);
+    grid.loadXML(url);
+        
+    myDataProcessor = new dataProcessor("{{path('compte_rendu_distribution_sauvegarde',{'repository':'AmsDistributionBundle:CptrDistribution', 'date':affichage_date})|raw}}");
+    myDataProcessor.setDataColumns([true, true, false, true, true, true, true, true, true, true, true, true, true]);
+    myDataProcessor.setVerificator(8,isDureee);
+    myDataProcessor.setTransactionMode("POST",true); //set mode as send-all-by-post
+    myDataProcessor.enableDataNames(true);
+    myDataProcessor.init(grid);
+
+    
+</script>
+{% endblock %}

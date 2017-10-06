@@ -1,0 +1,28 @@
+{% extends '::base.html.twig' %}
+{% block title %} Indicateurs{% endblock %}
+{% block body %}
+    {% form_theme form '::fields_inline.html.twig' %}
+    <div style='position:relative; width:100%;'>
+    <div class="well" id="formFiltreDepotFlux" style="text-align: left;">
+        <form method="post"  action ="{{path('indicateurs')}}">
+          {# {{form_widget(form)}}  #}
+          {{ form_widget(form.societe) }}
+          {{ form_widget(form.dateDebut) }}
+          {{ form_widget(form.dateFin) }}
+          {{ form_widget(form.depot) }}
+          {{ form_widget(form.reclamation) }}
+          {{ form_widget(form.reperage) }}
+          
+        </form>
+    </div>
+</div>
+<script type="text/JavaScript">
+    $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+    $("form input.date").datepicker({
+        dateFormat: 'dd/mm/yy',
+        required: true,
+        firstDay: 1
+    }).attr("readonly", "readonly");    
+ 
+ </script>
+{% endblock %}

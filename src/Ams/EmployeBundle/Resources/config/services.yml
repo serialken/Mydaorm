@@ -1,0 +1,80 @@
+parameters:
+    ams.repository.employerecherche.class: Ams\EmployeBundle\Repository\RechercheRepository
+    ams.metadata.employerecherche.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.employecontrat.class: Ams\EmployeBundle\Repository\ContratRepository
+    ams.metadata.employecontrat.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.employecdd.class: Ams\EmployeBundle\Repository\CddRepository
+    ams.metadata.employecdd.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.employecycle.class: Ams\EmployeBundle\Repository\CycleRepository
+    ams.metadata.employecycle.class: Doctrine\ORM\Mapping\ClassMetadata
+    
+    ams.repository.employeheuresup.class: Ams\EmployeBundle\Repository\HeureSupRepository
+    ams.metadata.employeheuresup.class: Doctrine\ORM\Mapping\ClassMetadata
+    
+    ams.repository.employesuivihoraire.class: Ams\EmployeBundle\Repository\SuiviHoraireRepository
+    ams.metadata.employesuivihoraire.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.employerequest.class: Ams\EmployeBundle\Repository\EmployeRequestRepository
+    ams.metadata.employerequest.class: Doctrine\ORM\Mapping\ClassMetadata
+
+services:
+    pleiadesng:
+        class: Ams\EmployeBundle\Services\PleiadesNG
+        arguments: ['@doctrine', %REP_PNG%, %SOUSREP_PNG_EV%,'@octime']
+        
+    octime:
+        class: Ams\EmployeBundle\Services\Octime
+        arguments: ['@doctrine', %REP_OCTIME%, %SOUSREP_OCTIME_BADGE%, %SOUSREP_OCTIME_HORAIRE%, %SOUSREP_OCTIME_HGARANTIES%]
+
+
+    ams.repository.employerecherche:
+        class:     %ams.repository.employerecherche.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employerecherche]
+    ams.metadata.employerecherche:
+        class:     %ams.metadata.employerecherche.class%
+        arguments: [Ams\EmployeBundle\Repository\Recherche]
+
+    ams.repository.employecontrat:
+        class:     %ams.repository.employecontrat.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employecontrat]
+    ams.metadata.employecontrat:
+        class:     %ams.metadata.employecontrat.class%
+        arguments: [Ams\EmployeBundle\Repository\Contrat]
+
+    ams.repository.employecdd:
+        class:     %ams.repository.employecdd.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employecdd]
+    ams.metadata.employecdd:
+        class:     %ams.metadata.employecdd.class%
+        arguments: [Ams\EmployeBundle\Repository\Cdd]
+
+    ams.repository.employecycle:
+        class:     %ams.repository.employecycle.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employecycle]
+    ams.metadata.employecycle:
+        class:     %ams.metadata.employecycle.class%
+        arguments: [Ams\EmployeBundle\Repository\Cycle]
+
+    ams.repository.employeheuresup:
+        class:     %ams.repository.employeheuresup.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employeheuresup]
+    ams.metadata.employeheuresup:
+        class:     %ams.metadata.employeheuresup.class%
+        arguments: [Ams\EmployeBundle\Repository\HeureSup]
+        
+    ams.repository.employesuivihoraire:
+        class:     %ams.repository.employesuivihoraire.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employesuivihoraire]
+    ams.metadata.employesuivihoraire:
+        class:     %ams.metadata.employesuivihoraire.class%
+        arguments: [Ams\EmployeBundle\Repository\SuiviHoraire] 
+
+    ams.repository.employerequest:
+        class:     %ams.repository.employerequest.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.employerequest]
+    ams.metadata.employerequest:
+        class:     %ams.metadata.employerequest.class%
+        arguments: [Ams\EmployeBundle\Repository\EmployeRequest]

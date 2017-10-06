@@ -1,0 +1,23 @@
+_ams_authentification:
+    pattern:  /authentification
+    defaults: { _controller: AmsSilogBundle:Authentification:authentification }
+
+_ams_deconnexion:
+    pattern:  /deconnexion
+    defaults: { _controller: AmsSilogBundle:Authentification:deconnexion }
+
+_ams_accueil_defaut:
+    pattern:  /accueil
+    defaults: { _controller: AmsSilogBundle:Navigation:accueil }
+
+_ams_accueil_administration:
+    pattern:  /{slug}/{categorieId}
+    defaults: { _controller: AmsSilogBundle:Navigation:sousCategorie }
+    
+_ams_messages:
+    pattern:  /messages
+    defaults: { _controller: AmsSilogBundle:Authentification:messages }
+    
+_ams_apropos:
+    pattern:  /apropos
+    defaults: { _controller: AmsSilogBundle:Navigation:apropos }

@@ -1,0 +1,48 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    {% if isModif %}
+        <span  style="float:center;"><input type="button" value="Maj de tournées" id="button_rafraichir"/></span>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['typetournee_id'   ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_debut'       ,'#text_filter'             ,null               ,isDate             ,null                   ,null                   ,null              ,null],
+['date_fin'         ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['borne_inf'        ,'#numeric_filter'          ,null               ,isPoids            ,null                   ,null                   ,null              ,null],
+['borne_sup'        ,'#numeric_filter'          ,null               ,isPoids            ,null                   ,null                   ,null              ,null],
+['valeur'           ,'#numeric_filter'          ,null               ,isValRem           ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+
+    $(document).ready(function() {
+        $('#button_rafraichir').on('click', function() {
+                    onRafraichir();
+        });
+    });
+    function onRafraichir(){
+        ajaxMessage("Maj des tournées en cours ...");
+        $('#button_rafraichir').prop('disabled', true);
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-pai-refsupplement-maj-tournee",
+            type: "GET",
+            data: { },
+            success: function(data) { ajaxSucces("Maj des tournées terminées");$('#button_rafraichir').prop('disabled', false); },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError);$('#button_rafraichir').prop('disabled', false); }
+        });  
+    }
+    </script>
+{% endblock %}
+

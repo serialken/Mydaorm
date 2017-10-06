@@ -1,0 +1,16 @@
+
+fichier_index:
+    pattern: /fichier
+    defaults: { _controller: "AmsExtensionBundle:Fichier:Create" }
+    
+fichier_ajout:
+    pattern: /fichier/ajout
+    defaults: { _controller: "AmsExtensionBundle:Fichier:Create" }
+    
+fichier_update:
+    pattern: /fichier/update
+    defaults: { _controller: "AmsExtensionBundle:Fichier:Update" }
+    
+fichier_delete:
+    pattern: /fichier/delete
+    defaults: { _controller: "AmsExtensionBundle:Fichier:Delete" }

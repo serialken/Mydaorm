@@ -1,0 +1,138 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}{{titre}}{% endblock %}
+{% block body %}
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': route }))}}
+    <div  class='well'>
+    Paie du mois de {{anneemois}} pour le flux {{flux}}.<br/><br/>
+    {% if paie_en_cours  %}
+        <b>Une interface de paie est déjà en cours d'éxécution, merci de consulter la log.</b>
+    {% elseif not isEnCours  %}
+        La paie ne peut pas encore être calculée.
+    {% elseif isModif  %}
+            <input type="checkbox" id="alim_employe" checked="checked"> Alimentation employé<br/>
+            <input type="checkbox" id="alim_octime" checked="checked"> Envoi des badges à Octime<br/>
+            <input type="checkbox" id="alim_pleiades" checked="checked"> Envoi des ev à Pléiades<br/>
+            <input type="button" id="button_generer" value="Générer" onclick="confirmAction('Voulez-vous vraiment lancer le calcul de la paie?','genererEv()')">
+    {% endif %}
+    <br/><br/>
+    {% if not blocage  %}
+        La saisie n'est pas encore bloquée
+        {% if isEnCours and isBlocage  %}<br/><input type="button" id="button_bloquer" value="Bloquer" onclick="confirmAction('Voulez-vous vraiment lancer bloquer la saisie?','bloquerSaisie()')">{% endif %}
+    {% else %}
+        La saisie est bloquée depuis le {{blocage}}
+        {% if isEnCours and isBlocage  %}<br/><input type="button" id="button_debloquer" value="Débloquer" onclick="confirmAction('Voulez-vous vraiment débloquer la saisie?','debloquerSaisie()')">{% endif %}
+    {% endif %}
+    <br/><br/>
+    {% if not blocage_reclamation  %}
+        Les réclamations sont toujours imputables sur le mois de {{anneemois}}
+        {% if isEnCours and blocage and isBlocage  %}<br/><input type="button" id="button_bloquer_reclamation" value="Bloquer" onclick="confirmAction('Voulez-vous vraiment bloquer les réclamations?','bloquerReclamation()')">{% endif %}
+    {% else %}
+        Les réclamations ne sont plus imputables sur le mois de {{anneemois}}
+    {% endif %}
+    <br/><br/>
+    {% if not paie_en_cours and isEnCours and blocage and isCloture  %}
+            <input type="button" id="button_cloturer" value="Clôturer" onclick="confirmAction('Voulez-vous vraiment cloturer la paie?','cloturerEv()')">
+    {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    function genererEv(){
+        ajaxMessage("Génération des ev en cours ...");
+        $('#button_generer').prop('disabled', true);
+    {% if not blocage  %}    
+        $('#button_bloquer').prop('disabled', true);
+    {% else %}
+        $('#button_debloquer').prop('disabled', true);
+        {% if not blocage_reclamation  %}    
+            $('#button_bloquer_reclamation').prop('disabled', true);
+        {% endif %}
+        $('#button_cloturer').prop('disabled', true);
+    {% endif %}
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-generer-pai-mensuel",
+            type: "GET",
+            data: { alim_employe: +$('#alim_employe').is(":checked")
+                ,   alim_octime: +$('#alim_octime').is(":checked")
+                ,   alim_pleiades: +$('#alim_pleiades').is(":checked") 
+            },
+            success: function(data) { 
+                ajaxSucces("Lancement réalisé ...<br/>Merci de consulter la log"); 
+                window.location.href = "liste-pai-int-traitement";
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+{% if not blocage  %}    
+    function bloquerSaisie(){
+        $('#button_generer').prop('disabled', true);
+        $('#button_bloquer').prop('disabled', true);
+        ajaxMessage("Blocage de la saisie en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-bloquer-pai-mensuel",
+            type: "GET",
+            data: { },
+            success: function(data) { location.reload(); },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+{% else %}
+    function debloquerSaisie(){
+        $('#button_generer').prop('disabled', true);
+        $('#button_debloquer').prop('disabled', true);
+        $('#button_cloturer').prop('disabled', true);
+        {% if not blocage_reclamation  %}    
+            $('#button_bloquer_reclamation').prop('disabled', true);
+        {% endif %}
+        ajaxMessage("Déblocage de la saisie en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-debloquer-pai-mensuel",
+            type: "GET",
+            data: { },
+            success: function(data) { location.reload(); },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+    function bloquerReclamation(){
+        $('#button_generer').prop('disabled', true);
+        $('#button_debloquer').prop('disabled', true);
+        $('#button_bloquer_reclamation').prop('disabled', true);
+        $('#button_cloturer').prop('disabled', true);
+        ajaxMessage("Blocage des réclamations en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-bloquer-reclamation-pai-mensuel",
+            type: "GET",
+            data: { },
+            success: function(data) { location.reload(); },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+
+    function cloturerEv(){
+        $('#button_generer').prop('disabled', true);
+        $('#button_debloquer').prop('disabled', true);
+        $('#button_bloquer_reclamation').prop('disabled', true);
+        $('#button_cloturer').prop('disabled', true);
+        ajaxMessage("Clôture de la paie en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-cloturer-pai-mensuel",
+            type: "GET",
+            data: { },
+            success: function(data) { 
+                ajaxSucces("Lancement réalisé ...<br/>Merci de consulter la log");
+                window.location.href = "liste-pai-int-traitement";
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+{% endif %}
+
+</script>
+{% endblock %}

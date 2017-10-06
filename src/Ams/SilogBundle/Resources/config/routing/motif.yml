@@ -1,0 +1,12 @@
+admin_liste_motif:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:MotifArbitrage:index" }
+    
+admin_liste_motif_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:MotifArbitrage:grid" }
+    
+admin_liste_motif_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:MotifArbitrage:MotifCrud" }
+

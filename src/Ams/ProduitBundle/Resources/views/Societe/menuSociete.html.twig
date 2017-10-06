@@ -1,0 +1,11 @@
+
+<ul class="nav nav-sidebar" id="ulCreerSociete">      
+    <li class="">
+        <a data-toggle="modal" data-target="#amsModal" id="addSociete" onClick="ChargeModal('{{ path('societe_creation_ajax') }}');" href="#"><span class="glyphicon glyphicon-plus-sign"></span> Créer société</a>
+    </li>
+</ul>
+<ul class="nav nav-sidebar" id="ulMenuSociete">    
+  {% for societe in societes %}
+    {% include 'AmsProduitBundle:Societe:ulMenuSociete.html.twig' %}
+  {% endfor %}  
+</ul>

@@ -1,0 +1,159 @@
+{# src/Ams/HorspresseBundle/Resources/views/Default/ajouter.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Hors Presse - Liste des campagnes{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/horspresse/hp.css" type="text/css" media="screen" />
+    <style>
+        .ui-datepicker { z-index: 9999 !important; }
+    </style>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {% javascripts output='js/compresse/core.js'
+                                'js/horspresse/hp.js' 
+                                'js/horspresse/lister.js' 
+                                'js/multiselect.min.js' 
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {#    {% include 'AmsCartoBundle:Default:htc_script_aff_tournees.js.twig' %}#}
+{% endblock%}
+
+{% block body %}
+
+    <div class="bloc">
+        {% if liste_campagnes | length > 0 %}
+            <table cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <td rowspan="{% if app.session.flashbag.has('notice')==true %}3{% else %}2{% endif %}" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+                <td class="title">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td class="full title">Liste des campagnes</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {#<tr>
+                <td class="content formHeader">
+                    <h4 class="titreSection"></h4>
+                    <p class="consigne_ppale"></p>
+                </td>
+            </tr>#}
+            <tr>
+                <td class="content horspresse">
+                    <p align="left">
+                        <button class="btn btn-primary new"><i class="glyphicon glyphicon-plus"></i>Nouvelle campagne</button>
+                    </p>
+                    <table width="100%" class="campList">
+                        <tr>
+                            <th>Titre<br/>(Nom de la campagne)</th>
+                            <th>Produit/Société</th>
+                            <th>Type</th>
+                            <th>Distribution</th>
+                            <th>Débordement</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Créée le</th>
+                            <th>modifiée le</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% for camp in liste_campagnes %}
+                            
+                            {% if camp.statut == 'new' %}
+                                {% set status = 'nouvelle' %}
+                            {% endif %}
+                            <tr>
+                                <td align="left">{{ camp.libelle }}</td>
+                                <td align="left">{{ camp.produit.libelle }} / {{ camp.societe.libelle }}</td>
+                                <td align="left"></td>
+                                <td align="left"></td>
+                                <td align="left"></td>
+                                <td align="left">{{ camp.dateDebut |  date("d/m/Y") }}</td>
+                                <td align="left">{{ camp.dateFin |  date("d/m/Y") }}</td>
+                                <td align="left">{{ camp.dateCrea |  date("d/m/Y") }}</td>
+                                <td align="center"> -- </td>
+                                <td align="left">{{ status }}</td>
+                                <td align="left">
+                                    <p>
+                                        <button class="btn btn-xs btn-success" disabled><i class="glyphicon glyphicon-th-list"></i>Analyser & planifier</button>
+                                    </p>
+                                    <p>
+                                        <button class="btn btn-xs btn-primary" disabled><i class="glyphicon glyphicon-pencil"></i>Modifier</button>
+                                    </p>
+                                    <p>
+                                        <button class="btn btn-xs btn-danger" disabled><i class="glyphicon glyphicon-remove"></i>Supprimer</button>
+                                    </p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            </table>
+        {% else %}
+            <div class="initCamp">
+                Aucune campagne disponible.
+                <br/>
+                <button class="btn btn-primary">Cliquer ici pour créer la première campagne hors presse</button>
+            </div>
+        {% endif %}
+    </div>
+
+    {#<div id="fileStrucBtnModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Définition de la structure du fichier client</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Structure du fichier client à envoyer</h4>
+                    <p class="consigne">A l'aide du formulaire ci-dessous, vous pouvez décrire la structure du fichier client, afin d'intégrer ses informations dans la base de données.<br/>Notez que l'analyse se fonde sur les informations qui proviennent du fichier.<br/>
+                        Veillez donc à <strong>bien définir la structure</strong> du fichier avant d'enregistrer la campagne.
+                    </p>
+                    <p><em>un extrait des données récupérées vous sera montré à la prochaine étape.</em></p>
+                    <div class="well">
+                        <p class="headers"><input type="checkbox" id="firstLineHeaders" value="1"/><label for="firstLineHeaders">La première ligne du fichier contient des en-têtes.</label></p>
+                        <p class="dataSeparator">
+                            <label for="dataSep"><strong>Séparateur de colonnes:</strong></label>
+                            <select id="dataSep">
+                                <option value="">Choisissez le séparateur</option>
+                                <option value="comma">Virgule (,)</option>
+                                <option value="semi">Point-virgule (;)</option>
+                                <option value="pipe">Pipe (|)</option>
+                            </select>
+                        </p>
+                        <p class="pSave">
+                            <button type="button" class="btn btn-primary btn-xs" disabled><i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer</button>
+                        </p>
+                        <table id="structure" width="100%" cellpadding="5">
+                            <tr>
+                                <th>Colonne du fichier</th>
+                                <th>Champ de données</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <td>#1</td>
+                                <td>
+                                    <select class="dataField original"></select>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <p class="addRow">
+                            <button type="button" class="btn btn-default btn-xs add" title="Cliquer pour ajouter une nouvelle colonne"><i class="glyphicon glyphicon-plus"></i> Ajouter une colonne</button>
+                            <button type="button" class="btn btn-warning btn-xs reset" title="Cliquer pour annuler la structure en cours de définition"><i class="glyphicon glyphicon-refresh"></i> Réinitialiser le formulaire</button>
+                        </p>
+                    </div>
+                    <button class="btn btn-default btn-xs" id="closeBadMapPointsBtn" data-dismiss="modal" >Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>#}
+{% endblock %}

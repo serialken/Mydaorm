@@ -1,0 +1,135 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Quantités de produits à distribuer{% endblock %}
+
+{% block body %}
+  <style>
+    .ui-datepicker { z-index: 888888 !important; }
+ </style>
+<div class="well" style="z-index:100000;position:relative;">
+    <form method="post" name="formCrmIndex" id="formCrmIndex" action="{{path('crm_vue_generale')}}" style="margin-bottom: 15px;">
+        <table>
+            <tr>
+                <td>
+                    {{ form_label(form.DateParutionMin) }} : &nbsp;&nbsp;{{ form_widget(form.DateParutionMin, {'attr': {'value': dateMin}, 'id': 'DateParutionMin', 'name': 'DateParutionMin'})}}
+                </td>
+                <td>
+                    &nbsp;&nbsp;{{ form_label(form.DateParutionMax) }} : &nbsp;&nbsp;{{ form_widget(form.DateParutionMax, {'attr': {'value': dateMax},'id': 'DateParutionMax',  'name': 'DateParutionMax'})}}
+                </td>
+                <td>
+                    &nbsp;&nbsp;
+                    <button type="submit" class="btn-small btn-primary">
+                        <i class="glyphicon glyphicon-search white"></i>
+                            Rechercher
+                    </button>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <span class="selectAll btn-small btn-primary" style="width:200px;cursor:pointer;display:inline-block">
+            Afficher tous les produits 
+        </span>
+        <span class="deselectAll btn-small btn-danger" style="width:200px;cursor:pointer;display:inline-block">
+            Cacher tous les produits
+        </span>
+        <div class="alert alert-warning">
+            Vous pouvez choisir les produits à afficher, en faisant un clic droit sur les entêtes
+        </div>
+    </form>
+    <br/>
+    <div class="create-rem">
+        <a href="{{path('crm_serach_client_to_create_rem_info')}}" class="btn-small btn-primary ">
+            Ajouter une remontée d'information
+        </a>
+    </div>
+</div>
+
+<div  class="info" style="font-size:19px">
+  {% if societes|length == 0 %}Aucun résultat{%endif%}
+</div>
+
+<div  style='position:relative; height:700px; width:100%;'>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div id="gridbox" class="split_at" style="width:100%; height:{{ 152+(23 * nbDepots) }}px; background-color:white;overflow:hidden"></div>
+                <div>
+                    <span id="pagingArea"></span>&nbsp;<span id="infoArea"></span>
+                </div>
+                <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                    Chargement ...
+                </div>
+            </td>
+        </tr>
+    </table>  
+</div>
+
+<script type="text/javascript">
+
+    function end_Range(){
+        var chosenDate = $("#DateParutionMin").datepicker("getDate");                  
+            if (chosenDate == null ){
+                $("#DateParutionMin").focus();
+            } else {
+             
+                $("#DateParutionMax").datepicker("option", "minDate", new Date (chosenDate));
+            };
+    };
+
+    $(document).ready(function() {
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("form input#DateParutionMin").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            onSelect: end_Range,     
+        }).attr("readonly","readonly");
+
+        $("form input#DateParutionMax").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            beforeShow: end_Range,
+            firstDay:1
+        }).attr("readonly","readonly");
+    
+    });  
+
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{ dhtmlx_img }}");
+    grid.enablePaging(true,25,3,"pagingArea",true,"infoArea");
+    grid.init();
+    grid.setDelimiter("*"); 
+    // empêche l'affichage par defaut des infos bulles de la grid
+    grid.enableTooltips("false");
+    grid.loadXML("{{path('crm_index_donnees', {'dateMin': dateMin|replace('/','-'), 'dateMax': dateMax|replace('/','-')})}}", function() {  
+    grid.setSizes(); 
+    grid.splitAt(1);  
+    document.getElementById('cover').style.display = 'none';
+     /** HIDE COLUMN BY RIGHT CLICK **/
+        grid.enableHeaderMenu();
+       // for(var i = 11 ;i < grid.getColumnsNum(); i++)
+        //    grid.setColumnHidden(i,true);
+    });
+    $(function() {
+        $('.selectAll').click(function(){
+            for(var i = 0 ;i < grid.getColumnsNum(); i++)
+                grid.setColumnHidden(i,false);
+            
+        });
+        $('.deselectAll').click(function(){
+            for(var i = 3 ;i < grid.getColumnsNum(); i++)
+                grid.setColumnHidden(i,true);
+            
+        });
+
+    });
+
+    
+</script>
+
+{% endblock %}
+
+     
+ 
+ 
+ 
+ 

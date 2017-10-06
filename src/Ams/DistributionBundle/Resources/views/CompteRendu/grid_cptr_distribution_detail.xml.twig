@@ -1,0 +1,24 @@
+
+<rows>
+    {% for row in liste %}
+
+        <row style="">
+            <cell>{{row.produit_id}}</cell>
+            <cell style="text-align:left">{{row.ville_id}}</cell>
+            <cell>{% if row.img_path is not empty%}<![CDATA[<img src="{{ asset('uploads/documents/'~row.img_path) }}" alt=""  style="width: 90px;padding:5px"/>]]>{%else%}{%endif%}</cell>
+            <cell style="text-align:left">{{row.nom_produit}}</cell>
+            <cell style="text-align:left">{{row.ville}}</cell>
+            <cell style="text-align:center">{{row.qte}}</cell>
+            {% if row.nb_abonne_non_livre is empty %}
+                <cell style="text-align:center">0</cell>
+            {% else %}
+                <cell style="text-align:center">{{row.nb_abonne_non_livre}}</cell>
+            {% endif %}
+               {% if row.nb_diff_non_livre is empty %}
+                <cell style="text-align:center">0</cell>
+            {% else %}
+                <cell style="text-align:center">{{row.nb_diff_non_livre}}</cell>
+            {% endif %}
+        </row>
+    {% endfor %}
+</rows>

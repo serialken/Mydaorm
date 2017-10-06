@@ -1,0 +1,62 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+{% block title %}Démo carto{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {% javascripts output='js/compresse/core.js'
+                                'js/carto/proj4js-combined.js' 
+                                'js/carto/defs/EPSG27572.js' 
+                                'js/carto/htc.js' 
+                                'js/carto/mroad-map.js' 
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
+    {% include 'AmsCartoBundle:Default:htc_script.js.twig' %}
+{% endblock%}
+
+{% block body %}
+    <div id="map" style="width: 950px; height: 650px; margin-bottom: 120px;">
+        &nbsp;
+{#        {{ dump(points_tournee)}}#}
+    </div>
+    <div id="mapDatas" style="width:30%; text-align: left;">
+        <h4>Tournée xyz du 23/06/2014</h4>
+        <div id="tourneeInfos">
+            <p>
+                <strong>ID tournée:</strong>&nbsp;<span id="idTourneeInfos">48</span>
+            </p>
+            <p>
+                <strong>de</strong>&nbsp;<span id="heureDebutTourneeInfos">04h00</span>&nbsp;
+                <strong>à</strong>&nbsp;<span id="heureDebutTourneeInfos">12h00</span>
+            </p>
+        </div>
+        <div id="pointInfos">
+            <h5>Informations point de livraison n°<span id="ordreClientTourneeInfos"></span></h5>
+            <p>
+                <strong>Type:</strong>&nbsp;<span id="typeClientTourneeInfos"></span><br/>
+                <strong>Client:</strong>&nbsp;<span id="nomClientTourneeInfos"></span>&nbsp;(<span id="idClientTourneeInfos"></span>)
+                <br/>
+                <strong>Adresse:</strong>&nbsp;<span id="adresseClientTourneeInfos"></span>
+                <br/><br/>
+                <strong>Heure:</strong>&nbsp;<span id="heureArretTourneeInfos"></span><br/>
+                <strong>Durée conduite:</strong>&nbsp;<span id="dureeConduiteTourneeInfos"></span><br/>
+                <strong>Durée arret:</strong>&nbsp;<span id="dureeArretTourneeInfos"></span><br/><br/>
+                <strong>Trajet:</strong>&nbsp;<span id="trajetArretTourneeInfos"></span><br/>
+                <strong>Trajet cumulé:</strong>&nbsp;<span id="trajetCumulTourneeInfos"></span><br/>
+            </p>
+        </div>
+        <div id="mapLegende">
+            <ul>
+                <li><img src="/images/carto/circle-16-black.png" alt="icone représentant les arrêts de type abonné"/>&nbsp;Abonné</li>
+                <li><img src="/images/carto/triangle-16-black.png" alt="icone représentant les arrêts de type lieu de vente"/>&nbsp;Lieu de vente</li>
+                <!--                    <li><img src="images/marker-red.png" alt="icone représentant les arrêts de type démarrage"/>&nbsp;Démarrage</li>
+                                    <li><img src="images/marker-green.png" alt="icone représentant les arrêts de type repérage"/>&nbsp;Repérage</li>-->
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_load %} init(); {% endblock %}

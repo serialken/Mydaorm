@@ -1,0 +1,9 @@
+From: {{ mailDatas.sSenderAdress }}
+To: {{ mailDatas.sMailDest }} 
+cc: {% for cc in mailDatas.cc %},{{cc}}{% endfor %} 
+Subject: ERREUR : Validation d'étalonnage
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit
+
+<strong>Demande d'étalonnage</strong><br/><br/>
+L'enregistrement n'a pas pu être trouvé en base de données pour la validation d'étalonnage n° {{mailDatas.etalon_id}}

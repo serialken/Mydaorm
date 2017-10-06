@@ -1,0 +1,64 @@
+{% if societe.produits is defined and societe.produits|length > 0 %}
+    {% for produit in societe.produits %}
+        {% set aProduit = [] %}
+        {% set counter = 0 %}
+            <tr>
+                <td>
+                    {% if produit.image.webPath is defined %}
+                        <img src="{{ asset( produit.image.webPath)}}" alt="{{ produit.image.name }}">
+                    {% endif %}
+                </td>
+                <td>{{ produit.code }}</td>
+                <td>{{ produit.libelle }}</td>
+                <td>{{ produit.dateDebut|date('d/m/Y') }}</td>
+                <td>{{ produit.socCodeExt }}</td>
+                <td>{{ produit.prdCodeExt }}</td>
+                <td>{{ produit.sprCodeExt }}</td>   
+                <td>{{ produit.passe }}%</td>       
+                <td>
+                    {% if produit.produitType.libelle is defined %}
+                       {{ produit.produitType.libelle }}
+                    {% endif %}
+                </td>            
+                <td>
+                    {% if produit.flux == "N - Nuit" %}
+                        Nuit
+                    {% elseif produit.flux == "J - Jour" %}
+                        Jour
+                    {% endif %}
+                </td>
+                <td>
+                    {% if produit.parents is defined %}
+                        {% for parent in produit.parents %}
+                          {% if parent.id in aProduit %}
+                          {% else %}
+                            {% set aProduit = aProduit|merge([parent.id]) %}
+                            {% set counter = counter + 1 %}
+                            {% if(counter > 1) %}
+                              , {{ parent.libelle}}
+                            {% else %}
+                              {{ parent.libelle}}
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <span class="text-muted" style="display: block;">
+                        <a href="#" data-toggle="modal" data-target="#amsModal" onmouseover="affPopoverLien(this);" data-description="Modification des informations" data-content="Ce lien permet de modifier les informations liées à un produit.Il renvoie vers un formulaire pour enregistrer les modifications." onClick="ChargeModal('{{ path('produit_modification_ajax') }}',{{produit.id}});"><span class="glyphicon glyphicon-edit"></span> Modifier</a>
+                    </span>
+                    <span class="text-muted" style="display: block;">
+                        <a href="#" data-toggle="modal" data-target="#amsModal" onmouseover="affPopoverLien(this);" data-description="Affichage des détails" data-content="Ce lien permet d'afficher les details liées à un produit.Il renvoie vers une fiche récapitulative." onClick="ChargeModal('{{ path('produit_detail_ajax') }}',{{produit.id}});"><span class="glyphicon glyphicon-zoom-in"></span> Détails</a>
+                    </span>
+                    <span class="text-muted deleteData" style="display: block;" onclick="suppConfirmProduit('{{path('produit_suppression', {'produitId':produit.id})}}', '{{societe.id}}', '{{produit.id}}', '{{produit.libelle}}', this);"  onmouseover="affPopoverLien(this);" data-description="Suppression d'un produit" data-content="Ce lien permet de supprimer un produit. Attention car la suppression est définitive !!!!" ><span class="glyphicon glyphicon-remove"></span> Supprimer</span>
+                </td>
+            </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="9" style="text-align:center;">
+            Pas de produit disponible pour cette société.
+        </td>        
+    </tr>
+{% endif %}

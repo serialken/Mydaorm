@@ -1,0 +1,23 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="codeNG"     width="70"  type="ed"   align="left"    sort="str">Code NG</column>
+        <column id="code"       width="70"  type="ed"   align="left"    sort="str">Code</column>
+        <column id="libelle"    width="*"   type="ed"   align="left"    sort="str">Libellé</column>
+        <column id="paie"       width="50"  type="ch"   align="left"    sort="str">Paie</column>
+        <column id="prime"      width="50"  type="ch"   align="left"    sort="str">Prime</column>
+        <column id="affichage_modele_tournee"      width="50"  type="ch"   align="left"    sort="str">Affichage Modele Tournée</column>
+        <column id="affichage_modele_activite"     width="50"  type="ch"   align="left"    sort="str">Affichage Modele Activité</column>
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.codeNG}}</cell>
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.paie}}</cell>
+            <cell>{{row.prime}}</cell>
+            <cell>{{row.affichage_modele_tournee}}</cell>
+            <cell>{{row.affichage_modele_activite}}</cell>
+        </row> 
+     {% endfor %}
+ </rows>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrAdrRnvpEtat" table="TR_ADR_RNVP_ETAT">
+    <id name="retRnvpEtat" type="integer" column="RET_RNVP_ETAT">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="retRnvpLibelle" type="string" column="RET_RNVP_LIBELLE" length="45" nullable="false"/>
+  </entity>
+</doctrine-mapping>

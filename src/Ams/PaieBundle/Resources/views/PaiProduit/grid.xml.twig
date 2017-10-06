@@ -1,0 +1,25 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"         type="ro"   hidden="true"></column>
+        <column id="lien_journal"       type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="tournee_mere"       type="ro"   hidden="true"></column> 
+        <column id="tournee_org_id"     type="ro"   hidden="true"></column> 
+        <column id="groupe_id"          type="coro" width="50"  align="center"  sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="tournee_id"         type="coro" width="*"   align="left"    sort="sortCombo">Tournée{{comboTournee|raw}}</column> 
+        <column id="produit_id"         type="coro" width="*"   align="left"    sort="sortCombo">Produit{{comboProduit|raw}}</column> 
+        <column id="natureclient_id"    type="coro" width="*"   align="left"    sort="sortCombo">Nature Client{{comboNatureClient|raw}}</column> 
+        <column id="qte"                type="ed"   width="80"  align="right"   sort="int">Quantité</column> 
+        <column id="nbcli"              type="ed"   width="80"  align="right"   sort="int">Nombre de clients</column> 
+        <column id="nbrep"              type="ed"   width="80"  align="right"   sort="int">Nombre de repérages</column> 
+        <column id="taux"               type="ro"   width="80"  align="right"   sort="int">Taux</column> 
+        <column id="montant"            type="ro"   width="80"  align="right"   sort="int">Montant</column> 
+        <column id="duree"              type="ro"   width="50"  align="center"  sort="str">Durée</column> 
+        {{m.columnAjout(isModif)}}
+
+	<beforeInit> 
+            <call command="attachFooter"><param>,,,,,,,Total,#stat_total,#stat_total,#stat_total,,#stat_total,{%if isModif%},{%endif%}</param></call>
+        </beforeInit> 
+    </head> 
+    {% include 'AmsPaieBundle:PaiProduit:row.xml.twig' %}
+</rows>

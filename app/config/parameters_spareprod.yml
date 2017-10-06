@@ -1,0 +1,14 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: 10.150.10.14
+    database_port: null
+    database_name: mroad
+    database_user: mroad
+    database_password: Mroad123
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: a4e099cd15a136f048d2df6bec0597b1a1252284
+    database_path: null

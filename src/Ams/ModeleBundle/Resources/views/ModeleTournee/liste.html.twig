@@ -1,0 +1,95 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block operation %}
+    {% if isTransfert %}
+    <div class="row well" style="margin: 10px">
+            <form id="transfert">
+            <div class="col-md-6">
+                   <select id="comboTransModele" style="width:150px;">{{comboTransModele|raw}}</select>
+                   <input type="button" value="Transférer" onclick="transferer()"/>
+            </div>
+            <div class="col-md-6">
+                   <select id="comboTransDepot" style="width:150px;">{{comboTransDepot|raw}}</select>
+                   <select id="comboTransFlux" style="width:150px;">{{comboTransFlux|raw}}</select>
+                   <select id="comboTransGroupe" style="width:150px;"></select>
+                   Code : <input type="text" id="inputTransCode" maxlength="3" length="5"/>
+                   Début : <input type="text" id="inputTransDateDebut" required="required"/>
+            </div>
+            </form>
+    </div>
+    {% endif %}             
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    depotcode='{{depotcode}}';
+    fluxcode='{{fluxcode}}';
+    dhtmlxInit=[
+//      IDX_ENTETE      ,IDX_HEADER1                ,IDX_HEADER2        ,IDX_VERIFICATOR    ,IDX_LNK_BEFOREINSERT   ,IDX_LINK_AFTERINSERT    ,IDX_FUNC_ONSELECT  
+        ['journal_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+        ['>Journal'     ,null                       ,null               ,null               ,null                   ,'{{m.lienJournal()}}'  ,'goJournal(rId)'   ,null],
+        ['Groupe'       ,'#select_filter_strict'   ,null                ,isNotEmpty         ,null                   ,null                   ,null               ,'onChangeCode(rId)'],
+        ['Numéro'       ,'#text_filter'             ,null               ,isNumeric3         ,null                   ,null                   ,null               ,'onChangeCode(rId)'],
+        ['Code'         ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+        ['Libellé'      ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+        ['Employé'      ,'#select_filter_strict'   ,null                ,null               ,null                   ,null                   ,null               ,null],
+        ['>Planning'    ,null                       ,null               ,null               ,null                   ,'{{m.lienEmploye()}}'  ,'goPlanning(rId)'  ,null],
+        ['codeDCS'      ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null               ,null],
+        ['Actif'        ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null               ,null],
+        ['Suppression'  ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+    ];
+
+    $(document).ready(function() {
+        $("#inputTransDateDebut").datepicker({dateFormat: 'dd/mm/yy', firstDay:1, minDate:2 }).attr("readonly","readonly");
+        ajaxReloadComboTransGroupe();
+        $('#comboTransDepot').on('change', function() { ajaxReloadComboTransGroupe(); });
+        $('#comboTransFlux').on('change', function() { ajaxReloadComboTransGroupe(); });
+    });
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{modele_tournee_id}}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+
+    function onChangeCode(id){
+        if (gridIsLoaded){
+            grid.cellById(id,4).setValue(depotcode+fluxcode+grid.cellById(id,2).cell.innerHTML+grid.cellById(id,3).getValue());
+        }
+    }
+
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_modele_journal',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&journal_id=",grid.cellById(rId,0).getValue());
+        }
+    function goPlanning(rId){
+        goLinkGrid("{{path('modele_planning',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&employe_id=",grid.cellById(rId,6).getValue());
+    }
+
+    function transferer(){
+        ajaxMessage("Transfert de la tournée en cours ...");
+        $.ajax({
+            url: "ajax-transfert-modele-tournee",
+            type: "GET",
+            data: { 
+               modele_tournee_id: document.getElementById('comboTransModele').value,
+               groupe_id: document.getElementById('comboTransGroupe').value,
+               code: document.getElementById('inputTransCode').value,
+               date_debut: document.getElementById('inputTransDateDebut').value
+            },
+            success: function(data) {
+                ajaxSucces("Transfert terminé");
+                //$("#comboTransModele option:selected").remove();
+                //ajaxComboDeSplit();
+                //deselect depot
+                //deselect flux
+                
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+    
+    function ajaxReloadComboTransGroupe()  { ajaxReloadCombo($('#comboTransGroupe'),"ajax-combo-groupe-modele-tournee",{depot_id:$('#comboTransDepot').val(),flux_id:$('#comboTransFlux').val()}); }
+
+    </script>
+{% endblock %}

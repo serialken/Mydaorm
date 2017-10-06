@@ -1,0 +1,317 @@
+{# liste des feuilles de portage #}
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}France Routage{% endblock %}
+
+{% block body %}
+
+    <style>
+        .breadCrumb{float:left}
+        .breadCrumb span{cursor:pointer}
+        .exec{float:right}
+        ul.list-files{width:750px;text-align:left}
+        ul.list-files li img{margin-right:10px}
+        ul.list-files li{list-style-type: none;margin-top:5px;cursor:pointer;background-color: #FCF8E3}
+        .img_folder span.img{background-image: url('../../images/dhtmlx_journal.png');height:20px;width:20px;float:left;margin-right:10px}
+        .img_file span.img{background-image: url('../../images/dhtmlx_contrat.png');height:20px;width:20px;float:left;margin-right:10px}
+        .img_file span.present{background-image: url('../../images/valid_16px.png');height:16px;width:16px;float:right;margin-right:5px}
+        .img_file span.absent{background-image: url('../../images/add_16px.png');height:16px;width:16px;float:right;margin-right:5px}
+        .img_file span.attente{background-image: url('../../images/loading/LoadingCircle_md.gif');height:16px;width:16px;float:right;margin-right:5px}
+        .waiting,#content_form{display:none}
+        .form_add_traitement_FR select#nom_societe{width:60%;height: 25px;}
+        .form_add_traitement_FR{width:80%;margin:auto}
+        .form_add_traitement_FR label{width:30%;display:block;float:left;text-align:right}
+        .form_add_traitement_FR input[type=text]{width:60%}
+        .alert{margin-bottom:10px;padding:5px;}
+        .del_message{float:right;}
+        span.date{float:right;margin-right:20px}
+
+    </style>
+
+    <div  class='well'>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadCrumb"> Position : <span>{{fileAriane}}</span> </div>
+                <div class="exec"> <button class="btn btn-danger"> Liste des traitements </button> </div>
+            </div>
+        </div>
+    </div>  
+
+    <div class="row">
+        <div class="col-md-12">
+            {% for cancelFile in cancelFilesAuto %}
+                <div class="alert alert-warning "> 
+                    Le fichier "{{ cancelFile.nom_fichier}}" a rencontré une erreur qui a pour message : <strong>"{{ cancelFile.message}}" </strong>
+                    <span id="{{cancelFile.id}}" class="btn btn-danger del_message btn-xs"> Supprimer le message </span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <img class="waiting" src="{{ asset('images/ajaxLoader.gif')}}"/>
+            <ul class="list-files">
+                {{ folders | raw }} 
+                {{ files | raw }} 
+            </ul>
+        </div>
+    </div>
+
+
+    <div id='content_form'>
+        <form class='form_add_traitement_FR'>
+            <label> Repertoire source :</label><input type='text' name='repertoire_ftp_source' disabled/> <br />
+            <label> Nom fichier :</label><input type='text' name='nom_fichier' disabled/> <br />
+            <label> Code société :</label>
+            <select name="nom_societe" id="nom_societe" style="margin-bottom: 4px;">
+            {% for produit in societe%}
+                <option  value="{{produit.code}}" name="nom_societe">{{produit.libelle}}</option> 
+            {% endfor %}
+            </select>    
+            <label> Date parution :</label><input type='text' name='date_parution'/><br />
+            <label> Repertoire destination :</label><input type='text' name='repertoire_ftp_destination'/><br />
+            {#<label style="margin-top: 5px;">Choix du script:</label>
+                    <input type="radio" name="coche" class="action_checked" value="ANCIEN" checked>Ancien script    
+                    <input type="radio" name="coche" class="action_checked" value="NOUVEAU">Nouveau script<br/>#}
+                <label> </label> <input type='button' value='Valider' class='btn-danger btn' id='add_traitement'style="margin-right: 100px; margin-top: 10px; margin-left: -62px;"/><br />
+                    
+            </form>
+        </div>
+
+
+        <script>
+
+
+            function isEmpty(value) {
+                if (value.trim() === '')
+                    return 1;
+                return 0;
+            }
+
+            $(function() {
+                var form_add_traitement = $('#content_form').html();
+                var nom_fichier = '';
+                var repertoire_ftp_source = '';
+                var inAction = '';
+
+
+                $('body').delegate('.del_message', 'click', function() {
+                    var obj = $(this);
+                    var id = $(this).attr('id');
+                    $.ajax({
+                        url: "{{path('france_routage_crud')}}",
+                        data: {
+                            action: 'delete_cancel',
+                            id: id,
+                        },
+                        type: "POST",
+                        success: function(data) {
+                            obj.closest('div').hide();
+                        }
+                    });
+                });
+
+                $('body').delegate('input[name=cancel]', 'click', function() {
+                    var aId = $(this).attr('id').split('_');
+                    var idFranceRoutage = aId[0];
+                    var selector = $(this);
+
+                    $.ajax({
+                        url: "{{path('france_routage_crud')}}",
+                        data: {
+                            action: 'delete',
+                            idFranceRoutage: idFranceRoutage
+                        },
+                        type: "POST",
+                        success: function(data) {
+                            $(selector).closest('td').html('<strong style="color:red"> Annulé </strong>');
+                        }
+                    });
+
+                });
+
+                /** MAJ MODAL AVEC NEW FORM **/
+                $('body').delegate('.absent', 'click', function() {
+                    var tmpBreadCrumb = $('.breadCrumb > span').attr('title');
+                    if (tmpBreadCrumb !== undefined) {
+                        var atmpBreadCrumb = tmpBreadCrumb.split('/');
+                        tmpBreadCrumb = atmpBreadCrumb[1];
+                    }
+                    else
+                        tmpBreadCrumb = '';
+                    inAction = this;
+                    nom_fichier = $(this).closest('.img_file').find('.element').html();
+                    repertoire_ftp_source = ($('.breadCrumb > span').attr('title') == undefined) ? '/' : $('.breadCrumb > span').attr('title');
+                    $('.modal-title').html('Ajout Traitement France Routage');
+                    $('.modal-body').html(form_add_traitement);
+                    $('input[name=repertoire_ftp_source]').val(repertoire_ftp_source);
+                    $('input[name=nom_fichier]').val(nom_fichier);
+                   $("#amsModalBody input[name=date_parution]").datepicker({
+                        maxDate: '+30d'
+                    });
+                    $('.ams-modal.modal-dialog').css('width', '570px');
+
+                    $.ajax({
+                        url: "{{path('france_routage_navigate')}}",
+                        data: {
+                            pathTest: true,
+                            path: tmpBreadCrumb
+                        },
+                        type: "POST",
+                        success: function(data) {
+                            $('input[name=repertoire_ftp_destination]').val(data.breadCrumb);
+                            $('#amsModal').modal();
+                        }
+                    });
+
+
+                });
+                
+                /** AJOUT TRAITEMENT FORM **/
+                $('body').delegate('#add_traitement', 'click', function() {
+                    var coche = "";
+                    var selected = $('input.action_checked:checked:visible');
+                    if (selected.length > 0) {
+                        coche = selected.val();
+                    }
+                    var error = 0;
+{#                    error += isEmpty($('#amsModalBody input[name=code_societe]').val())#}
+                    error += isEmpty($('#amsModalBody select[name=nom_societe]').val())
+                    error += isEmpty($('#amsModalBody input[name=date_parution]').val())
+                    error += isEmpty($('#amsModalBody input[name=repertoire_ftp_destination]').val())
+
+                    if (error > 0) {
+                        alert('veuillez remplir tous les champs');
+                    }
+                    else {
+                        $.ajax({
+                            url: "{{path('france_routage_crud')}}",
+                            data: {
+                                nom_fichier: nom_fichier,
+                                repertoire_ftp_source: repertoire_ftp_source,
+                                nom_societe: $('#amsModalBody select[name=nom_societe]').val(),
+{#                                code_societe: $('#amsModalBody input[name=code_societe]').val(),#}
+                                date_parution: $('#amsModalBody input[name=date_parution]').val(),
+                                repertoire_ftp_destination: $('#amsModalBody input[name=repertoire_ftp_destination]').val(),
+                            },
+                            type: "POST",
+                            success: function(data) {
+                                $(inAction).removeClass('absent');
+                                $(inAction).addClass('attente');
+                                $('#amsModal').modal('hide');
+                            }
+                        });
+                    }
+                });
+
+                $('body').delegate('.close-modal', 'click', function() {
+                    $('#amsModal').modal('hide');
+                });
+
+                $('body').delegate('#launch_script', 'click', function() {
+                    $('#amsModal').modal('hide');
+                    $.ajax({
+                        url: "{{path('france_routage_exec')}}",
+                        data: {
+                            launch: true
+                        },
+                        type: "POST",
+                        success: function(data) {
+                            $('#amsModal').modal('hide');
+                        }
+                    });
+                });
+
+                $('body').delegate('.exec', 'click', function() {
+                    $.ajax({
+                        url: "{{path('france_routage_list_exec_file')}}",
+                        type: "POST",
+                        success: function(data) {
+                            $('.ams-modal.modal-dialog').css('width', '790px');
+                            $('.modal-title').html('Execution des scripts');
+                            $('.modal-body').html(data);
+                            $('#amsModal').modal();
+                        }
+                    });
+                });
+
+
+
+                /** NAVIGATION AVEC LES DOSSIERS (FTP) **/
+                $('body').delegate('.img_folder', 'click', function() {
+                    $.ajax({
+                        url: "{{path('france_routage_navigate')}}",
+                        data: {name: $('> span.element', this).html(), breadCrumb: $('.breadCrumb span').attr('title'), byBreadCrumb: false},
+                        type: "POST",
+                        beforeSend: function() {
+                            $('.waiting,.list-files').toggle();
+                        },
+                        success: function(data) {
+                            $('.waiting,.list-files').toggle();
+                            var breadCrumb = data.breadCrumb;
+                            $('.list-files').html(data.list);
+                            $('.breadCrumb span').attr('title', breadCrumb);
+                            breadCrumb = breadCrumb.split('/');
+                            var tmp = '';
+                            for (i = 0; i < breadCrumb.length; i++) {
+                                if (i > 0)
+                                    tmp += ' <span>' + breadCrumb[i] + "</span> /";
+                                else
+                                    tmp += '<span> racine </span>/';
+                            }
+                            $('.breadCrumb span').html(tmp);
+                        }
+                    });
+
+                });
+
+                /** NAVIGATION AVEC LE FIL D ARIANNE**/
+                $('body').delegate('.breadCrumb span span', 'click', function() {
+                    var piecePath = $(this).html();
+                    var newPath = '';
+                    if (piecePath == ' racine ')
+                        newPath = piecePath;
+                    else {
+                        var fullPath = $(this).parent().attr('title');
+                        var aFullPath = fullPath.split('/');
+                        for (var i = 0; i < aFullPath.length; i++) {
+                            if (aFullPath[i] == piecePath) {
+                                newPath += aFullPath[i] + "/";
+                                break;
+                            } else {
+                                newPath += aFullPath[i] + "/";
+                            }
+                        }
+                    }
+
+                    $.ajax({
+                        url: "{{path('france_routage_navigate')}}",
+                        data: {name: $('> span.element', this).html(), breadCrumb: newPath, byBreadCrumb: true},
+                        type: "POST",
+                        beforeSend: function() {
+                            $('.waiting,.list-files').toggle();
+                        },
+                        success: function(data) {
+                            $('.waiting,.list-files').toggle();
+                            var breadCrumb = data.breadCrumb;
+                            $('.list-files').html(data.list);
+                            $('.breadCrumb span').attr('title', breadCrumb);
+                            var aBreadCrumb = breadCrumb.split('/');
+                            var tmp = '/';
+                            if (breadCrumb !== '/') {
+                                for (i = 0; i < aBreadCrumb.length; i++) {
+                                    if (i > 0)
+                                        tmp += ' <span>' + aBreadCrumb[i] + "</span> /";
+                                    else
+                                        tmp += '<span> racine </span>/';
+                                }
+                            }
+                            $('.breadCrumb span').html(tmp);
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+        {% endblock %}

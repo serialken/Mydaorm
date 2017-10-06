@@ -1,0 +1,34 @@
+reperage_vue_generale_xml: 
+    pattern:    /reperage-xml
+    defaults:    { _controller: "AmsDistributionBundle:Reperage:grid" }
+    
+reperage_vue_detail_xml: 
+    pattern:    /reperage_detail-xml
+    defaults:    { _controller: "AmsDistributionBundle:Reperage:gridDetail" }
+
+reperage_vue_detail_pdf: 
+    pattern:    /reperage_detail-pdf/{depot}/{society}
+    defaults:    { _controller: "AmsDistributionBundle:Reperage:reperageToPdf" }
+       
+reperage_vue_generale: 
+    pattern:  /
+    defaults: { _controller: "AmsDistributionBundle:Reperage:liste" }
+
+
+reperage_detail: 
+    pattern:  /detail/depot/{depot}/society/{society}
+    defaults: { _controller: "AmsDistributionBundle:Reperage:detail" }
+    requirements:
+        depot: \d*
+        society: \d*
+
+
+topage_selected: 
+    pattern:  /topage/
+    defaults: { _controller: "AmsDistributionBundle:Reperage:topage" }
+    
+reperage_crud: 
+    pattern:  /reperage
+    defaults: { _controller: "AmsDistributionBundle:Reperage:crud"}
+
+

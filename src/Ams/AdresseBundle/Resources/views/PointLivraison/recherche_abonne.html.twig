@@ -1,0 +1,208 @@
+{% if  not app.request.isXmlHttpRequest %}
+    <div class="well">
+        <form method="post" id="formAbo"  action="{{path('adresse_recherche_abonne')}}" >
+            <table>
+                <tr>
+                    <td>
+                        {{ form_label(form.societe) }}
+                    </td>
+                    <td>
+                        {{ form_widget(form.societe) }}
+                    </td>
+                    <td>
+                        {{ form_label(form.depot) }}
+                    </td>
+                    <td>
+                        {{ form_widget(form.depot) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ form_errors(form.societe) }}
+                    </td>
+                    <td colspan="2">
+                        {{ form_errors(form.depot) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form_label(form.numaboExt) }}
+                    </td>
+                    <td>
+                        {{ form_widget(form.numaboExt) }}
+                    </td>
+                    
+                    <td>
+                        {{ form_label(form.vol1) }}
+                    </td>
+                    <td>    
+                        {{ form_widget(form.vol1) }}
+                    </td>
+                    
+                    <td>
+                        {{ form_label(form.vol2) }}
+                    </td>
+                    <td>    
+                        {{ form_widget(form.vol2) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.numaboExt) }}
+                    </td>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.vol1) }}
+                    </td>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.vol2) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form_label(form.vol4) }}
+                    </td>
+                    <td>    
+                        {{ form_widget(form.vol4) }}
+                    </td>
+                    <td>
+                        {{ form_label(form.cp) }}
+                    </td>
+                    <td>    
+                        {{ form_widget(form.cp) }}
+                        <i id="search-city" class="glyphicon glyphicon-search" style="cursor:pointer" onmouseover="affPopoverLien(this);" data-description="Rechercher la commune" 
+                                                               data-content="Cet icône permet de rechercher les communes associées au code postal entré dans le champ précédent. A la suite d'un clique le champ commune n'est rempli qu'avec les communes associées au code postal !!!!"></i>
+                    </td>
+                    <td>
+                        {{ form_label(form.ville) }}
+                    </td>
+                    <td>    
+                        {{ form_widget(form.ville) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.vol4) }}
+                    </td>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.cp) }}
+                    </td>
+                    <td colspan="2" class="error_form">
+                        {{ form_errors(form.ville) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form_row(form._token) }} 
+                    </td>
+                    <td>
+                        <img class="ajaxLoader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                        <button id="rechercheAbos" type="submit" class="btn btn-primary" onmouseover="affPopoverLien(this);" data-description="Rechercher des abonnés" data-content="Ce bouton permet de rechercher des points de livraison via les informations d'un abonné: la societe, le dépôt, la fiche d'identité, le numéro de l'abonné et l'adresse etc ..." >
+                            <i class="glyphicon glyphicon-search white"></i> Rechercher
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+{% endif %}
+
+{# Liste des abonnes rattaché au point #}
+<div id="listeGeocode">  </div>
+
+{# Resultat de la recherche #}
+<div id="resultat" class="well" style="display:none;">
+        
+</div>
+
+
+<script type="text/javascript"> 
+    
+    $(document).ready(function() {
+        $('#form_societe').select2();
+        //$('#form_ville').select2();
+        function isValid() {
+            var numabo      = $('#form_numaboExt').val();
+            var nom         = $('#form_vol1').val();
+            var raisSoc     = $('#form_vol2').val();
+
+            var adresse     = $('#form_vol4').val();
+            var cp          = $('#form_cp').val();
+            var ville       = $('#form_ville').val();
+
+            var msg = false;
+
+            // On test si au moins 1 des filtre est remplie
+            if (numabo == '' && nom == '' && raisSoc == '' 
+                    && adresse == '' && cp == '' && ville == '') {
+                msg = "Un filtre au moins doit être selectioné!";
+
+            // On test si le champ adresse n'est pas seul à etre renseigné
+            } else if (adresse != '' && (ville == '' && cp == '')) {
+                msg = "Veuillez saisir un code postal ou une ville pour filtrer par adresse!";
+            }
+
+            if (msg) {
+                bootbox.alert(msg);
+                return false;
+            }
+            
+            return true;
+        }
+        
+        $('#formAbo').submit(function(e) {
+            
+            e.preventDefault();
+            
+            $('button:submit').hide();
+            $('.ajaxLoader').show();
+            
+            if (isValid()) {
+                submitAbonneForm(this);    
+            } else {
+                $('button:submit').show();
+                $('.ajaxLoader').hide();
+            }
+        });
+
+        var init_ville =  $('#form_ville').html();
+        $('#search-city').click(function() {
+            $('#form_ville').html(init_ville);
+
+            var pattern = "^" + $("#form_cp").val();
+
+            // Lorsqu'on utilise le constructeur pas besoin de délimiteur de pattern
+            var re = new RegExp(pattern);
+
+            $('#form_ville option').each(function( index ) {
+                if (re.test($(this).html())) {
+                  $(this).toggleOption(true);
+                } else if ($(this).val() != '') {
+                  $(this).toggleOption(false);
+                }
+            });
+        });
+        
+    });
+    
+    function submitAbonneForm(form) {
+        $.ajax({
+             url: $(form).attr('action'),
+             type: $(form).attr('method'),
+             data: $(form).serialize(),
+             cache: false,
+             success: function(data) {
+                $('#resultat').html(data);
+                $('#resultat').show();
+                $('#listeGeocode').hide();
+                
+                $('button:submit').show();
+                $('.ajaxLoader').hide();
+                
+             },
+             error: function(data) {
+                  alert("une erreur s'est produite");
+             }
+        });
+    };
+</script>
+

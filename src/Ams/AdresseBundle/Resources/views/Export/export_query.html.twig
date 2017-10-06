@@ -1,0 +1,81 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import '::macros.html.twig' as m %}
+
+{% block title %}Optimisation{% endblock %}
+
+{% block body %}
+    <style>
+        #gridbox {
+            height: 500px !important;
+        }
+    </style>
+    {# Affichage du bloc des msg flash et du nombre de ligne    #}
+    <div class="bloc">
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <td rowspan="{% if app.session.flashbag.has('notice')==true %}3{% else %}2{% endif %}" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1">
+                </td>
+                <td class="title">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td class="full title"> Résultat de la recherche <span> 0 </span> ligne(s) </td>
+                            <td class="link" nowrap="nowrap"> 
+                                <a  href ="" data-toggle="modal"   class="nyroModal" data-target="#amsModal" onClick="ChargeModal('{{ path('adresse_export_enregistre', {'reqId':reqId}) }}');"  data-description="Enregistrement de la requête" data-content="Ce lien renvoi vers un écran pour enregistrer la requête et les résultats." onmouseover="affPopoverLien(this);" data-placement="left"> 
+                                    <span class="glyphicon glyphicon-save"></span> Enregistrement
+                                </a> 
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    {# affichage de la grid #}
+    <div  style='position:relative; height:700px; width:100%;'>
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <span style="float:right">
+                        <a href="{{web_files_root_dir}}tmp/file_exportTourneeParTournee.csv" target="_blank" class="editlink" data-description="Exporter les données" data-content="Cet icone permet d'exporter les données présente dans le tableau au format xls" onmouseover="affPopoverLien(this);" data-placement="left">
+                            <img src="{{ asset('images/excel.png') }}"/>
+                        </a>
+                    </span>
+                    <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                    <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; width:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                        Chargement ...
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="recinfoArea"></div>
+                </td>
+            </tr>
+        </table>  
+    </div>     
+    <script>
+        var update = false;
+        gridQuery = new dhtmlXGridObject('gridbox');
+        gridQuery.setImagePath("{{ dhtmlx_img }}");
+
+        /** pagination */
+        gridQuery.enablePaging(true, 50, 3, "recinfoArea");
+        gridQuery.setPagingSkin("toolbar", "dhx_skyblue");
+
+        gridQuery.init();
+
+        gridQuery.attachEvent("onXLS", function() {
+            document.getElementById('cover').style.display = 'block';
+        });
+        gridQuery.attachEvent("onXLE", function() {
+            document.getElementById('cover').style.display = 'none';
+            var num = gridQuery.getRowsNum();
+            $('.full.title span').html(num);
+
+        });
+
+        gridQuery.setSkin("dhx_skyblue");
+        gridQuery.loadXML(" {{ path('adresse_export_grid', {'reqId':reqId}) }}");
+    </script>
+{% endblock %}
+

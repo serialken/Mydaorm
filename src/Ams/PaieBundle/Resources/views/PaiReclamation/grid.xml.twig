@@ -1,0 +1,18 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="date_distrib"   type="dhxCalendar"  width="80"      align="left"    sort="date"     format='%Y-%m-%d'>Date</column>
+        <column id="type_id"        type="coro"         width="50"      align="left"    sort="sortCombo">Type{{comboType|raw}}</column>
+        <column id="tournee_id"     type="coro"         width="*"       align="left"    sort="sortCombo">Tournée</column>
+        <column id="employe_id"     type="coro"         width="200"     align="left"    sort="sortCombo">Employé</column>
+        <column id="societe_id"     type="coro"         width="150"     align="left"    sort="sortCombo">Societe{{comboSociete|raw}}</column>
+        <column id="nbrec_abonne"   type="ed"           width="50"      align="center"  sort="int">Abonné</column>
+        <column id="nbrec_diffuseur" type="ed"          width="50"      align="center"  sort="int">Diffuseur</column>
+        <column id="commentaire"    type="txt"          width="*"       align="left"    sort="str">Commentaire</column> 
+        <column id="crm"            type="ro"           width="*"       align="left"    sort="na">CRM</column> 
+        {{m.columnAjout(isModif)}}
+    </head>      
+    {% include 'AmsPaieBundle:PaiReclamation:row.xml.twig' %}
+ </rows>
+
+

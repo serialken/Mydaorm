@@ -1,0 +1,35 @@
+{% import 'AmsEmployeBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>
+{#
+        <column id="journal_id"     type="ro"   hidden="true">journal_id</column>
+        <column id="lien_journal"   type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="groupe_id"      type="coro" width="50"  align="center"  sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="numero"         type="edn"  width="50"  align="center"  sort="int">Numéro</column> 
+        <column id="code"           type="ro"   width="100" align="center"  sort="str">Code</column> 
+        <column id="libelle"        type="ed"   width="*"   align="left"    sort="str">Libellé</column> 
+        <column id="employe_id"     type="coro" width="*"   align="left"    sort="sortCombo">Titulaire{{comboEmploye|raw}}</column>
+        <column id="lien_planning"  type="ro"   width="70"  align="center"  sort="na"></column> 
+        <column id="codeDCS"        type="ed"   width="70"  align="center"  sort="str">CodeDCS</column> 
+        <column id="actif"          type="ch"   width="50"  align="center"  sort="str">Actif</column> 
+#}
+        {% for h in head %}
+            <column id="{{h.libelle}}"     
+                    type="{{h.type}}"   
+                    hidden="{{h.hidden}}"
+                    width="{{h.width}}"
+                    align="{{h.align}}"
+                    sort="{{h.sort}}"
+                    >{{h.libelle}}</column>
+        {% endfor %}
+	<beforeInit> 
+{#            <call command="attachHeader"><param>#select_filter_strict,#select_filter_strict,#select_filter_strict,,,,,{% for produit in produits %}{%if produit.type_id==1%},Qte,NbCli{%else%},Nb,#cspan,#cspan{%endif%}{% endfor %}</param></call>
+            <call command="attachFooter"><param>,,Total,,,,,{% for produit in produits %}{%if produit.type_id==1%},#stat_total,#stat_total{%else%},,#stat_total,{%endif%}{% endfor %}</param></call>
+#}      
+            <call command="attachHeader"><param>{% for h in head %}{{h.search}},{% endfor %}</param></call>
+        </beforeInit> 
+
+    </head> 
+    {% include 'AmsEmployeBundle:EmployeRequest:row.xml.twig' %}
+ </rows>
+

@@ -1,0 +1,8 @@
+     <div class="societe tab-pane fade active in" id="societe_">
+        <h1 class="page-header">Aucune société affichée</h1>
+    </div>
+    {% if societes|length > 0 %} 
+        {% for societe in societes %}        
+            {% include 'AmsProduitBundle:Societe:tabSociete.html.twig' %}
+        {% endfor %}
+    {% endif %}

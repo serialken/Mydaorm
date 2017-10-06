@@ -1,0 +1,49 @@
+From: {{ mailDatas.sSenderAdress }}
+To: {{ mailDatas.sMailDest }}
+Subject: {{ mailDatas.sSubject }}
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+
+<style type="text/css">
+table {
+    border:1px solid black;
+    border-collapse:collapse
+}
+th {font-weight:bold;}
+th, td { 
+    border:1px solid black;
+    text-align:center;
+    vertical-align:middle;
+    width:200px;
+}
+</style>
+
+<p>Bonjour,</p>
+<p>Ce jour {{ mailDatas.sDateCourant }} à {{ mailDatas.sHeureCourant }}, {% if mailDatas.aListeFicAbsents.nb_fics_absents > 1 %}{{ mailDatas.aListeFicAbsents.nb_fics_absents }} fichiers de feuilles de portage ne sont pas encore disponibles{% else %}il manque un fichier{% endif %} pour les flux et date suivants :</p>
+<table>
+    <tr><th>Date de distribution</th><th>Flux</th><th>Dépôt</th></tr>
+    {% set date_tmp = '' %}
+    {% set flux_tmp = '' %}
+    {% for date_dmy, aFlux in mailDatas.aListeFicAbsents.donnees %}
+        {% for flux, depots in aFlux %}
+            {% for i, depot in depots %}
+                <tr>
+                    <!-- date -->
+                    {% if date_tmp != date_dmy %}
+                        {% set date_tmp = date_dmy %}
+                        <td {% if mailDatas.aListeFicAbsents['date_rowspan'][date_dmy] > 1 %}rowspan="{{ mailDatas.aListeFicAbsents['date_rowspan'][date_dmy] }}"{% endif %}>{{ date_dmy }}</td>
+                    {% endif %}                    
+                    <!-- flux -->
+                    {% if flux_tmp != flux %}
+                        {% set flux_tmp = flux %}
+                        <td {% if mailDatas.aListeFicAbsents['date_flux_rowspan'][date_dmy][flux_tmp] > 1 %}rowspan="{{ mailDatas.aListeFicAbsents['date_flux_rowspan'][date_dmy][flux_tmp] }}"{% endif %}>{{ flux }}</td>
+                    {% endif %}
+                    <!-- depot -->
+                    <td>{{ depot }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+</table>
+
+<p>Cordialement,</p>
+<p>AMS-IT-AVPD</p>

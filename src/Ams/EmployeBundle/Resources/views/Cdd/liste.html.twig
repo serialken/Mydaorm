@@ -1,0 +1,49 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreActif" {{app.request.cookies.get('MRoad_filtreActif')}}/>Afficher seulement les contrats actifs</span>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['actif'            ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['matricule'        ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_debut'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['cdddatefinprevu'  ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_fin'         ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['depot_id'         ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['flux_id'          ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['rc'               ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['relatmotifdeb'    ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['motifremplw'      ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['xautremotrempl'   ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['termecddw'        ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['salremplaw'       ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['infosalrempw'     ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+    }
+    function dhtmlxgridOnLoad(){
+        showOrHideActif();
+        $('#filtreActif').on('change', function() {
+            showOrHideActif();
+        });
+    }
+    function showOrHideActif(){
+        if($('#filtreActif').attr('checked') == 'checked') {
+            grid.filterBy(0, "1" ,true);
+            $.cookie('MRoad_filtreActif', 'checked');
+       }
+       else{
+            grid.filterBy(0,"");
+            grid.filterByAll();
+            $.cookie('MRoad_filtreActif', 'false');
+       }
+    }
+    </script>
+{% endblock %}

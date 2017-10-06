@@ -1,0 +1,268 @@
+<script>
+    function init() {
+        OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+            defaultHandlerOptions: {
+                'single': true,
+                'double': false,
+                'pixelTolerance': 0,
+                'stopSingle': false,
+                'stopDouble': false
+            },
+            initialize: function(options) {
+                this.handlerOptions = OpenLayers.Util.extend({},
+                        this.defaultHandlerOptions);
+                OpenLayers.Control.prototype.initialize.apply(this, arguments);
+                this.handler = new OpenLayers.Handler.Click(this, {
+                    //'dblclick' : this.trigger,
+                    'click': this.trigger
+                }, this.handlerOptions);
+            },
+            trigger: function(e) {
+                var map = GCUI.getMap('map');
+                var lonlat = map.getLonLatFromPixel(e.xy);
+                lonlat.transform(new OpenLayers.Projection("EPSG:27572"), new OpenLayers.Projection("EPSG:4326"));        
+                updatePointCoords(lonlat.lon,lonlat.lat, '{{web_files_root_dir}}images/carto/marker_pinpoint.png');
+            }
+
+        });
+var options = {}; 
+    var options = {
+        server: 'http://geoweb.geoconcept.com/geoweb-admin/maps',
+        mapName: 'integrationiris',
+        tab: 'Server2'
+    };
+
+{#
+            var options = {
+                server: 'http://10.150.5.157:8080/geoweb-easy/maps',
+                mapName: 'GCIS_Europe',
+//                mapName: 'Aulnay_Testgcm',
+                tab: 'Tout le vecteur',
+                showSlider: true,
+                projection: new OpenLayers.Projection("EPSG:27572"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326")
+////                                    maxExtent: new OpenLayers.Bounds.fromString("-180,-90,180,90"),
+//                //                    restrictedExtent: new OpenLayers.Bounds.fromString("-180,-90,180,90"),
+            };#}
+
+            var map = new GCUI.Map('map', options);
+            map.onEvent("load", onMapLoaded);
+               
+{#            var map = new OpenLayers.Map( 'map');
+            
+            var osmlayer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+            map.addLayer(osmlayer);
+            osmlayer.isBaseLayer= true;
+            
+            console.log(osmlayer);#}
+        }
+        function onMapLoaded() {
+            var map = GCUI.getMap('map');
+            
+            // Création de la couche des marqueurs
+            var markers = new OpenLayers.Layer.Markers("Markers");
+
+            var featurecollection = {{ json | raw }};
+                    // Affichage des informations de la tournée
+                    displayTourneeDatas(featurecollection.properties, 0);
+
+            // Création d'un tableau de points pour nourrir les étapes de la route
+            var pointsGeoJson = [];
+            for (oFeature in featurecollection.features) {
+                var point = featurecollection.features[oFeature];
+                pointsGeoJson.push(point);
+            }
+
+            var geojson_format = new OpenLayers.Format.GeoJSON({
+            });
+
+            var iconCount = 0;
+
+            var vector_layer = new OpenLayers.Layer.Vector("vector", {
+                projection: map.displayProjection,
+                preFeatureInsert: function(feature) {
+                    feature.geometry.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:27572"));
+
+                    // Changement de l'affichage du point selon son type
+                    if (feature.attributes.aType) {
+                        // Création du marqueur
+                        var size = new OpenLayers.Size(16, 16);
+                        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+
+                        // Style du point à afficher
+                        var style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+                        style.fillColor = feature.attributes.aPointColor;
+                        style.fillOpacity = 1;
+                        style.strokeColor = feature.attributes.tColor;
+                        style.strokeOpacity = 1;
+                        style.cursor = 'pointer';
+
+                        switch (feature.attributes.aType) {
+                            case 'abo':
+                                var icon = new OpenLayers.Icon('{{ web_files_root_dir|raw }}images/carto/marker_circle_' + feature.attributes.aTourneeNumber + '.png', size, offset);
+                                style.externalGraphic = '{{ web_files_root_dir|raw }}images/carto/marker_circle_' + feature.attributes.aTourneeNumber + '.png';
+                                icon.setOpacity(1);
+                                break;
+                            case 'l2v':
+                                var icon = new OpenLayers.Icon('{{ web_files_root_dir|raw }}images/carto/marker_triangle_' + feature.attributes.aTourneeNumber + '.png', size, offset);
+                                style.externalGraphic = '{{ web_files_root_dir|raw }}images/carto/marker_triangle_' + feature.attributes.aTourneeNumber + '.png';
+                                icon.setOpacity(1);
+                                break;
+                            case 'reperage':
+                                var icon = new OpenLayers.Icon('{{ web_files_root_dir|raw }}images/carto/marker_target_' + feature.attributes.aTourneeNumber + '.png', size, offset);
+                                style.externalGraphic = '{{ web_files_root_dir|raw }}images/carto/marker_target_' + feature.attributes.aTourneeNumber + '.png';
+                                icon.setOpacity(1);
+                                break;
+                            case 'depart':
+                                var icon = new OpenLayers.Icon('{{ web_files_root_dir|raw }}images/carto/marker_start_' + feature.attributes.aTourneeNumber + '.png', size, offset);
+                                style.externalGraphic = '{{ web_files_root_dir|raw }}images/carto/marker_start_' + feature.attributes.aTourneeNumber + '.png';
+                                icon.setOpacity(1);
+                                break;
+                        }
+
+                        var lonlat = new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y);
+                        var marker = new OpenLayers.Marker(lonlat, icon);
+
+                        feature.style = style;
+
+                        iconCount++;
+                    }
+                    markers.addMarker(marker);
+                }
+            });
+            vector_layer.addFeatures(geojson_format.read(featurecollection));
+
+            map.addLayer(vector_layer);
+
+            var selectFeature = new OpenLayers.Control.SelectFeature(vector_layer);
+            map.addControl(selectFeature);
+            selectFeature.activate();
+
+            vector_layer.events.on({
+                'featureselected': function(feature) {
+                    var markObj = feature.feature;
+                    displayP2LDatas(markObj, '{{web_files_root_dir|raw}}images');
+                },
+                'featureunselected': function(feature) {
+                    //hide message
+                }
+            });
+
+            var routeLayer = new OpenLayers.Layer.Vector('routeLayer',
+                    OpenLayers.Util.extend(OpenLayers.Feature.Vector.style, {
+                        'default': {
+                            strokeWidth: 2,
+                            strokeColor: featurecollection.properties.tColor
+                        },
+                        'select': {
+                            strokeWidth: 2,
+                            strokeColor: "blue"
+                        }
+                    }));
+            var currentXY = null;
+
+            map.events.register('mousemove', null, function(evt) {
+                currentXY = evt.xy;
+            });
+            routeLayer.events.on({
+                'featureselected': function(feature) {
+                    feature = feature.feature;
+                    var name = feature.attributes.name ? feature.attributes.name
+                            + '<br>' : '';
+                    var info = "<div style='font-size:.8em'>" + name + 'Durée: '
+                            + feature.attributes.duration + '<br>Distance: '
+                            + feature.attributes.distance + "</div>";
+                    var popup = new OpenLayers.Popup.FramedCloud("chicken", GCUI
+                            .getMap('map').getLonLatFromPixel(currentXY), null,
+                            info, null, true, null);
+                    feature.popup = popup;
+                    GCUI.getMap('map').addPopup(popup);
+                },
+                'featureunselected': function(feature) {
+                    feature = feature.feature;
+                    GCUI.getMap('map').removePopup(feature.popup);
+                    feature.popup.destroy();
+                    feature.popup = null;
+                }
+            });
+            map.addLayer(routeLayer);
+            var route = new GCUI.Control.Route({
+                autoActivate: true,
+                layer: routeLayer
+            });
+            map.addControl(route);
+
+            // Récupération des étapes intermédiaires dans un tableau
+            var etapesInter = [];
+            if (pointsGeoJson.length > 2) {
+                for (etape in pointsGeoJson) {
+                    if (etape != 0 && etape != (pointsGeoJson - 1)) {
+                        etapesInter.push(new OpenLayers.LonLat(pointsGeoJson[etape].geometry.coordinates));
+                    }
+                }
+            }
+
+            route.route({
+                origin: new OpenLayers.LonLat(pointsGeoJson[0].geometry.coordinates), // 1ère étape de la doute
+                destination: new OpenLayers.LonLat(pointsGeoJson[pointsGeoJson.length - 1].geometry.coordinates), // Dernière étape de la route
+                waypoints: etapesInter,
+                callback: function(resp, options) {
+                    var features = this.displayRoute(resp); // this == the route control
+                    //displayRouteSheet(resp); // display route sheet in #results div
+                },
+            });
+
+            var select = new OpenLayers.Control.SelectFeature([routeLayer], {
+                hover: true,
+                autoActivate: true
+            });
+            // map.addControl(select); // commenter pour activer les clicks sur les marqueurs
+
+            // Permet de centrer la carte sur la zone d'intéret
+            var newBound = markers.getDataExtent();
+            map.zoomToExtent(newBound);
+
+            // Ajoute les controles à la carte
+            map.addControl(new GCUI.Control.ScaleSlider());
+            
+            // Ajoute la gestion du click pour l'obtention des coordonnées
+            var c = new OpenLayers.Control.Click();
+            map.addControl(c);
+            c.activate();
+            
+            // Ajout de la couche contenant le marqueur du point désigné sur la carte
+            map.addLayer(newMarkerLayer);
+
+    {#            console.log(map);#}
+        }
+        function displayRouteSheet(route) {
+            var legs = route.legs;
+            var routeSheet = '<table>';
+            for (var i = 0; i < legs.length; i++) {
+                var leg = legs[i];
+                var steps = leg.steps;
+                for (var j = 0; j < steps.length; j++) {
+                    var step = steps[j];
+                    step.speed = Math.round((3600 * step.distance)
+                            / (1000 * step.duration));
+                    step.distance = step.distance < 1000
+                            ? step.distance + ' m'
+                            : (step.distance / 1000).toFixed(1) + ' km';
+                    step.duration = step.duration < 60 ? step.duration
+                            + ' s' : Math.round(step.duration / 60)
+                            + ' mn';
+                    var bounds = new OpenLayers.Bounds();
+                    for (var k = 0; k < step.points.length; k++) {
+                        var pt = step.points[k].split(',');
+                        bounds.extendXY(parseFloat(pt[0]), parseFloat(pt[1]));
+                    }
+                    routeSheet += '<tr' + ((j % 2 == 0) ? ' class="odd"' : "") + ' onclick="zoomOn(' + bounds.bottom + ',' + bounds.left + ',' + bounds.top + ',' + bounds.right + ')"><td class="tdNav"><span class="nav' + step.navInstruction + '"></span></td><td class="tdName">' + step.name + '</td><td class="tdDist">' + step.distance + '</td><td class="tdDur">' + step.duration + '</td><td class="tdSpeed">' + step.speed + ' km/h</td></tr>';
+                }
+            }
+            //document.getElementById('results').innerHTML = routeSheet + '</table>';
+        }
+        function zoomOn(bottom, left, top, right) {
+            var map = GCUI.getMap('map');
+            map.zoomToExtent(new OpenLayers.Bounds(left, bottom, right, top));
+        }
+</script>

@@ -1,0 +1,141 @@
+<rows>
+    <head>
+        <afterInit>
+            <call command="attachFooter"><param><![CDATA[<b>Total</b>
+                {% set totalNbClientAbo = '0' %}
+                {% set totalNbExAbo = '0' %}
+                {% set totalNbDiff = '0' %}
+                {% set totalNbClientsDIV = '0' %}
+                {% set totalNbExDIV = '0' %}
+                {% set totalNbExEnSupplements = '0' %}
+                {% set totalNbAdresses = '0' %}
+                {% set totalNbHeures = '0' %}
+                {% set totalEtalon = '0' %}
+                {% set totalNombreReclamBrut = '0' %}
+                {% set totalNombreReclamNet = '0' %}
+                {% set totalNombreReclamDivBrut = '0' %}
+                {% set totalNombreReclamDivNet = '0' %}
+                {% set totalNbKm = '0' %}
+                {% set compteur = '0' %}
+                {% set moyenneEtalon = '0' %}
+                {% set prod = '0' %}
+                {% set densite = '0' %}
+                {% set txSat = '0' %}
+                {% set txSvc = '0' %}
+                {% set txSatDiv = '0' %}
+                {% set txSvcDiv = '0' %}
+                {% set prodTotal = '0' %}
+                {% set densiteTotal = '0' %}
+                {% set txSatTotal = '0' %}
+                {% set txSvcTotal = '0' %}
+                {% set txSatDivTotal = '0' %}
+                {% set txSvcDivTotal = '0' %}
+            {# Calculs du footer Total #}
+            {% for reporting in reportings %}
+                {% set totalNbClientAbo = "#{totalNbClientAbo + reporting.nbClientAbo}" %}
+                {% set totalNbExAbo = "#{totalNbExAbo + reporting.nbExAbo}" %}
+                {% set totalNbDiff = "#{totalNbDiff + reporting.nbDiff}" %}
+                {% set totalNbClientsDIV = "#{totalNbClientsDIV + reporting.nbClientsDIV}" %}
+                {% set totalNbExDIV = "#{totalNbExDIV + reporting.nbExDIV}" %}
+                {% set totalNbExEnSupplements = "#{totalNbExEnSupplements + reporting.nbExEnSupplements}" %}
+                {% set totalNbAdresses = "#{totalNbAdresses + reporting.nbAdresses}" %}
+                {% set totalNbHeures = "#{totalNbHeures + reporting.nbHeures}" %}
+                {% set compteur = "#{compteur + 1}" %}
+                {% set totalEtalon = "#{totalEtalon + reporting.etalon}" %}
+                {% set totalNombreReclamBrut = "#{totalNombreReclamBrut + reporting.nombreReclamBrut}" %}
+                {% set totalNombreReclamNet = "#{totalNombreReclamNet + reporting.nombreReclamNet}" %}
+                {% set totalNombreReclamDivBrut = "#{totalNombreReclamDivBrut + reporting.nombreReclamDivBrut}" %}
+                {% set totalNombreReclamDivNet = "#{totalNombreReclamDivNet + reporting.nombreReclamDivNet}" %}
+                {% set totalNbKm = "#{totalNbKm + reporting.nbKm}" %}
+            {% endfor %}
+                {% if totalNbHeures != 0 %}
+                    {% set prodTotal = "#{(totalNbClientAbo + totalNbClientsDIV) / totalNbHeures}" %}   
+                {% endif %}
+                {% if totalNbKm != 0 %}
+                    {% set densiteTotal = "#{(totalNbClientAbo + totalNbClientsDIV) / totalNbKm}" %}
+                {% endif %}
+                {% if totalNbExAbo != 0 %}
+                    {% set txSatTotal = "#{((totalNombreReclamBrut / totalNbExAbo) * 1000)}" %} 
+                    {% set txSvcTotal = "#{((totalNombreReclamNet / totalNbExAbo) * 1000)}" %}
+                {% endif %}
+                {% if totalNbExDIV != 0 %}
+                    {% set txSatDivTotal = "#{((totalNombreReclamDivBrut / totalNbExDIV) * 1000)}" %}
+                    {% set txSvcDivTotal = "#{((totalNombreReclamDivNet / totalNbExDIV) * 1000)}" %}
+                {% endif %}
+            {% if compteur != 0 %}
+                {% set moyenneEtalon = "#{totalEtalon / compteur}" %}
+            {% endif %}
+            
+            {# Affichage du footer Total #}
+            *<div style="text-align: center;"><span>{{ totalNbClientAbo }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbExAbo }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbDiff }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbClientsDIV }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbExDIV }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbExEnSupplements }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbAdresses }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbHeures }}</span></div>
+            *<div style="text-align: center;"><span>{{ moyenneEtalon|round(5, 'floor')}}</span></div>
+            *<div style="text-align: center;"><span>{{ prodTotal|round(5, 'floor')}}</span></div>
+            *<div style="text-align: center;"><span>{{ densiteTotal|round(5, 'floor')}}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNombreReclamBrut }}</span></div>
+            *<div style="text-align: center;"><span>{{ txSatTotal|round(5, 'floor') }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNombreReclamNet }}</span></div>
+            *<div style="text-align: center;"><span>{{ txSvcTotal|round(5, 'floor') }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNombreReclamDivBrut }}</span></div>
+            *<div style="text-align: center;"><span>{{ txSatDivTotal|round(5, 'floor') }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNombreReclamDivNet }}</span></div>
+            *<div style="text-align: center;"><span>{{ txSvcDivTotal|round(5, 'floor') }}</span></div>
+            *<div style="text-align: center;"><span>{{ totalNbKm }}</span></div>
+            
+            *#cspan]]></param></call>
+        </afterInit>
+    </head>
+    {#Calculs dans le grid#}
+    {% for reporting in reportings %}
+        {% if reporting.nbHeures != 0 %}
+            {% set prod = "#{(reporting.nbClientAbo + reporting.nbClientsDIV + reporting.nbDiff) / reporting.nbHeures}" %}   
+        {% endif %}
+        {% if reporting.nbKm != 0 %}
+            {% set densite = "#{(reporting.nbClientAbo + reporting.nbClientsDIV) / reporting.nbKm}" %}
+        {% endif %}
+        {% if reporting.nbExAbo != 0 %}
+            {% set txSat = "#{((reporting.nombreReclamBrut / reporting.nbExAbo) * 1000)}" %} 
+            {% set txSvc = "#{((reporting.nombreReclamNet / reporting.nbExAbo) * 1000)}" %}
+        {% endif %}
+        {% if reporting.nbExDIV != 0 %}
+            {% set txSatDiv = "#{((reporting.nombreReclamDivBrut / reporting.nbExDIV) * 1000)}" %}
+            {% set txSvcDiv = "#{((reporting.nombreReclamDivNet / reporting.nbExDIV) * 1000)}" %}
+        {% endif %}
+        {# Affichage des données dans les cellules #}
+        <row id ="{{reporting.id}}">
+           <cell>{{reporting.codeTournee}}</cell>
+           <cell>{{reporting.nbClientAbo}}</cell>
+           <cell>{{reporting.nbExAbo}}</cell>
+           <cell>{{reporting.nbDiff}}</cell>
+           <cell>{{reporting.nbClientsDIV}}</cell>
+           <cell>{{reporting.nbExDIV}}</cell>
+           <cell>{{reporting.nbExEnSupplements}}</cell>
+           <cell>{{reporting.nbAdresses}}</cell>
+           <cell>{{reporting.nbHeures}}</cell>
+           <cell>{{reporting.etalon}}</cell>
+           <cell>{{prod|round(5, 'floor')}}</cell>
+           <cell>{{densite|round(5, 'floor')}}</cell>
+           <cell>{{reporting.nombreReclamBrut}}</cell>
+           <cell>{{txSat|round(5, 'floor')}}</cell>
+           <cell>{{reporting.nombreReclamNet}}</cell>
+           <cell>{{txSvc|round(5, 'floor')}}</cell>
+           <cell>{{reporting.nombreReclamDivBrut}}</cell>
+           <cell>{{txSatDiv|round(5, 'floor')}}</cell>
+           <cell>{{reporting.nombreReclamDivNet}}</cell>
+           <cell>{{txSvcDiv|round(5, 'floor')}}</cell>
+           <cell>{{reporting.nbKm}}</cell>
+        </row>
+        {% set prod = '0' %}
+        {% set densite = '0' %}
+        {% set txSat = '0' %}
+        {% set txSvc = '0' %}
+        {% set txSatDiv = '0' %}
+        {% set txSvcDiv = '0' %}
+    {% endfor %}
+</rows>

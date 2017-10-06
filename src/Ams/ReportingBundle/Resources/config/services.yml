@@ -1,0 +1,7 @@
+parameters:
+#    ams_reporting.example.class: Ams\ReportingBundle\Example
+
+services:
+#    ams_reporting.example:
+#        class: %ams_reporting.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

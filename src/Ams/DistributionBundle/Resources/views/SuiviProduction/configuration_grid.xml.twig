@@ -1,0 +1,33 @@
+<rows>
+    {% if depotRoutes is empty %}
+        <row id ="0" locked="true">
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+        </row>
+    {% else %}
+        {% for data in depotRoutes %}
+            <row id ="{{data.id}}" locked="true">
+                <cell>Dev en cours .....</cell>
+                <cell>{{data.code_route}}</cell>
+                <cell>
+                    {% if data.libelle_route|length > 0 %}
+                        {{data.libelle_route}}
+                    {% else %}
+                        -
+                    {% endif %}
+                </cell>
+                <cell>{{data.code_centre}}</cell>
+                <cell>
+                    {% if data.libelle_route|length > 0 %}
+                        {{data.libelle_centre}}
+                    {% else %}
+                        -
+                    {% endif %}
+                </cell>
+            </row>
+        {% endfor %}
+    {% endif %}
+</rows>

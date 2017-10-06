@@ -1,0 +1,18 @@
+<rows>
+  <head>      
+    <column type="ro" width="0" align="left"> Id </column>
+    <column type="coro" align="left"> Depot {{ listeDepot |raw }} </column>
+    <column type="ed" align="left"> Libelle </column>
+    <column type="ed" align="left">Adresse IP</column>
+    <column type="ro" align="center" width="50">Action</column>
+  </head> 
+  {% for row in imprimantes %}
+  <row>
+    <cell> {{ row.id }}</cell>
+    <cell> {{ row.depotId }} </cell> 
+    <cell> {{ row.libelleImprimante}}</cell>
+    <cell> {{ row.ipImprimante }}</cell>
+    <cell type="ro"><![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]>    </cell>
+  </row>
+  {% endfor %}
+</rows>

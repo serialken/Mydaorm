@@ -1,0 +1,113 @@
+<style type="text/css" media="screen">
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .title {
+        font-weight: bold;
+        font-size: 24px;
+        text-align: center;
+        text-decoration: underline;
+    }
+    .span_underbold {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    .bold_center {
+        font-weight: bold;
+        text-align: center;
+        align: center;
+    }
+</style>
+<img style="position:relative; width:250px;"  src="../web/images/logo_proximy.jpg" ><br/>
+<div class='title'>PARAMETRES DE LA TOURNEE A LA DATE DU {{entete.0.date_application}}</div>
+<div class='title'>PLATEFORME DE DISTRIBUTION : {{entete.0.depot}}</div>
+<div style='margin-top: 20px'>
+    <p>
+        <b>{% if entete.0.nb_tournees==1 %}La tournée confiée{% else %}Les tournées confiées{% endif %} au jour des présentes : </b>{{entete.0.tournees}}<b> &agrave; {{entete.0.employe}}</b><br/>
+        <i>Etant précisé que le salarié s'engage &agrave; accepter tout affectation, même temporaire, sur une autre tournée,</i>
+    </p>
+    <p>
+        <b>Jour travaillées sur la semaine : </b>{{entete.0.cycle}}<br/>
+    </p>
+    <p>
+        <b>Heure de prise de service :</b> {{entete.0.heure_debut}}<br/>
+    </p>
+</div>
+    
+<div style='width: 100%;align: center;text-align: center;'>
+    <table align="center" style='margin: 0px auto;margin-top: 20px;table-layout:fixed'>
+        <tr>
+            <th colspan='5'><b>Etalonnage de la tournée<br/>(hors suppléments et autres produits)</b><br/></th>
+        </tr>
+        <tr>
+            <td style='width:100px'><b>Jour</b></td>
+            <td style='width:100px'><b>Tournée</b></td>
+            <td style='width:75px'><b>Temps</b></td>
+            <td style='width:75px'><b>Nb clients</b></td>
+            <td style='width:75px'><b>Kms</b></td>
+        </tr>
+        {% for row in tournees %}
+        <tr>
+            <td style='text-align:left'><b>{{row.jour}}</b></td>
+            <td>{{row.code}}</td>
+            <td>{{row.duree}}</td>
+            <td>{{row.nbcli}}</td>
+            <td>{{row.nbkm}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th colspan='5'><br/><b>Durée étalonnée de référence</b></th>
+        </tr>
+        {% for row in reference %}
+        <tr>
+            <td style='text-align:left'><b>{{row.jour}}</b></td>
+            <td></td>
+            <td>{{row.duree}}</td>
+            <td>{{row.nbcli}}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        <tr style='border-left: 0px;border-right: 0px'>
+            <th colspan='5'  style='border-left: 0px;border-right: 0px'>&nbsp;</th>
+        </tr>
+        <tr>
+            <th colspan='5'><b>Valeur étalon par client</b></th>
+        </tr>
+        <tr>
+            <td colspan='5' style='text-align:left;width:400px;word-wrap:break-word'>
+                <i>Cette valeur étalon correspond &agrave; la rémunération qui sera appliquée &agrave; chaque client livré. Elle est calculée en multipliant la durée étalonnée de référence par le taux horaire su SMIC puis en divisant par le nombre de clients moyen.</i><br/>
+            </td>
+        </tr>
+        {% for row in reference %}
+        <tr>
+            <td style='text-align:left'><b>{{row.jour}}</b></td>
+            <td colspan='4'>{{row.valrem}} €</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+            
+<br/><br/>
+<div class='thrd_content'>
+    <p>
+        <span class='span_underbold'>Rémunération de la tournée :</span><br/>
+        <i>La rémunération de la tournée, hors supplément et autres produits, est égale par jour &agrave; :</i><br/>
+        <br/>
+        <div class="bold_center">(Valeur Etalon par client x Nbre de clients livrés)</div>
+    </p>
+    <p>
+        <span class='span_underbold'>Les suppléments et autres produits :</span><br/>
+        <i>Le temps et la rémunération des suppléments et autres produits sont pris en compte selon les règles en vigueur dans l'entreprise.</i><br/>
+    </p>
+    <p><b>Les éléments ci-dessus peuvent être modifiés via un réétalonnage &agrave; la demande du salarié comme de l'entreprise.</b></p>
+</div>
+            
+<br/><br/><br/>
+<div class='signature'>
+    Fait le<br/>
+    Signature - avec la mention " Lu et approuvé - Bon pour accord "<br/>
+    <br/>
+    Le salarié
+</div>

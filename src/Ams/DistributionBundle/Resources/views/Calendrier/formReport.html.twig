@@ -1,0 +1,7 @@
+<h4>Gestion des reports de fichier</h4>
+<form method="post" class="form reportFichier" id="formReport" action="{{ path('calendrier_update_report',{'id':produit.id})}}" {{ form_enctype(formReport) }} >          
+    {{ form_widget(formReport) }}
+    <span id="inputFormReport">
+        <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+    </span>
+</form>

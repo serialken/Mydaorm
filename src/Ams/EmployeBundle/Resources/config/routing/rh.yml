@@ -1,0 +1,138 @@
+emp_action_dhtmlx:
+    pattern:  /action-dhtmlx/{repositoryName}
+    defaults: { _controller: AmsEmployeBundle:Dhtmlx:gridAction}
+
+    
+liste_employe_journal:
+    pattern:  /liste-employe-journal
+    defaults: { _controller: "AmsEmployeBundle:EmpJournal:liste" }
+    
+gridliste_employe_journal:
+    pattern:  /grid-employe-journal
+    defaults: { _controller: "AmsEmployeBundle:EmpJournal:grid" }
+
+ajax_actualisation_employe_journal:
+    pattern:  /ajax-actualisation-employe-journal
+    defaults: { _controller: "AmsEmployeBundle:EmpJournal:ajaxActualisation" }
+
+
+liste_employe_recherche:
+    pattern:  /liste-employe-recherche
+    defaults: { _controller: "AmsEmployeBundle:Recherche:liste" }
+  
+gridliste_employe_recherche:
+    pattern:  /grid-employe-recherche
+    defaults: { _controller: "AmsEmployeBundle:Recherche:grid" }
+
+recherche_employe:
+    pattern:  /recherche-employe
+    defaults: { _controller: "AmsEmployeBundle:Recherche:recherche" }
+
+
+liste_employe_contrat:
+    pattern:  /liste-employe-contrat
+    defaults: { _controller: "AmsEmployeBundle:Contrat:liste" }
+  
+gridliste_employe_contrat:
+    pattern:  /grid-employe-contrat
+    defaults: { _controller: "AmsEmployeBundle:Contrat:grid" }
+
+alimentation_employe:
+    pattern:  /alimentation-employe
+    defaults: { _controller: "AmsEmployeBundle:Contrat:alimentation" }
+    
+export_annexe_employe:
+    pattern:  /export-annexe-employe
+    defaults: { _controller: "AmsEmployeBundle:Contrat:exportAnnexe" }
+    
+export_annexe_fichier:
+    pattern:  /export-annexe-fichier
+    defaults: { _controller: "AmsEmployeBundle:Contrat:exportAnnexeFichier" }
+
+
+liste_employe_transfert:
+    pattern:  /liste-employe-transfert
+    defaults: { _controller: "AmsEmployeBundle:EmpTransfert:liste" }
+  
+gridliste_employe_transfert:
+    pattern:  /grid-employe-transfert
+    defaults: { _controller: "AmsEmployeBundle:EmpTransfert:grid" }
+
+ajax_actualisation_emp_transfert:
+    pattern:  /ajax-actualisation-emp-transfert
+    defaults: { _controller: "AmsEmployeBundle:EmpTransfert:ajaxActualisation" }
+
+
+liste_employe_affectation:
+    pattern:  /liste-employe-affectation
+    defaults: { _controller: "AmsEmployeBundle:EmpAffectation:liste" }
+  
+gridliste_employe_affectation:
+    pattern:  /grid-employe-affectation
+    defaults: { _controller: "AmsEmployeBundle:EmpAffectation:grid" }
+
+ajax_actualisation_emp_affectation:
+    pattern:  /ajax-actualisation-emp-affectation
+    defaults: { _controller: "AmsEmployeBundle:EmpAffectation:ajaxActualisation" }
+
+
+liste_employe_cdd:
+    pattern:  /liste-employe-cdd
+    defaults: { _controller: "AmsEmployeBundle:Cdd:liste" }
+  
+gridliste_employe_cdd:
+    pattern:  /grid-employe-cdd
+    defaults: { _controller: "AmsEmployeBundle:Cdd:grid" }
+
+
+liste_employe_contrathp:
+    pattern:  /liste-employe-contrathp
+    defaults: { _controller: "AmsEmployeBundle:EmpContratHP:liste" }
+  
+gridliste_employe_contrathp:
+    pattern:  /grid-employe-contrathp
+    defaults: { _controller: "AmsEmployeBundle:EmpContratHP:grid" }
+
+
+liste_employe_cycle:
+    pattern:  /liste-employe-cycle
+    defaults: { _controller: "AmsEmployeBundle:Cycle:liste" }
+  
+gridliste_employe_cycle:
+    pattern:  /grid-employe-cycle
+    defaults: { _controller: "AmsEmployeBundle:Cycle:grid" }
+
+
+liste_employe_heure_sup:
+    pattern:  /liste-employe-heure-sup
+    defaults: { _controller: "AmsEmployeBundle:HeureSup:liste" }
+
+gridliste_employe_heure_sup:
+    pattern:  /grid-employe-heure-sup
+    defaults: { _controller: "AmsEmployeBundle:HeureSup:grid" }
+        
+ajax_actualisation_employe_heure_sup:
+    pattern:  /ajax-actualisation-employe-heure-sup
+    defaults: { _controller: "AmsEmployeBundle:HeureSup:ajaxActualisation" }
+        
+    
+liste_employe_suivi_horaire:
+    pattern:  /liste-employe-suivi-horaire
+    defaults: { _controller: "AmsEmployeBundle:SuiviHoraire:liste" }
+
+gridliste_employe_suivi_horaire:
+    pattern:  /grid-employe-suivi-horaire
+    defaults: { _controller: "AmsEmployeBundle:SuiviHoraire:grid" }
+        
+ajax_actualisation_employe_suivi_horaire:
+    pattern:  /ajax-actualisation-employe-suivi-horaire
+    defaults: { _controller: "AmsEmployeBundle:SuiviHoraire:ajaxActualisation" }
+
+    
+liste_employe_request:
+    pattern:  /liste-employe-request
+    defaults: { _controller: "AmsEmployeBundle:EmployeRequest:liste" }
+  
+gridliste_employe_request:
+    pattern:  /grid-employe-request
+    defaults: { _controller: "AmsEmployeBundle:EmployeRequest:grid" }

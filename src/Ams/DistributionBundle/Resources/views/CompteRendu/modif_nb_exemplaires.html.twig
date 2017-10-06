@@ -1,0 +1,203 @@
+{% extends '::modal.html.twig' %}  
+{% block modalCss %}
+<link rel="stylesheet" type="text/css" href="{{asset ('js/dhtmlxSuite/dhtmlx_pro_full/dhtmlx.css') }}">
+<style>
+        .modal-dialog {
+            width: 55%!important; 
+            height: 100px!important; 
+            margin:  auto;
+        }
+        div#amsModalBody {
+            height: 790px!important;
+        }
+        #listeGeocode {overflow: scroll;height: 200px;}
+        div.gridbox_dhx_skyblue .dhtmlx_invalid{background-color:#FAD9DD}
+        div.gridbox_dhx_skyblue .dhtmlx_ecart10{background-color:#F4FA58}
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4>Modification des comptes rendus de distribution</h4>
+{% endblock %}
+{% block modalContenu %}
+
+<div id='modifDistrib' class="well">
+  <div id ="errorMsg" style="color:red"></div><br/>
+    <div class="row">
+      <div>
+          <div  style='position:relative; height:700px; width:100%;'>
+            <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <div id="gridbox_modal"  style="width:100%; height:500px!important; background-color:white;overflow:hidden"></div>
+                         <div id="cover_modal" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                                 Chargement ...
+                          </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {#<div id="recinfoArea"><form><input id="modifButton" value="Enregistrer" type="button"></form></div>#}
+                    </td>
+                </tr>
+            </table>  
+          </div>
+      </div>
+    </div>
+
+<script type="text/javascript">   
+
+    function updategRid(){
+       var row_id = {{row_id}},
+        total_abo =$("#nb_diff_non_livre").html(),
+        total_diff = $("#qte_diff_non_livre").html(),
+        id_cptr = {{cptr_distribution_id}},
+        date = '{{affichage_date}}',
+        id_depot = {{id_depot}},
+        row_index = parseInt(row_id) -1,
+        tournee = '{{tournee}}'; 
+       
+        if(typeof(total_abo) != 'undefined' && typeof(total_diff) != 'undefined'){
+ grid.filterBy(0,""); //unfilters the grid
+        grid._f_rowsBuffer = null; //clears the cache
+ 
+            grid.cells2(row_index,6).setValue('<a href="#" data-toggle="modal" data-target="#amsModal" onclick="modifDistribRow( \''+date+'\', \''+id_depot+'\', \''+tournee+'\', \''+row_id+'\')" >'+total_abo+'</a>');
+            grid.cells2(row_index,7).setValue('<a href="#" data-toggle="modal" data-target="#amsModal" onclick="modifDistribRow( \''+date+'\', \''+id_depot+'\', \''+tournee+'\', \''+row_id+'\')" >'+total_diff+'</a>');
+           // myDataProcessor.setUpdated(row_id,true);
+           grid.filterByAll();
+        }
+
+    }
+
+    function calculateFooterValues(stage){
+        if(stage && stage!=2) 
+            return true; 
+        $("#qte_prevue").html(sumColumn(5));
+        $("#nb_diff_non_livre").html(sumColumn(6));
+        $("#qte_diff_non_livre").html(sumColumn(7));
+        {#$("#qte_ab_non_livre").html(sumColumn(7));#}
+        {#$("#nb_ab_non_livre").html(sumColumn(6));#}
+         
+        return true;
+    }
+
+    function isValidInitQte(value,id,ind){
+        if(ind == 5){ 
+            var nolLivAbVal   = grid_modal.cells(id,ind+2).getValue(),
+                nolLivDifVal  = grid_modal.cells(id,ind+4).getValue();
+            if(!((value).match(/^\d+$/)) || !((nolLivAbVal).match(/^\d+$/)) || !((nolLivDifVal).match(/^\d+$/))) {
+                //$('#errorMsg').html('<span>Merci de saisir une valeur valide</span> ');
+                 bootbox.alert("Merci de saisir une valeur valide").find("div.modal-dialog").addClass("smallWidth");
+                $('#modifButton').hide();
+
+                return false;
+            }
+            nolLivAbVal   = parseInt(nolLivAbVal);
+            nolLivDifVal  = parseInt(nolLivDifVal);
+            var value = parseInt(value);
+            if(value < nolLivAbVal || value < nolLivDifVal){
+                 bootbox.alert("Le nombre des exemplaires non livrés  doit être inférieur ou égale la quantité initiale").find("div.modal-dialog").addClass("mdWidth");
+               // $('#errorMsg').html('<span>Le nombre des exemplaires non livrés  doit être inférieur ou égale la quantité initiale</span> ')
+                $('#modifButton').hide();
+                
+                return false;
+            }
+             
+            if(value < (nolLivAbVal + nolLivDifVal)){
+               // $('#errorMsg').html('<span>La somme des exemplaires non livrés  doit être inférieur ou égale  la quantité initiale</span> ');
+                bootbox.alert("La somme des exemplaires non livrés  doit être inférieur ou égale  la quantité initiale").find("div.modal-dialog").addClass("mdWidth");
+               
+                 $('#modifButton').hide();
+                return false;
+            }
+            $('#errorMsg').html('<span></span>'); 
+            $('#modifButton').show();   
+
+            return true;
+        }
+        
+    }
+
+
+     function isValidExNoLivAb(value,id,ind){
+        var value = parseInt(value); 
+        if(ind == 4){    
+            var initQte  = parseInt(grid_modal.cells(id,ind-1).getValue());
+            
+            var nolLivDifVal  = parseInt(grid_modal.cells(id,ind+1).getValue());
+            if(value > initQte){
+                 bootbox.alert('Le nombre des exemplaires non livrés  doit être inférieur ou égale la quantité initiale').find("div.modal-dialog").addClass("mdWidth");
+                return false;
+            }
+            
+             if(initQte < (value + nolLivDifVal)){
+                 bootbox.alert('La somme des exemplaires non livrés  doit être inférieur ou égale  la quantité initiale ').find("div.modal-dialog").addClass("mdWidth");
+                return false;
+            }
+            $('#errorMsg').html();    
+          return true;
+        }
+    }
+   
+    function sumColumn(ind){
+            var sum = 0,
+            gridRows =  grid_modal.getRowsNum();
+
+            for(var i=0;i< gridRows;i++){
+                if(typeof(grid_modal.cells2(i,ind) != 'undefined')){
+                   sum+= parseInt(grid_modal.cells2(i,ind).getValue());  
+               }else{
+                console.log(i+'_'+ind);
+               }
+                   
+            }
+
+            return sum;
+    }
+
+    
+    grid_modal = new dhtmlXGridObject('gridbox_modal');
+    grid_modal.setImagePath("{{dhtmlx_img }}");
+    grid_modal.setHeader("id,ville_id,Soc,Societe,ville,Quantité initiale,Nb des abonnés non livré,Nb diffuseur non livré");
+    grid_modal.setColumnIds("id,ville_id,societe,produit,ville,qte,nb_ab_non_livre,nb_ex_abo,nb_diff_non_livre,nb_ex_diff");
+    grid_modal.setColAlign("center,left,left,left,center,center,center,center,center,center");
+    grid_modal.setColTypes("ro,ro,ro,ro,ro,ro,ed,ed");
+    grid_modal.setInitWidths("8,8,170,190,190,140,140,140");
+    grid_modal.attachHeader("#text_filter,#text_filter,#text_filter,#text_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+   // grid_modal.attachFooter("Total,,,,,#stat_total,#stat_total,#stat_total,#stat_total,#stat_total",["width:100px","width:100px","width:100px","width:100px","width:100px","width:100px","width:100px","width:100px","width:100px","width:100px;color:red"]);
+    grid_modal.attachFooter("Total,,<div style='text-align:left;width:100px'>Total</div>,<div style='width:100px'></div>,<div style='width:100px'></div>,<div style='text-align:center;' id='qte_prevue'></div>,<div id='nb_diff_non_livre' style='width:100px'>0</div>,<div style='text-align:center;' id='qte_diff_non_livre'>0</div>",["text-align:center,color:green,font-weight: bold;"])
+
+    grid_modal.setColumnHidden(0,true);
+    grid_modal.setColumnHidden(1,true);
+    grid_modal.enableValidation(true); 
+    grid_modal.setColValidators(",,,,,ValidInteger,ValidInteger,ValidInteger,ValidInteger,ValidInteger"); 
+    grid_modal.init();
+    //grid_modal.setColumnsVisibility("true,false,false,false,false,false");
+    grid_modal.attachEvent("onXLS", function() {
+        $('#cover_modal').show();
+    });
+    grid_modal.attachEvent("onXLE", function() {
+        $('#cover_modal').hide();
+    });
+    
+    grid_modal.attachEvent("onEditCell",calculateFooterValues);
+    // grid_modal.attachEvent("onEditCell",);
+            
+    grid_modal.setSkin("dhx_skyblue");
+    grid_modal.loadXML("{{path('compte_rendu_liste_exemplaires_non_distribues',{'date':affichage_date,'tournee_id':tournee,'id_depot':id_depot, 'id_cptr': cptr_distribution_id})|raw}}",calculateFooterValues);
+    myDataProcessor_modal = new dataProcessor("{{path('compte_rendu_liste_exemplaires_non_distribues_sauvegarde',{'date':affichage_date, 'id_cptr': cptr_distribution_id})|raw}}");
+    {#myDataProcessor_modal.setVerificator(5,isValidInitQte);#}
+  
+    //myDataProcessor.setVerificator(9,ValidInteger);
+   //myDataProcessor_modal.setVerificator(5,ischeckQuantity);
+    myDataProcessor_modal.setTransactionMode("POST",true); //set mode as send-all-by-post
+    myDataProcessor_modal.enableDataNames(true);
+
+    myDataProcessor_modal.init(grid_modal);
+    myDataProcessor_modal.attachEvent("onAfterUpdateFinish",function(){
+    updategRid();
+
+    });
+    
+    
+</script>  
+{% endblock %}

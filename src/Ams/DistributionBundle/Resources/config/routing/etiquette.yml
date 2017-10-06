@@ -1,0 +1,10 @@
+etiquette: 
+    pattern:    /
+    defaults:    { _controller: "AmsDistributionBundle:Etiquette:index" }
+    
+etiquette_imprim: 
+    pattern:    /impression
+    defaults:    { _controller: "AmsDistributionBundle:Etiquette:imprim" }
+    
+
+

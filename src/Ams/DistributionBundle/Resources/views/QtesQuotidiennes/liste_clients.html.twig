@@ -1,0 +1,111 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Liste des clients{% endblock %}
+
+{% block body %}
+    
+<style>
+  .objbox{height:617px !important}
+  #gridbox{height:645px !important}
+</style>
+
+<div class="well">
+    <form method="post" name="formListeClients" id="formListeClients" action="{{path('liste_clients_cd_produit')}}" >
+        <table>
+            <tr>
+                <td>
+                    {{ form_label(form.depot_id) }} :
+                    &nbsp;&nbsp;{{ form_widget(form.depot_id, {'value': depot_id, 'id': 'depot_id'}) }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ form_label(form.dateDistrib) }} : 
+                    {{ form_errors(form.dateDistrib) }}
+                    &nbsp;&nbsp;{{ form_widget(form.dateDistrib, {'attr': {'value': form.dateDistrib.value|default(date_distrib|date("d/m/Y"))}, 'id': 'dateDistrib'}) }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {{ form_label(form.produit_id) }} :
+                    &nbsp;&nbsp;{{ form_widget(form.produit_id, {'value': produit_id, 'id': 'produit_id'}) }}&nbsp;&nbsp;
+                    {{form_label(form.flux)}} : {{ form_widget(form.flux, {'value': flux, 'id': 'flux'}) }}
+                </td>
+                <td >&nbsp;&nbsp;<button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-search white"></i> Rechercher </button>  </td>
+                </tr>
+       </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("form input.date").datepicker({
+         dateFormat: 'dd/mm/yy', 
+         firstDay:1
+     }).attr("readonly","readonly");
+
+    $(document).ready(function() {
+        /* $('#formListeClients').submit(function(e) {
+             e.preventDefault();
+             this.action = this.action+'/'+$('#depot_id').val()+'/'+$('#produit_id').val()+'/'+$('#dateDistrib').val().replace(/\//gi, '-');
+             $(location).attr('href', this.action);
+         });*/
+     });    
+</script>
+<div style='height:28px'>
+  {#<a href ="{{web_files_root_dir}}tmp/file_{{date_distrib|date('d-m-Y')}}_{{depot_id}}_{{produit_id}}.csv" target="_blank">
+    <img style="float:right; margin:3px; cursor:pointer" src="{{ asset('images/excel.png') }}" alt="Imprimer" >
+  </a>#}
+  <a href ="{{path('liste_clients_cd_produit_donnees',{dId:depot_id,pId:produit_id,date : date_distrib|date('d-m-Y'), flux: flux, export: true })}}"  target="_blank">
+    <img style="float:right; margin:3px; cursor:pointer" src="{{ asset('images/excel.png') }}" alt="Imprimer" >
+  </a>
+ 
+</div>
+<div  style='position:relative; height:700px; width:100%;'>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                         Chargement ...
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="recinfoArea"></div>
+            </td>
+        </tr>
+    </table>  
+</div>
+
+<script type="text/javascript">
+    
+    grid = new dhtmlXGridObject('gridbox');
+	grid.setImagePath("{{dhtmlx_img }}");
+	grid.init();
+    
+	grid.attachEvent("onXLS", function() {
+		document.getElementById('cover').style.display = 'block';
+	});
+	
+	grid.attachEvent("onXLE", function() {
+		document.getElementById('cover').style.display = 'none';
+	});
+
+	grid.setSkin("dhx_skyblue");
+	grid.enableSmartRendering(true);
+    
+	/** Pagination */
+	grid.enablePaging(true, 30, 3, "recinfoArea");
+	grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+	/** INSERT VIEW XML FORMAT **/
+	grid.loadXML("{{path('liste_clients_cd_produit_donnees', {'date': date_distrib|date("d-m-Y"), 'dId': depot_id, 'pId': produit_id, flux:flux})}}");
+        
+   
+    
+      
+</script>
+
+{% endblock %}
+
+    
+ 
+ 
+ 
+ 

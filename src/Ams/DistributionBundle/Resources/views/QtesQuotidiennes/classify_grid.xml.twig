@@ -1,0 +1,28 @@
+<rows>
+    <head>      
+      <column type="ro" width="200" align="center" sort="str"> Produit(s) </column>
+      <column type="ro" width="80" align="center" sort="int">N°Abonné</column>
+      <column type="ro" width="250" align="left" sort="str">Nom/Prénom</column>
+      <column type="ro" width="*" align="left" sort="str">Adresse</column>
+      <column type="ro" width="80" align="center" sort="str">Quantité</column>
+      <column width="150" type="coro" align="center" sort="str">Code Tournée {{ tournee|raw }} </column> 
+      <column width="80" type="ro" align="center" sort="str">Actions</column> 
+      <afterInit>
+        <call command='attachHeader'> 
+          <param>#select_filter,#text_filter,#text_filter,#text_filter,#select_filter,#text_filter,
+         </param> 
+        </call>   
+      </afterInit>  
+    </head> 
+    {% for row in classify %}
+      <row>
+        <cell>{{ row.libelle|trim }}</cell>
+        <cell>{{ row.numabo_ext  }}</cell> 
+        <cell>{{ row.vol1 }}</cell> 
+        <cell>{{ row.vol4~" "~row.vol3~" "~row.cp~" "~row.ville }}</cell> 
+        <cell>{{ row.qte}}</cell> 
+        <cell>  </cell> 
+        <cell><![CDATA[ <form action="" method="post"> <input type="hidden" name="tournee" class="tournee" value="" required=""/> <input type="hidden" name="casl_id" value="{{row.casl_id}}"/><input type="button"  class="btn btn-danger btn-xs btn_valier" value="Affecter"/></form> ]]></cell>
+      </row>
+    {% endfor %}
+</rows>

@@ -1,0 +1,8 @@
+admin_liste_groupedepot:
+    pattern:  groupes_depots
+    defaults: { _controller: AmsSilogBundle:GroupeDepot:liste }
+
+admin_modif_groupedepot:
+    pattern:  groupe_depots/{GRD_CODE}/{act}/
+    defaults: { _controller: AmsSilogBundle:GroupeDepot:groupeDepots, GRD_CODE: 0, act: 0 }
+    

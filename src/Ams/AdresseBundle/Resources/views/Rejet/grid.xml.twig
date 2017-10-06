@@ -1,0 +1,15 @@
+<rows>
+    {% for row in liste %}
+        <row id="{{row.adresseId}}" locked="true">
+            <cell Tooltips="false"><![CDATA[<a href="#" class="editlink" data-description="Traitement des rejets" data-content="Ce lien permet de traiter les rejets, normaliser une adresse(RNVP), géocoder une adresse." onmouseover="affPopoverLien(this);" data-toggle="modal" data-target="#amsModal" onClick="modifRow({{ row.adresseId }},'{{ row.type_rejet }}');" ><span class="glyphicon glyphicon-edit"></span> Modifier </a>]]></cell>
+            <cell>{{row.cd}}</cell>
+            <cell>{{row.vol3}}</cell>
+            <cell>{{row.vol4}}</cell>
+            <cell>{{row.vol5}}</cell>
+            <cell>{{row.cp}}</cell>
+            <cell>{{row.ville}}</cell>
+            <cell><![CDATA[<a href="https://www.google.fr/maps/place/{{row.vol4}} {{row.cp}} {{row.ville}}" target=_blank class="editlink"/>  <span class="glyphicon glyphicon-screenshot"></span> Afficher </a>]]></cell>
+            <cell>{{row.etat}}</cell>
+        </row>
+    {% endfor %}
+</rows>

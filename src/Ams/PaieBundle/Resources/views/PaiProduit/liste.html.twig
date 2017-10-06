@@ -1,0 +1,63 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreSplit"/> Cacher les tournées splittées</span>
+    <span><a href="{{path('emargemement')}}"><img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Export Excel" >Emargement</a></span>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT           ,ONCHANGE
+['journal_id'       ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['>Journal'         ,null                       ,null               ,null               ,null                   ,'{{m.lienJournal()}}'  ,'goJournal(rId)'   ,null],
+['tournee_mere'     ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_org'      ,null                       ,null               ,null               ,null                   ,'N'                    ,null               ,null],
+['groupe_id'        ,'#select_filter'           ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+['produit_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+['natureclient_id'  ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null               ,null],
+['qte'              ,'#numeric_filter'          ,null               ,isQuantite         ,null                   ,null                   ,null               ,null],
+['nbcli'            ,'#numeric_filter'          ,null               ,isQuantite         ,null                   ,null                   ,null               ,null],
+['nbrep'            ,'#numeric_filter'          ,null               ,isQuantite         ,null                   ,null                   ,null               ,null],
+['taux'             ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null               ,null],
+['montant'          ,'#numeric_filter'          ,null               ,null               ,null                   ,null                   ,null               ,null],
+['duree'            ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null               ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+   ];
+
+    $(document).ready(function() {
+        dhtmlxLoadCookieObject($('#filtreSplit'));
+    });
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+        
+        grid.attachEvent("onXLE", function(){   
+            var  total_duree = 0;
+             grid.forEachRow(function(id){
+                total_duree += MyGetSeconds(grid.cellById(id,13).getValue());
+            });
+            grid.setFooterLabel(13, Second2Time(total_duree));
+        });
+    }
+    function dhtmlxgridOnLoad(){
+        gridFilter(2);
+        $('#filtreSplit').on('change', function() {
+            gridFilter(2);
+            dhtmlxSaveCookieObject($('#filtreSplit'));
+        });
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==4 || cInd==11  || cInd==12  || cInd==13 ) return false; // groupe_id, taux, montant, duree
+        if ((cInd==5 || cInd==6 || cInd==7) && !rowIsInserted) return false; // tournee_id, produit_id, natureclient_id
+        return true;
+    }
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,0).getValue());
+        }
+</script>
+{% endblock %}

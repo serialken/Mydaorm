@@ -1,0 +1,47 @@
+{#{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+#}
+{% extends 'AmsSilogBundle::layout_dashboard.html.twig' %}
+{% block title %}Sociétés{% endblock %}
+
+{% block sidebar %}
+    {% include 'AmsProduitBundle:Societe:menuSociete.html.twig' %}
+{% endblock %}
+
+{% block dashboard %}
+<div class="liste societes tab-content" id="liste_societes" style="overflow: hidden;">
+        {% include 'AmsProduitBundle:Societe:liste_societes.html.twig' %}
+    <div class="societe tab-pane fade" id="societe_0">            
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+{{parent()}}
+<script type="text/javascript">
+    function ajoutEtiquette(obj,id) {
+        var add=null;
+        var remove=null;
+        if(obj.is(':checked')){
+            add=id;
+        }else{
+            remove=id;
+        }
+        $.ajax({
+            url: "{{path('adresse_etiquette_crud_societe')}}", // La ressource ciblée
+            type: "POST",
+            data: {
+                abonne_soc_id_add: add,
+                abonne_soc_id_delete: remove
+            },
+            success: function(data) {
+                
+            },
+            error: function(data) {
+
+            }
+
+        });
+    }
+</script>
+{% endblock %}

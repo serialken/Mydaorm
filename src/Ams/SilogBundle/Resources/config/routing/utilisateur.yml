@@ -1,0 +1,12 @@
+admin_liste_utilisateur:
+    pattern:  /utilisateurs
+    defaults: { _controller: AmsSilogBundle:Utilisateur:liste }
+
+ams_admin_utilisateur:
+    pattern:  /utilisateur/{ID}/{act}/
+    defaults: { _controller: AmsSilogBundle:Utilisateur:utilisateur, ID: 0, act: 0 }
+
+export_liste_utilisateur:
+    pattern:  /export-utilisateurs
+    defaults: { _controller: AmsSilogBundle:Utilisateur:export }
+

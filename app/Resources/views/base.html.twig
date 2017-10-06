@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>* {{ param.get_nom_appli }} * {% block title %} {% endblock %}</title>
+
+        {% block css %}
+            {% stylesheets filter='cssrewrite' output='css/compresse/core.css' 
+                            'css/*.css'
+                            'css/priorite/bootstrap.css'
+                            'css/priorite/ams.css'
+                            'css/select2.css'
+            %}
+            <link rel="stylesheet" href="{{ asset_url }}" type="text/css" media="screen" />
+            {% endstylesheets %}
+        {% endblock %}
+
+        {% block js %}
+            <script type="text/javascript">
+                // Permet de définir le contexte d'exécution de Symfony dans le scope global de JS
+                window.appEnv = '{{ app.environment }}';
+            </script>
+            {% javascripts output='js/compresse/core.js'
+                                'js/jquery-1.10.2.min.js' 
+                                'js/jquery.blueimp-gallery.min.js'
+                                'js/jquery-ui.custom.min.js'
+                                'js/bootstrap.js'
+				'js/*.js'
+            %}
+            <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+
+        {% endblock %}
+
+    </head>  
+    <body>
+        <table cellspacing="0" cellpadding="0" class="interface">
+            <tr>
+                <td width="9" class="top top10 right"><img src="{{ asset('images/interface_top_left_shadow.png') }}"></td>
+                <td width="100%" class="top10">
+                    <table cellspacing="0" cellpadding="0" width="100%" class="top10">
+                        <tr>
+                            <td width="10" class="top top10 right"><img src="{{ asset('images/interface_top_left.png') }}"></td>
+                            <td class="topbg top10"><img src="{{ asset('images/trans.png') }}"></td>
+                            <td width="10" class="top top10 left"><img src="{{ asset('images/interface_top_right.png') }}"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="19" class="top top10 left"><img src="{{ asset('images/interface_top_right_shadow.png') }}"></td>
+            </tr><tr>
+                <td class="shadowleft"><img src="{{ asset('images/trans.png') }}" width="9" height="1"></td>
+                <td>
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td class="mainbg">
+                                <table cellspacing="0" cellpadding="0" width="100%">
+                                    <tr>
+                                        <td width="112"><a href="{{ path('ams_navigation')}}"><img src="{{ asset('images/logo_mroad.png') }}"></a></td>
+                                                {{ render(controller('AmsSilogBundle:Statique:identifiant')) }} 
+
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr><tr>
+                            <td class="sublogoline">Plateforme Logistique</td>
+                        </tr>
+                        {% block navigation %}
+                            <tr>
+                                <td class="navigation">
+                                    {{ render(controller('AmsSilogBundle:Statique:navigation')) }} 
+                                </td>
+                            </tr>
+                        {% endblock %}
+                        <tr>
+                            <td class="interfacemain">
+                                <div class="row">
+                                    <div id="breadcrumb" class="col-md-12">
+                                        {% block pagetitle %}{{ render(controller('AmsSilogBundle:Statique:filAriane', { 'id_route_courant': app.request.attributes.get('_route') })) }}{% endblock %} 
+                                    </div>
+                                    <div class="open-help"> <i class="glyphicon glyphicon-eye-open"></i> Afficher l'aide </div>
+                                    <div class="close-help"> <i class="glyphicon glyphicon-eye-close"></i> Masquer l'aide </div>
+                                </div>
+                                <div id="contenu">
+                                    {% block body %}{% endblock %}
+                                </div>                                                        
+                                <div class="modal fade" id="amsModal" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+                                    {% include '::modal.html.twig' %}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="shadowright"><img src="{{ asset('images/trans.png') }}" width="16" height="1"></td>
+            </tr><tr>
+                <td class="top right"><img src="{{ asset('images/interface_bottombar_shadow_left.png') }}" width="9" height="26"></td>
+                <td>
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td width="10" class="bottom"><img src="{{ asset('images/interface_bottombar_left.png') }}"></td>
+                            <td class="bottombar">
+                                © Copyright 2014 - M-Road - Amaury Services
+                                {%if app.request.server.get('SERVER_NAME') == "silog.sdv.amaury.local" %}
+                                    - Recette
+                                    {% if app.request.baseUrl starts with '/MRoad.new' %}
+                                        DSI
+                                    {%else%}
+                                        utilisateur
+                                    {%endif%}
+                                {% elseif app.request.server.get('SERVER_NAME') == "mroad.resdom.amaury.local" %}
+                                    - Production
+                                {% elseif app.request.server.get('SERVER_NAME') == "mroadprep.resdom.amaury.local" %}
+                                    - Pré-production
+                                {% else %}
+                                    - Developpement
+                                {% endif %}
+                            </td>
+                            <td width="10" class="bottom"><img src="{{ asset('images/interface_bottombar_right.png') }}"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="top left"><img src="{{ asset('images/interface_bottombar_shadow_right.png') }}" width="19" height="26"></td>
+            </tr><tr>
+                <td class="top right"><img src="{{ asset('images/interface_bottom_shadow_left.png') }}" width="9" height="16"></td>
+                <td class="top">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td width="10" class="top"><img src="{{ asset('images/interface_bottom_left.png') }}"></td>
+                            <td class="bottomshadow"><img src="{{ asset('images/trans.png') }}"></td>
+                            <td width="10" class="top"><img src="{{ asset('images/interface_bottom_right.png') }}"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="top left"><img src="{{ asset('images/interface_bottom_shadow_right.png') }}" width="16" height="16"></td>
+            </tr>
+        </table>
+
+
+        <script type="text/javascript">
+            $().ready(function() {
+                masqueImgAttente();
+            {% block js_load %} {% endblock %}
+            });
+
+            $(document).ready(function() {
+                window.backendApp.env.code = 'local';
+                
+                $('#amsModal').on('hidden.bs.modal', function() {
+                    $('#amsModalLabel').html('Chargement en cours...');
+                    $('#amsModalBody').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                });
+                $('.open-help').click(function(){
+                  $(this).hide();
+                  $('.close-help').fadeIn();
+                });
+                $('.close-help').click(function(){
+                  $(this).hide();
+                  $('.open-help').fadeIn();
+                });
+            });
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,43 @@
+parameters:
+#    ams_extension.example.class: Ams\ExtensionBundle\Example
+
+services:
+#    ams_extension.example:
+#        class: %ams_extension.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%] 
+
+
+    ams_extension.sinceWhen:
+        class: Ams\ExtensionBundle\Twig\SinceWhen
+        tags:
+            - { name: twig.extension }
+
+    ams_extension.arrayUnique:
+        class: Ams\ExtensionBundle\Twig\ArrayUnique
+        tags:
+            - { name: twig.extension }
+
+    ams_extension.file:
+        class: Ams\ExtensionBundle\Twig\File
+        tags:
+            - { name: twig.extension }
+            
+    ams_extension.timeAdd:
+        class: Ams\ExtensionBundle\Twig\TimeAdd
+        tags:
+            - { name: twig.extension }
+            
+    ams_extension.date_posterieure:
+        class: Ams\ExtensionBundle\Validator\Constraints\DatePosterieureValidator
+        tags:
+            - { name: validator.constraint_validator, alias: date_posterieure }
+            
+    validator.unique.your_validator_name:
+        class: Ams\ExtensionBundle\Validator\Constraints\ContainsAlphanumericValidator
+        tags:
+            - { name: validator.constraint_validator, alias: contains_alphanumeric }
+
+    twig.extension.intl:
+       class: Twig_Extensions_Extension_Intl
+       tags:
+           - { name: twig.extension }

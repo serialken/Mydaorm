@@ -1,0 +1,134 @@
+{% if meta is defined %} {# nécessaire pour la génération en ligne de commande #}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+{% endif %}
+<style type="text/css" media="screen">
+    .total {
+        font-size: 12px;
+        font-weight: bold;
+        text-align: left;
+    }
+    .grid th {
+        padding-left: 5px;
+        padding-right: 5px;
+        border: 1px solid black;
+        text-align: center;
+        font-size:9;
+    }
+    .grid tr {
+        background-color: grey;
+        color: white;
+    }
+    .grid td {
+        padding-left: 5px;
+        padding-right: 5px;
+        border: 1px solid black;
+        background-color: white;
+        color: black;
+        font-size:11;
+    }
+    .nombre {
+        text-align: right;
+    }
+    .duree {
+        text-align: center;
+    }
+</style>
+
+<page backtop="10mm" backbottom="10mm" backleft="5mm" backright="5mm">
+    <page_header>
+        {% for row in employe %}
+        <div style="border: 3px solid black;text-align: center;font-size: 20px;font-weight: bold;">Annexe paie du {{row.date_debut}} au {{row.date_fin}}</div>
+        <div style="width: 100%; height: 70px;">
+            <div class="col-md-8">
+                <table>
+                    <tr>
+                        <th>Salarié</th><td>: {{row.nom}} {{row.prenom1}} {{row.prenom2}}</td>
+                        <th style='padding-left: 100px;'>Date de calcul</th><td>: {{row.date_calcul}}</td>
+                    </tr>
+                    <tr>
+                        <th>Matricule</th><td>: {{row.matricule}}</td>
+                        <th style='padding-left: 100px;'>Taux de qualité</th><td>: {{row.taux_qualite}}</td>
+                    </tr>
+                    <tr>
+                        <th>Centre</th><td>: {{row.depot}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </page_header>
+
+    <table style='margin-top: 5px; border: 1px solid black; border-collapse: collapse; padding-top: 90px; width: 100%; align:center;'>
+        <tr>
+            <th>Date</th>
+            <th>Libellé</th> 
+            <th>Qte</th> 
+            <th>Taux</th>
+            <th>Montant</th>
+            <th>Durée<br/>Tournée</th>  
+            <th>Durée<br/>Activité</th>  
+            <th>Durée<br/>Autre</th>  
+            <th>Durée<br/>Totale</th>  
+            {% if flux_id==1 %}<th>Durée<br/>Nuit</th>{% endif %}
+            <th>Nb<br/>km</th> 
+            <th>Reclam</th> 
+            <th>Incid.</th> 
+        </tr>
+
+        {% set prev_date_distrib="" %}
+        {% for row in detail %}
+            <tr{% if row.date_distrib=="2999-01-01" %} class='total'{% endif %}>  
+                <td class='duree'>{% if prev_date_distrib!=row.date_distrib and row.date_distrib!='2999-01-01' %}{{row.date_distrib|date('d/m')}}{% endif %}</td>
+                <td class='libelle'>{{row.libelle}}</td>
+                <td class='nombre'>{{row.qte}}</td>
+                <td class='nombre'>{{row.taux}}</td>
+                <td class='nombre'>{{row.val}}</td>
+                <td class='duree'>{{row.duree_tournee|slice(0,5)}}</td>
+                <td class='duree'>{{row.duree_activite|slice(0,5)}}</td>
+                <td class='duree'>{{row.duree_autre|slice(0,5)}}</td>
+                <td class='duree'>{{row.duree_totale|slice(0,5)}}</td>
+                {% if flux_id==1 %}<td class='duree'>{{row.duree_nuit|slice(0,5)}}</td>{% endif %}
+                <td class='nombre'>{{row.nbkm_paye}}</td>
+                <td class='nombre'>{{row.nb_reclamation}}</td>
+                <td class='nombre'>{{row.nb_incident}}</td>   
+            </tr> 
+            {% set prev_date_distrib=row.date_distrib %}
+        {% endfor %}
+    </table>
+  
+    <div style="display:bloc;">
+        <table style='margin-top: 5px; border: 1px solid black; border-collapse: collapse; padding-top: 90px; width: 100%; align:center;'>
+            <tr>      
+                <th>Date</th>
+                <th>Poste</th>
+                <th>Libellé</th>
+                <th>Qte</th>
+                <th>Taux</th>
+                <th>Montant</th> 
+            </tr>   
+            {% set prev_datev="" %}
+            {% for row in ev %}
+                <tr>  
+                    <td class='duree'>{% if prev_datev!=row.datev%}{{row.datev|date('d/m')}}{% endif %}</td>
+                    <td class='libelle'>{{row.poste}}</td>
+                    <td class='libelle'>{{row.libelle}}</td>
+                    <td class='nombre'>{{row.qte}}</td>
+                    <td class='nombre'>{{row.taux}}</td>
+                    <td class='nombre'>{{row.val}}</td>
+                </tr> 
+                {% set prev_datev=row.datev %}
+            {% endfor %}
+        </table>
+    </div>
+            
+            
+            <page_footer> 
+        <small><table style='width:100%;'><tr>
+                    <td style='width:60%;'>Reproduction et utilisation sont interdites sans l'accord écrit de {% if flux_id==1 %}Proximy{% else %}Médiapresse{% endif %}.</td>
+                    <td style='width:40%;text-align: right;'><span style="float:right;">Edité le {{ "now"|date("d/m/Y") }} à {{"now"|date("H:i")}}</span></td>
+                </tr></table></small>
+    </page_footer> 
+</page>
+
+
+

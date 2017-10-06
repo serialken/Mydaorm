@@ -1,0 +1,74 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+	{% if app.request.xmlHttpRequest %}	
+		{{ grid(grid, 'AmsSilogBundle:Grid:grid_base_js.jquery.html.twig') }}
+	{% else %}
+		<div class="bloc">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td rowspan="3" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+				<td class="title">Filtres</td>
+			</tr><tr>
+				<td class="content">
+				{% block grid_filters %}
+				{{ grid_search(grid, 'AmsSilogBundle:Grid:grid_base.html.twig') }} 
+				{% endblock %}
+				</td>
+			</tr>
+		</table>
+		</div>
+                <div style='height:28px'>
+                    <img style="float:right; margin:3px; cursor:pointer" src="{{ asset('images/excel.png') }}" alt="Imprimer"  onclick="window.location.href='{{ path('export_liste_utilisateur')}}'" > 
+                </div>
+		<div class="bloc">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td rowspan="{% if app.session.flashbag.has('notice')==true %}3{% else %}3{% endif %}" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+				<td class="title">
+					<table cellspacing="0" cellpadding="0" width="100%">
+						<tr>
+							<td class="full title">Liste des utilisateurs ({{ grid_pager_totalcount(grid) }})</td>
+							<td class="link" nowrap="nowrap">
+								{% if lien_nouveau is defined %}
+								        <a  href = "" data-toggle="modal"    data-target="#amsModal" onClick="ChargeModal('{{ path(lien_nouveau) }}');" > Ajouter un utilisateur</a>      
+								{% else %}
+									&nbsp;
+								{% endif %}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			{% if app.session.flashbag.has('notice')==true %}
+			<tr>
+				<td class="center success">
+                                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                                        {{ flashMessage }}
+                                    {% endfor %}
+				</td>
+			</tr>
+                        {% elseif app.session.flashbag.has('error')==true %}
+			<tr>
+				<td class="center success">
+                                    {% for flashMessage in app.session.flashbag.get('error') %}
+                                        <span style="color: red">{{ flashMessage }}</span>
+                                    {% endfor %}
+				</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<td class="content">
+					{{ grid(grid, 'AmsSilogBundle:Grid:grid_base_js.jquery.html.twig') }}
+				</td>
+			</tr>
+		</table>
+		</div>
+		
+	{% endif %}
+
+{% endblock %}

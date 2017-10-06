@@ -1,0 +1,88 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Quantités non classées{% endblock %}
+
+{% block body %}
+  {% for flashMessage in app.session.flashbag.get('error_geocodage') %}
+      <div class="alert alert-danger">  {{ flashMessage }} </div>
+  {% endfor %}
+<div id="infoResClassify" class="alert alert-info" role="alert"></div>
+<div style="height:20px"> <img style="cursor:pointer;height:20px;float:right" src="{{ asset('images/excel.png') }}" alt="Imprimer"  onclick="grid.toExcel('{{ asset('codebase/grid-excel-php/generate.php')}}','color',true);" /> </div>
+<div  style='position:relative; height:700px; width:100%;'>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td>
+        <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+        <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                Chargement ...
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td><div id="recinfoArea"></div></td>
+    </tr>
+  </table>  
+</div>
+
+
+<script src="{{asset('js/jquery.toaster.js')}}"></script>
+<script>
+  grid = new dhtmlXGridObject('gridbox');
+  grid.setImagePath("{{dhtmlx_img }}");
+  grid.enableMultiselect(true);
+  grid.init();
+  
+  grid.setSkin("dhx_skyblue");
+  grid.enableSmartRendering(true);
+
+  /** Pagination */
+  grid.enablePaging(true, 30, 2, "recinfoArea");
+  grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+ 
+  
+  grid.attachEvent("onXLS", function() {
+    document.getElementById('cover').style.display = 'block';
+     $('#infoResClassify').html('Veuillez patientez pendant le chargement du tableau ...');
+  });
+  
+  grid.attachEvent("onXLE", function() {
+    document.getElementById('cover').style.display = 'none';
+    var num = grid.getRowsNum();
+    var val = num + " Résultat(s)";
+    $('#infoResClassify').html(val);
+    $('.btn_valier').click(function(){
+        if($(this).closest('form').find('input.tournee').val()==""){
+            $.toaster({ priority : 'danger', title : 'Alerte', message : 'Veuillez sélectionner une tournée.'});
+        }else{
+           $(this).closest('form').submit(); 
+        }
+  });
+  });
+  
+  grid.attachEvent("onFilterEnd", function() {
+    var num = grid.getRowsNum();
+    var val = num + " Résultat(s)";
+    $('#infoResClassify').html(val);
+  });
+  grid.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
+    var value = grid.cells(rId,6).getValue();
+    if(stage == 2){
+      $(function(){
+        var caslId = $(value).closest('form').find('input[name=casl_id]').val();
+        $('input[value='+caslId+']').closest('form').find('input[name=tournee]').val(nValue);
+      });
+    {#      console.log(value);#}
+    {#      console.log(nValue);#}
+      return true;
+    }
+  });
+  
+   /** INSERT VIEW XML FORMAT **/
+  grid.loadXML("{{path('qtes_quotidiennes_classify_xml',{'date': date,'depot': depot,'flux':flux })}}");
+  
+  grid.enableMultiline(true);
+  
+  
+</script>
+
+{% endblock %}

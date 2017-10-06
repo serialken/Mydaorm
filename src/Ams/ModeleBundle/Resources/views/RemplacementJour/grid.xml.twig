@@ -1,0 +1,18 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="remplacant_id"          type="coro" width="200" align="center"  sort="sortCombo">Remplacant</column>
+        <column id="date_debut"             type="ro"   width="70"  align="center"  sort="sortDate">Début</column> 
+        <column id="cdddatefinprevu"        type="ro"   width="70"  align="center"  sort="sortDate">Fin prévue</column> 
+        <column id="date_fin"               type="ro"   width="70"  align="center"  sort="sortDate">Fin</column> 
+        <column id="jour_id"                type="coro" width="80"  align="left"    sort="int">Jour{{comboJour|raw}}</column> 
+        <column id="code"                   type="ro"   width="100"  align="center"  sort="str">Code</column>
+        <column id="date_distrib"           type="ro"   width="70"  align="center"  sort="sortDate">Distribution</column> 
+        <column id="employe_id"             type="coro" width="200" align="center"  sort="sortCombo">Employé</column>
+        <column id="duree"                  type="ro"   width="70"  align="center"  sort="str">Durée</column> 
+        <column id="nbcli"                  type="ro"   width="50"  align="right"   sort="int">Nombre de clients</column> 
+        <column id="valrem"                 type="ron"  width="70"  align="center"  sort="int" format="0.00000">Valeur de rémunération</column>
+        <column id="valrem_moyen"           type="ron"  width="70"  align="center"  sort="int" format="0.00000">Valeur de rémunération Moyenne</column>
+    </head> 
+    {% include 'AmsModeleBundle:RemplacementJour:row.xml.twig' %}
+ </rows>

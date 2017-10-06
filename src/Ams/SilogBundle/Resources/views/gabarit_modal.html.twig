@@ -1,0 +1,49 @@
+{% extends '::base_modal.html.twig' %}	
+    {% block css %}
+        {{ parent() }}
+    {% endblock %}
+		
+    {% block js %}
+         {{ parent() }}
+    {% endblock %}      
+    {% block body %} 
+                    
+                <div id="contenu_modal">
+                </div>		
+	    	<div class="imgAttente" style="display: block;"/>
+                
+                
+                <script type="text/javascript">
+	    		$("#contenu_modal").hide(); 			    
+			    afficheImgAttente();	// On affiche l'image de chargement
+		        $().ready(function() {
+		    		// On fait disparaitre notre page de chargement
+		    		$(".imgAttente").fadeOut(function() { 
+			        		//Ensuite on fait apparaitre notre contenu
+			            $("#contenu_modal").fadeIn(1000); 
+					});
+		        	
+		        	{% block js_load %}	
+						$('#closeNyroModal').click(function() 
+						{
+					    	var win = window.dialogArguments || opener || parent || top; 
+					    	win.$('.nyroModalClose').click(); 
+					    	return false;
+					    });
+					    $("form").submit(function( event ) {
+					    	afficheImgAttente();
+						});
+					    {% block js_load_2 %} {% endblock %}	
+					{% endblock js_load %}
+				});
+			</script>
+                    {% endblock %}
+	    	
+	    	
+	    	
+
+
+
+
+
+

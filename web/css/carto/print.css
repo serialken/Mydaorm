@@ -1,0 +1,28 @@
+/* 
+    Created on : 17 mars 2015, 11:03:54
+    Author     : madelise
+*/
+@page {size: landscape}
+
+td.navigation
+,td.top img
+,td.bottom img
+,div#breadcrumb
+,div.open-help
+,div.close-help
+,div#mapNotifications
+,p.infosCarte
+,p.infosPoint
+,div#amsModal
+,div#amsModal *
+,div.modal-content
+,div#pointInfos
+,div.sf-toolbar
+{
+    display : none !important;
+}
+
+div.tourneeDatasDetails
+{
+    display: block !important;
+}

@@ -1,0 +1,19 @@
+suivi_production_vue_generale:
+    pattern:  /suivi-production-liste
+    defaults: { _controller: "AmsDistributionBundle:SuiviProduction:list" }
+
+suivi_production_vue_generale_xml:
+    pattern:  /suivi-production-xml
+    defaults: { _controller: "AmsDistributionBundle:SuiviProduction:grid" }
+
+suivi_production_parametrage:
+    pattern:  /suivi-production-config
+    defaults: { _controller: "AmsDistributionBundle:SuiviProduction:configurationList" }
+    
+suivi_production_parametrage_xml:
+    pattern:  /suivi-production-config-xml
+    defaults: { _controller: "AmsDistributionBundle:SuiviProduction:configurationGrid" }
+    
+suivi_production_create_route:
+    pattern:  /create-route
+    defaults: { _controller: "AmsDistributionBundle:SuiviProduction:createRoute" }

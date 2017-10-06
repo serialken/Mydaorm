@@ -1,0 +1,357 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Quantités de produits à distribuer{% endblock %}
+
+{% block body %}
+    
+	<style>
+          #gridbox{height:800px !important}
+          .alert-warning{padding :5px !important;margin: 10px 0 0 !important}
+          table.hdr tr:nth-child(2){height:46px}
+	</style>
+
+<div class="well" style="z-index:100000;">
+    <form method="post" name="formQtesQuotidiennesIndex" id="formQtesQuotidiennesIndex" action="{{path('qtes_quotidiennes_index')}}">
+        <table style="width:100%">
+            <tr>
+                <td style="float:left">
+                    {{ form_label(form.passe) }} :
+                    &nbsp;&nbsp;{{ form_widget(form.passe, {'value': passe, 'id': 'passe'}) }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {{form_label(form.flux)}} : {{ form_widget(form.flux, {'value': flux, 'id': 'flux'}) }}
+                    {{ form_label(form.dateDistrib) }} : 
+                    {{ form_errors(form.dateDistrib) }}
+                    &nbsp;&nbsp;{{ form_widget(form.dateDistrib, {'attr': {'value': form.dateDistrib.value|default(date_distrib|date("d/m/Y"))}, 'id': 'dateDistrib'}) }}
+                </td>
+                <td style="float:left">&nbsp;&nbsp;<button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-search white"></i> Rechercher </button>  </td>
+                <td><input id='register' type=button class="btn btn-primary" value=Enregistrer>&nbsp;&nbsp;<img id='loader' src="{{web_files_root_dir}}images/ajaxLoader.gif" style="display:none"/></td>
+            </tr>
+       </table>
+    </form>
+    <br />
+    <span class="selectAll btn-small btn-primary" style="width:200px;cursor:pointer;display:inline-block"> Afficher tous les produits </span>
+    <span class="deselectAll btn-small btn-danger" style="width:200px;cursor:pointer;display:inline-block"> Cacher tous les produits </span>
+    <div class="alert alert-warning"> Vous pouvez choisir les produits à afficher, en faisant un clic droit sur les entêtes, et déplacer la position d'un centre </div>
+</div>
+
+<script type="text/javascript">
+    
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("form input.date").datepicker({
+         dateFormat: 'dd/mm/yy', 
+         firstDay:1
+         //"currentText, "Now"
+     }).attr("readonly","readonly");
+     
+    $(document).ready(function() {
+         /*$('#formQtesQuotidiennesIndex').submit(function(e) {
+             e.preventDefault();
+             this.action = this.action+'/'+$('#dateDistrib').val().replace(/\//gi, '-')+'/'+$('#passe').val();
+             $(location).attr('href', this.action);
+         });*/
+     });    
+</script>
+
+<div style='height:28px'>
+  <div><img class="generate_xls" style="float:right; margin:3px; cursor:pointer" src="{{ asset('images/excel.png') }}" alt="Imprimer"  > </div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+            <div id="gridbox" class="" style="width:100%;"></div>
+            <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                    Chargement ...
+            </div>
+        </td>
+    </tr>
+</table> 
+
+
+
+<script type="text/javascript">
+    
+    var flux_selectionne;
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{ dhtmlx_img }}");
+    //grid.enableAutoWidth(true); // A ne pas utiliser si on applique splitAt()
+    grid.enableDragAndDrop(true);
+    grid.enableAutoSaving(true);
+    grid.enableDragOrder(true);
+    grid.init();
+    {#grid.enableAutoSaving();#}
+    
+//     grid.splitAt(1);
+    grid.attachEvent("onDrop", function(sId,tId,sObj,tObj,sInd,tInd){
+        document.getElementById('cover').style.display = 'block';
+{#        console.log(sId,tId,sObj,tObj,sInd,tInd);#}
+        var tab=new Array;
+        $('table.obj:first tr').each(function(){
+           tab.push($(this).find('a').attr('valeur'));
+       });
+{#       console.log(tab);#}
+        $.ajax({
+            url: "{{path('qtes_quotidiennes_depot_update_ordre')}}",
+            type: "POST",
+            data: {
+                tab: tab                
+            },
+        })
+        document.getElementById('cover').style.display = 'none';
+    });
+
+    grid.attachEvent("onXLE", function() {
+
+
+        $(function() {
+            $('.selectAll').click(function(){
+            	for(var i = 0 ;i < grid.getColumnsNum(); i++)
+        	        grid.setColumnHidden(i,false);
+    	        
+            });
+            $('.deselectAll').click(function(){
+            	for(var i = 2 ;i < grid.getColumnsNum(); i++)
+        	        grid.setColumnHidden(i,true);
+                      console.log(grid.getColLabel(i));
+    	        
+            });
+            
+            $('.generate_xls').click(function(){
+              var products = [];
+              $( ".xhdr .hdr tr:nth-child(2) td .hdrcell div" ).each(function() {
+                var attr = $(this).closest('td').attr('style');
+                if(typeof attr !== typeof undefined){
+                  if(attr.indexOf("none") < 0)
+                    products.push($(this).attr('id'));
+                }
+                else
+                  products.push($(this).attr('id'));
+              });
+
+              $.ajax({
+                url: "{{ path('qtes_quotidiennes_generation_xls') }}",
+                type: "POST",
+                data: {
+                  products: products
+                },
+                success: function(data) {
+                  window.location.href = "{{ asset(fileExcel~'/quantite_quotidienne.xls')}}";
+                }
+              });
+            });
+
+        });
+    });
+    grid.setDelimiter("*"); // A cause de l'appel d'une fonction javascript, il vaut mieux utiliser un autre delimiteur
+    grid.loadXML("{{ path('qtes_quotidiennes_index_donnees', {'date': date_distrib|date("d-m-Y"), 'passe': passe, 'flux': flux}) }}", function() {
+      grid.splitAt(1); 
+        nbTotalExemplaires();
+        calculAppoints();
+
+        grid.setSizes();
+
+        document.getElementById('cover').style.display = 'none';
+        grid.enableHeaderMenu();
+    });
+        
+    {#$('#formQtesQuotidiennesIndex #flux').on('change', function(){
+        var valFlux = $('#formQtesQuotidiennesIndex #flux option:selected').val();
+        if (valFlux == 1){
+            {% set flux = 1 %}
+        }
+        else if (valFlux == 2){
+            {% set flux = 2 %}
+        }
+        else{
+            {% set flux = '' %}
+        }
+        console.log(valFlux);
+    });#}
+        
+    function nbTotalExemplaires()
+    {
+        var sumExplPqt = 0;
+        var sumExplAppt = 0;
+        var sumColPqt = 0;
+        {% for produit in produits %}
+            //Conditionnement / Filtre
+            vol_pqt = document.getElementById("input_vol_pqt_{{ produit.id }}").value;
+            //Somme des appointements créés a cause du Conditionnement
+            sumExplAppt = sumColumn(grid, {{ (2 * loop.index) }});
+            //Somme des paquets
+            sumColPqt = sumColumn(grid, {{ (2 * loop.index) - 1 }});
+            if(vol_pqt != 0)
+            {
+                //Somme des paquet * Conditionnement
+                sumExplPqt = sumColumn(grid, {{ (2 * loop.index) - 1 }}) * vol_pqt;
+            }
+            else
+            {
+                // Somme des paquets
+                sumExplPqt = sumColumn(grid, {{ (2 * loop.index) - 1 }});
+            }
+            // Total des appointements et des paquets avec Conditionnement
+            document.getElementById("nb_expl_{{ (2 * loop.index) - 1 }}").innerHTML = (sumExplPqt+sumExplAppt);
+            // Total des appointements et des paquets sans Conditionnement
+            document.getElementById("total_pqt_std_{{ (2 * loop.index) - 1 }}").innerHTML = sumColPqt;
+            
+            document.getElementById("condit_{{ (2 * loop.index) -1 }}").innerHTML = vol_pqt;
+            
+            
+        {% endfor %}      
+    }
+    
+    function calculAppoints()
+    {
+        var sumCol = 0;
+        var vol_pqt = 0;
+        var appts_pqt = 0;
+        var appts_expl = 0;
+        {% for produit in produits %}
+        //Somme des appointements créés a cause du Conditionnement
+        sumCol = sumColumn(grid, {{ (2 * loop.index) }});
+        //Somme des paquets
+        sumColPqt = sumColumn(grid, {{ (2 * loop.index) - 1 }});
+        //Conditionnement / Filtre
+        vol_pqt = document.getElementById("input_vol_pqt_{{ produit.id }}").value;
+        
+        if(vol_pqt != 0)
+        {
+            appts_pqt = Math.floor(sumCol / vol_pqt);
+
+            appts_expl = (sumCol % vol_pqt);
+
+            document.getElementById("appts_pqt_{{ (2 * loop.index) }}").innerHTML = appts_pqt+'P';
+            document.getElementById("appts_expl_{{ (2 * loop.index) }}").innerHTML = ((appts_expl>0) ? ' + '+appts_expl : '');
+        }
+        else
+        {
+            document.getElementById("appts_pqt_{{ (2 * loop.index) }}").innerHTML = '';
+            document.getElementById("appts_expl_{{ (2 * loop.index) }}").innerHTML = '';
+        }
+        
+        
+        {% endfor %}
+        $('#cover').hide(); 
+        temp = $("#depot_title").closest('td').prev();
+        temp.html("Dépôt");
+        temp = $("#condit_title").closest('td').prev();
+        temp.html("Conditionnement");
+        temp = $("#nb_ex_title").closest('td').prev();
+        temp.html("Nb. d'exemplaires");
+        temp = $("#tot_paq_std_title").closest('td').prev();
+        temp.html("Total paquets standards");
+        temp = $("#tot_app_title").closest('td').prev();
+        temp = temp.closest('td').prev();
+        temp.html("Total appoints");
+    }
+        
+    /**
+     * Recharge les valeurs du tableau
+     * @param string url
+     * @param integer pqtVol
+     * @returns {undefined}         */
+    function rechargeTableau(url, pqtVol)
+    {
+        // Si pqtVol est un entier
+        if((parseFloat(pqtVol) == parseInt(pqtVol)) && !isNaN(pqtVol))
+        {
+            url = url.replace("VOLUME", pqtVol);
+            document.getElementById('cover').style.display = 'block';
+            grid.clearAll();
+            grid.loadXML(url,function(){
+                            nbTotalExemplaires();
+                            calculAppoints();
+                        }
+                    ); // Le '/1' a la fin de l'URL correspondant au parametre "refresh"
+
+            document.getElementById('cover').style.display = 'none';
+
+            /*
+            dhtmlx.message({
+                            type:"confirm",
+                            ok: "Oui",
+                            cancel: "Non",
+                            text: "Voulez vous enregistrer ce volume de paquet ?",
+                            callback: function(confirm) {
+                                if(confirm)
+                                {
+                                    document.getElementById('cover').style.display = 'block';
+                                    grid.clearAll();
+                                    grid.loadXML(url+'/'+pqtVol,function(){
+                                                    nbTotalExemplaires();
+                                                    calculAppoints();
+                                                }
+                                            );
+
+                                    document.getElementById('cover').style.display = 'none';
+                                }
+                            }
+            });
+            */
+                    
+        }
+        else
+        {
+            dhtmlx.message({
+                type: "alert-error",
+                text: "Le volume d'un paquet devrait être un nombre entier"
+            });
+        }
+    }
+    var complete = 0;
+    var count = 0;
+    $(document).ready(function(){
+        $('#register').click(function(){
+            $('#loader').show();
+            {% for produit in produits %}
+                    
+                rowCount = grid.getRowsNum()-1;
+                ordonne_paquet = {{ (2 * loop.index)-1 }};
+                ordonne_appoint = {{ (2 * loop.index) }};
+                produit_id = {{ produit.id }};
+                datedistrib = $("#dateDistrib").val();
+                passe = $('#passe').val();
+
+                for (i = 0; i < rowCount; i++) { 
+                    count++;
+                    depot = grid.cellByIndex(i,0).cell.textContent;
+                    nb_paquet = grid.cellByIndex(i, ordonne_paquet ).cell.textContent;
+                    nb_appoint = grid.cellByIndex(i, ordonne_appoint ).cell.textContent;
+                    $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: "{{ path('qtes_quotidiennes_save') }}",
+                            data: {
+                                depot: depot, 
+                                nb_paquet: nb_paquet, 
+                                nb_appoint: nb_appoint, 
+                                conditionnement: vol_pqt, 
+                                produit_id: produit_id, 
+                                date_distrib: datedistrib, 
+                                passe: passe}
+                        }).done(function( msg ) {
+                            console.log(msg);
+                        }).fail(function(){
+                            console.log('Erreur Technique');
+                        });
+                }
+            {% endfor %}
+        })
+        
+        
+    });
+    $( document ).ajaxComplete(function( event,request, settings ) {
+        complete++;
+        if(complete == count){
+            $('#loader').hide();
+        }
+    });
+</script>
+
+{% endblock %}
+
+     
+ 
+ 
+ 
+ 

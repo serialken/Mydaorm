@@ -1,0 +1,55 @@
+{% extends '::modal.html.twig' %}
+{% block modalCss %}
+<style>
+        .modal-dialog {
+        width: 1000px; 
+        height: 100px;
+        margin: 100px auto;
+    }
+   
+    
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4> Mise à jour "Repérage"</h4>
+{% endblock %}
+{% block modalContenu %}
+	<div class="well">
+	  <form method="post" {{ form_enctype(form) }}>
+	    {{ form_widget(form) }}
+	    <input type="submit" class="btn btn-primary" />
+	  </form>
+	</div>
+
+    
+     <script>    
+     
+     function selectByText( MySelect, txt ) {
+        $('MySelect option')
+        .filter(function() { return $.trim( $(this).text() ) == txt; })
+        .attr('selected',true);
+    }
+     
+     
+     $(document).ready(function() {
+      
+        $("#ams_distributionbundle_reperage_qualif").change(function(){
+ 
+             var qualif_id = $(this).val();
+             $.ajax({
+                    url: "{{path('topage_selected')}}",
+                    data: 'id='+ qualif_id,
+                    dataType: 'json', 
+                    success: function(json) { 
+                      var tmp = '';
+                      $("#ams_distributionbundle_reperage_topage option").each(function(i){
+                        if($(this).text() == json)
+                            tmp = $(this).val();
+                      });
+                      
+                       var t = $('#ams_distributionbundle_reperage_topage option[value='+tmp+']').attr('selected','selected');
+                    }});
+        });
+     });
+  </script>
+{% endblock %}

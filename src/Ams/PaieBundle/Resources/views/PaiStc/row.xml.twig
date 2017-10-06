@@ -1,0 +1,14 @@
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}{{m.bgColorBloque(isModif and row.isModif)}}>
+    <cell>{{row.extrait}}</cell>
+    <cell>{{row.depot_id}}</cell>
+    <cell>{{row.flux_id}}</cell>
+    <cell>{{row.matricule}}</cell>
+    <cell>{{row.matriculeNG}}</cell>
+    <cell>{{row.employe_id}}</cell>
+    <cell>{{row.rc}}</cell>
+    <cell>{{row.date_stc|date('d/m/Y')}}</cell>
+    <cell>{% if row.date_extrait is not null%}{{row.date_extrait|date('d/m/Y')}}{% endif %}</cell>
+    {{m.cellSupprime(isModif and isDelete and row.isDelete)}}
+</row> 
+{% endfor %}

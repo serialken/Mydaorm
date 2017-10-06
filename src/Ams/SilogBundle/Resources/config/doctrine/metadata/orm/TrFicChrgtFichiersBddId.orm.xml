@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrFicChrgtFichiersBddId" table="TR_FIC_CHRGT_FICHIERS_BDD_ID">
+    <id name="cfiFicCode" type="string" column="CFI_FIC_CODE" length="45">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="cfiFtpCode" type="string" column="CFI_FTP_CODE" length="40" nullable="false"/>
+    <field name="cfiRegexFic" type="string" column="CFI_REGEX_FIC" length="255" nullable="false"/>
+    <field name="cfiFormatFic" type="string" column="CFI_FORMAT_FIC" nullable="false"/>
+    <field name="cfiNbLignesIgnorees" type="integer" column="CFI_NB_LIGNES_IGNOREES" nullable="false"/>
+    <field name="cfiSeparateur" type="string" column="CFI_SEPARATEUR" length="1" nullable="true"/>
+    <field name="cfiSrcId" type="integer" column="CFI_SRC_ID" nullable="false"/>
+    <field name="cfiTrimVal" type="string" column="CFI_TRIM_VAL" nullable="false"/>
+    <field name="cfiNbCol" type="integer" column="CFI_NB_COL" nullable="false"/>
+  </entity>
+</doctrine-mapping>

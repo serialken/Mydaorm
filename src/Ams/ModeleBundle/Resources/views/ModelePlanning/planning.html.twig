@@ -1,0 +1,104 @@
+{% extends '::base_planning.html.twig' %}	
+{% block title %}{{titre}}{% endblock %}
+{% block body %} 
+    <style>
+        body {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+        }
+        #calendar {
+            width: 100%;
+            margin: 0 auto;
+        }
+        .fc-event-inner {
+            margin: 5px;
+        }
+        
+        @media screen and (max-width: 1300px) {
+            span.fc-event-title {
+              display:block;
+            }
+        }
+    </style>
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': 'modele_planning' }))}}
+  
+    <br/>
+    <div id='calendar'></div>
+    <script>
+        
+    $(document).ready(function() {
+        var date = new Date("2014-08-17");
+        var cycles = {{cycles|raw}};
+        
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        
+        var options = {
+            firstDay:0,
+            defaultDate:"2014-08-17",
+            aspectRatio: 2,
+            defaultView: 'basicWeek',
+            // for agendaWeek and agendaDay
+            //agenda: 'H:mm', // 5:00
+            droppable: false,
+            eventStartEditable: false,
+            allDayDefault: false,
+            header: {
+                left: '',
+                center: '',
+                right:''
+            },
+            editable: false,
+            displayEventEnd:true,
+            timeFormat: 'HH:mm',
+            columnFormat:{
+                month: 'ddd',    // Mon
+                week: 'dddd', // Mon 9/7
+                day: 'dddd'      // Monday
+                },
+            events: [
+            {% for tournee_jour in tournees %} { 
+                id      : '{{ tournee_jour.id}}',
+                start   : new Date(y, m, d + {{tournee_jour.jour_id-1}},{{tournee_jour.heure_debut|date('H,i')}}),
+                end     : new Date(y, m, d + {{tournee_jour.jour_id-1}},{{tournee_jour.heure_fin|date('H,i')}}),
+                title   : '{{tournee_jour.code}}',
+                backgroundColor  : {% if not tournee_jour.valide %}'#FAD9DD'{% else %}''{% endif %},
+                url     : '{{path('liste_modele_tournee_jour')}}?depot_id={{tournee_jour.depot_id}}&flux_id={{tournee_jour.flux_id}}&modele_tournee_id={{tournee_jour.tournee_id}}&modele_tournee_jour_id={{tournee_jour.id}}'
+            },
+            {% endfor %}                            
+            {% for activite in activites %} { 
+                id      : '{{ activite.id }}',
+                start   : new Date(y, m, d + {{ activite.jour_id-1}},{{activite.heure_debut|date('H,i')}}),
+                end     : new Date(y, m, d + {{ activite.jour_id-1}},{{activite.heure_fin|date('H,i')}}),
+                title   : '{{activite.libelle}}',
+                color   : '#FF8000',
+                backgroundColor  : {% if not activite.valide %}'#FAD9DD'{% else %}'{{activite.couleur}}'{% endif %},
+                url     : '{{path('liste_modele_activite')}}?depot_id={{activite.depot_id}}&flux_id={{activite.flux_id}}&activite_id={{activite.id}}'
+                },
+            {% endfor %}      
+            ],
+            dayRender: function ( date, cell ) {
+                // Colorisation des jours actif
+                if  (cycles[date.format('d')] === '1') {
+                    cell.css("background-color", "#F5F6CE");
+                }
+                cell.removeClass('fc-state-highlight');
+            },
+        };                
+        $('#calendar').fullCalendar(options);
+    });
+
+       //chargement de la liste des employés lorsqu'on change de dépot   
+    $(document).ready(function() {
+        $('#form_filtre_depot_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_flux_id').on('change', function() { ajaxComboEmploye(); });
+    });
+    function ajaxComboEmploye()  {
+        ajaxReloadCombo($('#form_filtre_employe_id')
+        ,"ajax-combo-employe-modele-planning",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val()});
+   }
+</script>
+{% endblock %}

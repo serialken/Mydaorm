@@ -1,0 +1,27 @@
+admin_liste_profil:
+    pattern:  /
+    defaults: { _controller: AmsSilogBundle:Profil:liste }
+
+admin_modif_profil:
+    pattern:  /modification
+    defaults: { _controller: AmsSilogBundle:Profil:modif}
+
+admin_ajout_profil:
+    pattern:  /ajout
+    defaults: { _controller: AmsSilogBundle:Profil:ajout}
+      
+admin_supp_profil:
+    pattern:  /suppression/{id}
+    defaults: { _controller: AmsSilogBundle:Profil:suppression}
+    requirements:
+        id:  \d+
+
+admin_arborescence_page:
+    pattern:  /arborescence
+    defaults: { _controller: AmsSilogBundle:Profil:arborescence}
+    
+    
+
+admin_profil_enregistre:
+    pattern:  /enregistre
+    defaults: { _controller: AmsSilogBundle:Profil:enregistre}

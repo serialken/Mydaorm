@@ -1,0 +1,37 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="code"               type="ed" width="70"    align="left"    sort="str">Code</column>
+        <column id="libelle"            type="ed" width="*"     align="left"    sort="str">Libellé</column>
+        <column id="affichage_modele"   type="ch" width="50"    align="center"  sort="str">Affichage Modèle</column> 
+        <column id="km_paye"            type="ch" width="50"    align="center"  sort="str">Kilomètre Payé</column> 
+        <column id="est_hors_presse"    type="ch" width="50"    align="center"  sort="str">Hors Presse</column> 
+        <column id="est_hors_travail"   type="ch" width="50"    align="center"  sort="str">Hors Travail</column> 
+        <column id="est_1mai"           type="ch" width="50"    align="center"  sort="str">1er Mai</column> 
+        <column id="est_pleiades"       type="ch" width="50"    align="center"  sort="str">Pléiades maitre</column> 
+        <column id="est_JTPX"           type="ch" width="50"    align="center"  sort="str">Pléiades JTPX</column> 
+        <column id="est_badge"          type="ch" width="50"    align="center"  sort="str">Octime Badge</column> 
+        <column id="est_garantie"       type="ch" width="50"    align="center"  sort="str">Octime HGarantie</column> 
+        <column id="couleur"            type="cp" width="50"    align="center"  sort="str">Couleur</column> 
+        <column id="actif"              type="ch" width="50"    align="center"  sort="str">Actif</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.affichage_modele}}</cell>
+            <cell>{{row.km_paye}}</cell>
+            <cell>{{row.est_hors_presse}}</cell>
+            <cell>{{row.est_hors_travail}}</cell>
+            <cell>{{row.est_1mai}}</cell>
+            <cell>{{row.est_pleiades}}</cell>
+            <cell>{{row.est_JTPX}}</cell>
+            <cell>{{row.est_badge}}</cell>
+            <cell>{{row.est_garantie}}</cell>
+            <cell>{{row.couleur}}</cell>
+            <cell>{{row.actif}}</cell>
+            {{m.cellSupprime(isModif and row.isDelete)}}
+        </row> 
+     {% endfor %}
+ </rows>

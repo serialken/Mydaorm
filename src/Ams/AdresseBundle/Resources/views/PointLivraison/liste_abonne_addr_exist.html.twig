@@ -1,0 +1,118 @@
+{% if listeAbonnes|length %}
+    <div class="row">
+       
+          <span class="text-muted">
+               {% if type_liste is defined %}
+                <h3> Choisir un point livraison </h3>
+               {% else %}
+                    <a href="#" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('adresse_regroupement_abonne',{'pointLivraisonId': pointLivraisonId, 'tourneeId' : idTournee, 'regroup' :0}) }}');"
+                                                                            onmouseover="affPopoverLien(this);" data-description="Rajouter des abonnés au point de livraison" data-content="Ce lien permet de rajouter des abonnés au point de livraison. Il donne accés a une interface avec l'adresse du point de livraison dans l'entête et ensuite la liste des abonnés et leurs adresses autour du point de livraison.Pour lier un abonné au point de livraison cochez la case concerné puis cliquez sur le bouton ok." >
+                        <span class="glyphicon glyphicon-plus"></span> Ajouter
+                    </a>          
+               {% endif %}
+          </span>
+         <table class="table nocollapse" id="table_liste_abonne">
+            <tr>
+                <th>Nom Prénom</th>
+                <th>Rais. Sociale </th>
+                <th> Num Abonne </th>
+                <th>Adresse de l'abonné</th>
+                   
+                
+                {% if type_liste is defined %}
+                     <th> </th>
+                {% endif %}
+            </tr>
+            
+            {% for listeAbonne in listeAbonnes %}
+                <tr id="tr_{{listeAbonne.id}}"  onclick="marqueObj(this);" >
+                    <td>{{listeAbonne.vol1}} </td>
+                    <td> {{listeAbonne.vol2}} </td>
+                    <td>{{listeAbonne.numabo_ext}}</td>  
+                    <td>{{listeAbonne.vol4}} {{listeAbonne.vol3}}<br />{{listeAbonne.cp}} - {{listeAbonne.ville}}</td>
+                    {% if listeAbonne.pointLivraisonId == null %}
+                        <td> Cet abonné ne posséde pas de point de livraison </td>
+                        {% if type_liste is defined %}
+                            <td style="vertical-align:middle;text-align: center;">
+                                <a href="#" class="modiflink" data-description="Traitement des rejets" data-placement="left" data-content="Ce lien permet de traiter les rejets, normaliser une adresse(RNVP), géocoder une adresse." onmouseover="affPopoverLien(this);" data-toggle="modal" data-target="#amsModal" onClick="modifAddr({{ listeAbonne.id }}, '{{ listeAbonne.type_rejet }}');"><span class="glyphicon glyphicon-edit"></span> </a> 
+                            </td>
+                        {% endif %}
+                    {% else %}
+                        
+                    {% endif %}
+                   
+                </tr>
+            {% endfor %}
+         </table>
+    </div>
+{% else %}
+  <span class="text-muted">
+       {% if type_liste is defined %}
+          Aucun  résultat pour votre recherche.
+       {% else %}
+            <a href="#" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('adresse_regroupement_abonne',{'pointLivraisonId': pointLivraisonId, 'tourneeId' : idTournee }) }}');"
+                                                                    onmouseover="affPopoverLien(this);" data-description="Ajouter des abonnés au point de livraison" 
+                                                                    data-content="Ce lien permet d'ajouter des abonnés au point de livraison. Il donne accés a une interface avec l'adresse du point de livraison dans l'entête et ensuite la liste des abonnés et leurs adresses autour du point de livraison.Pour lier un abonnés au point de livraison cochez la case concerné puis cliquez sur le bouton ok." >
+                <span class="glyphicon glyphicon-plus"></span> Ajouter</a>          
+       {% endif %}
+ </span>
+{% endif %} 
+<script>    
+    /** Affichage du formulaire de modification */
+    function modifAddr(id, type_rejet) {
+            
+            $.ajax({
+                url: "{{ path('adresse_modif_rejet') }}",
+                type: "GET",
+                data: { 
+                    adresseId: id,
+                    type_rejet: type_rejet
+                },
+                success: function(data) {
+                    $('#amsModal').html(data);
+                    $('#amsModal').modal();
+                    $('#amsModal').on('hide.bs.modal', function () {
+                                    
+                                    submitAbonneForm($('#formAbo'));
+                                    changeColor();
+                                    //location.reload();
+                    });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $('#amsModalLabel').html('Une erreur est survenue.');
+                    $('#amsModalBody').html(thrownError+' - code erreur:'+xhr.status);
+                }
+            });
+        }
+        
+       /** Popover des liens "modifier" et "regrouper" */
+    function affPopoverLien(elem) {
+        var titre = $(elem).attr('data-description');
+        
+        $(elem).popover({
+            trigger : 'hover',
+            title:  titre
+        });
+    }
+    
+    /** fonctions qui gerent la modification de couleur apres modification d'un champ*/
+    var actuel ;
+    var dernier;
+    
+    function marqueObj(obj){
+        actuel = obj;
+        //console.log(actuel);
+       
+    }
+    console.log('rrrrrrr');
+    function changeColor() {
+        if(typeof actuel !== "undefined"){
+            actuel.style.backgroundColor = "deepskyblue";
+            if(dernier != null && actuel != dernier ){
+                dernier.style.backgroundColor = "transparent";
+            }
+    }
+        //dernier = actuel;
+    }
+                    
+</script>

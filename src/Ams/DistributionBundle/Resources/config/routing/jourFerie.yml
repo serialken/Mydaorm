@@ -1,0 +1,24 @@
+feries_index:
+    pattern: /gestion
+    defaults: { _controller: "AmsDistributionBundle:JourFerie:ListeFerie" }
+    
+feries_ajout:
+    pattern: /ajout
+    defaults: { _controller: "AmsDistributionBundle:JourFerie:Ajout" }
+    
+feries_grid_xml:
+    pattern: /gridferie
+    defaults: { _controller: "AmsDistributionBundle:JourFerie:GridFerie"}
+    
+feries_suppression:
+    pattern: /suppression/{id}
+    defaults: { _controller: "AmsDistributionBundle:JourFerie:Supprimer" }
+    requirements:
+        id:  \d+
+        
+feries_change_statut:
+    pattern: /change/{id}
+    defaults: { _controller: "AmsDistributionBundle:JourFerie:Change" }
+    requirements:
+        id:  \d+
+    

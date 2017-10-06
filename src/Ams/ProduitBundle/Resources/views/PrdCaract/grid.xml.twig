@@ -1,0 +1,44 @@
+ <rows>
+     {% for caract in caracts %}
+        <row id ="{{caract.id}}">
+            <cell>{{caract.Libelle}}</cell>
+            <cell>{{caract.Code}}</cell>
+            <cell>{{caract.CaractType.Libelle}}</cell>
+            <cell>{{caract.ProduitType.Libelle}}</cell>
+            <cell>{{caract.Saisie.Libelle}}</cell>
+            <cell>{{caract.actif}}</cell>
+            <cell><![CDATA[
+                <a class="supprimer" data-toogle="modal" data-target="#suppressionModal_{{ caract.id }}" title="supprimer une caractéristique" onClick="$('div#suppressionModal_{{caract.id}}').show();" href="javascript:void(0)">
+                    <img src="{{ asset('images/dhtmlx_delete.png') }}" height="16px" alt="Supprimer" /> 
+
+                </a>
+                <div  class="modal" id="suppressionModal_{{caract.id}}">
+                    <div class="modal-dialog">
+                        <div class="modal-content panel panel-danger">
+                            <div class="modal-header panel-heading">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Suppression</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Voulez-vous vraiment supprimer cette caractéristique?</p>
+                            </div>
+                            <div class="modal-footer" id='footer_modal'>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="$('div#suppressionModal_{{caract.id}}').hide()">Annuler</button>
+                                {#<button type="button" class="btn btn-default" data-dismiss="modal"><a href="javascript:void(0);" onclick="deleteCacactere('{{caract.id}}')">OK</a></button>#}
+                                
+                                    <a href="javascript:void(0);" onclick="deleteCacactere('{{caract.id}}')"><button type="button" class="btn btn-danger">OK</button></a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ]]>
+            </cell>
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+
+

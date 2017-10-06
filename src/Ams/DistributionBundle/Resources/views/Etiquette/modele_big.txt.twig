@@ -1,0 +1,56 @@
+{% autoescape false %}
+{% if clients|length > 0%}
+{% if part == 'T' or part == 'D' %}    
+{D1520,0700,1450|}
+{AX;+000,+000,+00|}
+{AY;+00,1|}
+{C|}
+{PV00;0330,1000,0065,0100,J,33,B|}
+{PV01;0430,1000,0065,0100,J,33,B|}
+{RV00;{{code_tournee|upper}}|}
+{RV01;{{nom_porteur|upper}}|}
+{XR;0000,0000,0700,1450,B|}
+{XS;I,0001,0002C6000|}
+{% endif %}
+{% for client in clients %}
+{% set vol5Existant = client.vol5|trim|length > 0 ? true : false %}
+{D1520,0700,1450|}
+{AX;+000,+000,+00|}
+{AY;+00,1|}
+{C|}
+{PV00;0075,1440,0040,0045,J,33,B|}
+{PV01;0125,1440,0035,0045,J,33,B|}
+{PV02;0075,0150,0035,0045,J,33,B|}
+{PC000;0200,1440,09,09,I,33,B,P1|}
+{PC003;0250,1440,08,09,I,33,B,P1|}
+{PC004;0300,1440,08,09,I,33,B,P1|}
+{PC001;0350,1440,09,09,I,33,B,P1|}
+{% if vol5Existant %}
+{PC008;0400,1440,09,09,I,33,B,P1|}
+{% endif %}
+{PC002;{{ vol5Existant ? '0450' : '0400' }},1440,08,09,I,33,B,P1|}
+{PC005;0550,1440,08,09,I,33,B,P1|}
+{PC006;0650,1440,08,09,I,33,B,P1|}
+{PC007;0650,0250,08,09,I,33,B,P1|}
+{RV00;{{client.nom_produit}}|}
+{RV01;{{client.code_tournee}}|}
+{RV02;{{client.nb_ex}} ex|}
+{RC000;{{client.vol1}} |}
+{RC003;{{client.vol2}} |}
+{%if client.vol3 is not null %}
+    {RC004;{{client.vol3}} |}
+{% else %} 
+    {RC004; - |}
+{% endif %}
+{RC001;{{client.adresse}} |}
+{% if vol5Existant %}
+{RC008;{{client.vol5}} |}
+{% endif %}
+{RC002;{{client.cp_ville}} |}
+{RC005;{{client.infoportage|replace({'/':'-'})}}|}
+{RC006;{{client.numero}} {{client.date_distrib}}|}
+{RC007;Ordre : {{client.ordre}}|}
+{XS;I,0001,0002C8000|}
+{% endfor %}
+{% endif %}
+{% endautoescape%}

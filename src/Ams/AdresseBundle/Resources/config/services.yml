@@ -1,0 +1,21 @@
+#parameters:
+#    ams_silog.example.class: Ams\SilogBundle\Example
+
+#services:
+#    ams_silog.example:
+#        class: %ams_silog.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+
+
+parameters:
+    parametres.class: Ams\SilogBundle\Services\Parametres
+    adresse_rnvp_service.class: Ams\AdresseBundle\Services\AdresseRnvpService
+
+services:  
+    param:
+        class:     %parametres.class%
+        arguments: [@doctrine.orm.entity_manager]
+    adresse_rnvp:
+        class:     %adresse_rnvp_service.class%
+        arguments: [@doctrine.orm.entity_manager, @rnvp, @geocodage]

@@ -1,0 +1,19 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="date_log"       type="ro"   width="120" align="center"  sort="sortDateTime">Date</column> 
+        <column id="level"          type="ro"   width="50"  align="center"  sort="int">Level</column> 
+        <column id="module"         type="ro"   width="200" align="left"    sort="str">Module</column> 
+        <column id="msg"            type="ro"   width="*"   align="left"    sort="str">Message</column> 
+        <column id="count"          type="ro"   width="70"  align="left"    sort="int">Nombre</column> 
+    </head> 
+    {% for row in curseur %}
+    <row id ="{{row.id}}"{{m.locked(false)}}{{m.bgColorInterface(row.level)}}>
+        <cell>{{row.date_log}}</cell>
+        <cell>{{row.level}}</cell>
+        <cell>{{row.module}}</cell>
+        <cell>{{row.msg}}</cell>
+        <cell>{{row.count}}</cell>
+    </row> 
+    {% endfor %}
+</rows>

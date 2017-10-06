@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrNavPagesElements" table="TR_NAV_PAGES_ELEMENTS">
+    <id name="pelId" type="integer" column="PEL_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="pelEltDescCourt" type="string" column="PEL_ELT_DESC_COURT" length="30" nullable="false"/>
+    <field name="pelEltLibelle" type="string" column="PEL_ELT_LIBELLE" length="45" nullable="false"/>
+    <field name="pelEltOblig" type="string" column="PEL_ELT_OBLIG" nullable="false"/>
+    <many-to-one field="pelPag" target-entity="TrNavPages">
+      <join-columns>
+        <join-column name="PEL_PAG_ID" referenced-column-name="PAG_ID"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,61 @@
+<rows>
+	<head>      
+		<column type="ro" width="100" align="left" sort="str"> id </column>
+		<column type="ro" width="100" align="left" sort="date">Date réclamation</column>
+		<column type="ro" width="100" align="left" sort="date">Date demande arbitrage</column>
+		<column type="ro" width="140" align="left" sort="str">Société</column>
+		<column type="ro" width="80" align="left" sort="str">N°Tournée</column>
+		<column width="180" type="ro" align="center" sort="str">Réclamation</column> 
+		<column width="80" type="ro" align="center" sort="str">N°Abonné</column> 
+		<column width="160" type="ro" align="center" sort="str">Ville</column> 
+		<column width="90" type="coro" align="center" sort="str">Réponse réclamation {{ ipp|raw }} </column> 
+		<column width="90" type="coro" align="center" sort="str">Motif {{ motif|raw }}</column> 
+		<column width="100" type="coro" align="center" sort="str">Imputation {{ imputation|raw }}</column> 
+		<column width="220" type="ed" align="center" sort="str">Commentaire</column> 
+		<column width="150" type="ro" align="center" sort="str">Date réponse arbitrage</column> 
+		<column width="150" type="ro" align="center" sort="str">complément d'info</column> 
+		<afterInit>
+			<call command='attachHeader'> <param>,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#select_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter</param> </call>   
+		</afterInit>  
+	</head> 
+	{% for row in reclamation %}
+		<row>
+			<cell> {{ row.id }}</cell>
+			<cell> {{ row.dateCreat | date('d/m/Y') }} </cell> 
+			<cell> {% if row.dateDemandeArbitrage %} {{ row.dateDemandeArbitrage | date('d/m/Y') }} {% endif %} </cell> 
+			<cell> {{ row.societe.libelle}} </cell> 
+			<cell></cell>
+			<cell> {{row.crmDemande.libelle}} </cell>
+			<cell> {{ row.numaboExt }}</cell>
+			<cell> {{ row.ville }}</cell>
+			<cell> 
+				{% if row.ipp is not null %}
+					 {{ row.ipp ? 'Oui'| trim : 'Non' | trim }}
+				{% else  %}
+					{{ 'N/A' }}
+				{% endif %}
+			</cell>
+			<cell> 
+				{% if row.motif is not null %} 
+					{{ row.motif.libelle}} 
+				{% else  %}
+					{{ 'N/A' }}
+				{% endif %}
+			</cell>
+			<cell> 
+				{% if row.imputation is not null %} 
+					{{ row.imputation.libelle }}
+				{% else  %}
+					{{ 'N/A' }}
+				{% endif %}
+			</cell>
+			<cell> {{ row.cmtReponseArbitrage }} </cell> 
+			<cell> {% if row.dateReponseArbitrage %} {{ row.dateReponseArbitrage | date('d/m/Y') }} {% endif %} </cell> 
+			<cell class="getData"> 
+			{% if row.dateDemandeArbitrage is not null %} 
+				{{ '<div id="'~row.id~'" class="alert-perso"> Info supplémentaire </div>'| raw }} 
+			{% endif %} 
+			</cell>
+		</row>
+	{% endfor %}
+</rows>

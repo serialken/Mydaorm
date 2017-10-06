@@ -1,0 +1,18 @@
+parameters:
+#    ams_carto.example.class: Ams\CartoBundle\Example
+
+services:
+#    ams_carto.example:
+#        class: %ams_carto.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+    ams_carto.geoservice:
+        class: Ams\CartoBundle\GeoService\AmsGeoservice
+        calls:
+             - [ setContainer,[ @service_container ] ]
+#        arguments: [@service_id, "plain_value", %parameter%]
+    ams_util.geoservice:
+        class: Ams\CartoBundle\GeoService\AmsUtil
+        calls: 
+            - [ setContainer,[ @service_container ] ]
+         

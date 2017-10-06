@@ -1,0 +1,83 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+{% block title %}{{titre}}{% endblock %}
+{% block body %} 
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': route }))}}
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                {% block cmd %}{% endblock %}
+               
+                <span style="float:right; margin-left:15px; height:28px">
+                    <img id="cancel_grid" style='cursor:pointer;visibility:hidden' src="{{ asset('images/dhtmlx_undo.png') }}" alt="Annuler"  onclick="dhtmlxgridUndo()">
+                    {% block exportExcel %}<img style='cursor:pointer' src="{{ asset('images/dhtmlx_excel.png') }}" alt="Imprimer"  onclick="grid.toExcel({{m.urlExcel()}},'color',true);">{% endblock %}
+                </span>  
+                {% block exportPdf %}{% endblock %}
+                <div id="gridbox"  style="width:100%; height:500px; min-height:500px; background-color:white;overflow:hidden"></div>
+
+                {% block operation %}{% endblock %}
+
+                <div id="cover" style='text-align:center; font-family:Tahoma;position:absolute;top:400px;left:500px;height:150px;width:500px;'>
+                    <img src="{{ asset('images/ajaxLoader.gif') }}"> 
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="recinfoArea"></div>
+            </td>
+        </tr>
+    </table>  
+</div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    isModif={{isModif?1:0}};
+        
+    function initDateDistrib(){
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("#form_filtre_date_distrib").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        }
+        
+    function initDateIntervalFiltre(){
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("#form_filtre_date_debut").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        $("#form_filtre_date_fin").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        }
+    
+    function initFrenchDateIntervalFiltre(){
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("#form_filtre_date_debut").datepicker({
+               dateFormat: 'dd/mm/yy', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        $("#form_filtre_date_fin").datepicker({
+               dateFormat: 'dd/mm/yy', 
+               firstDay:1
+            }).attr("readonly","readonly");
+        }
+        
+    function gridFilter(colId){
+        if( $('#filtreSplit').is(':checked') ){
+            grid.filterBy(colId, 'N', true);
+        } else {
+            grid.filterBy(colId, '', true);
+            grid.filterByAll();
+        }  
+    }
+    </script>
+{% endblock %}
+{% block js_load %} 
+    onLoadGrid();
+{% endblock %}

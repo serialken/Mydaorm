@@ -1,0 +1,67 @@
+parameters:
+    database_driver: pdo_mysql
+    database_host: py-ch-prdmrapp
+    database_port: null
+    database_name: mroad
+    database_user: mroad
+    database_password: Mroad123
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    locale: en
+    secret: a4e099cd15a136f048d2df6bec0597b1a1252284
+    database_path: null
+
+#Connection Pleiades
+    database_driver_ple: oci8
+    database_host_ple: vp-amsora01
+    database_port_ple: 1521
+    database_name_ple: PNG
+    database_service_ple:  true
+    database_user_ple: PNG3_MOD
+    database_password_ple: ADMINPNG3_MOD
+    database_charset_ple: AL32UTF8
+
+#Connection Octime
+    database_driver_oc: oci8
+    database_host_oc: vp-amsora01
+    database_port_oc: 1521
+    database_name_oc: POCT
+    database_service_oc:  true
+    database_user_oc: sdv
+    database_password_oc: adminsdv
+    database_charset_oc: AL32UTF8
+
+#Connection Pevp
+    database_driver_pevp: oci8
+    database_host_pevp: PY-CH-PRDPEVP
+    database_port_pevp: 1521
+    database_name_pevp: PEVP
+    database_service_pevp:  true
+    database_user_pevp: pevp
+    database_password_pevp: pevp
+    database_charset_pevp: AL32UTF8
+    
+#WebService GEOCODAGE : Criteres de qualification (OK | A_STATUER | AUCUNE_PROPOSITION) & options d'appel de SOAP     
+    GEOC_WS_GEOCODE_SOAP_CRITERIA_OK: 
+        - { GeocodeType: 4, GeocodeScoreMin: 18 }
+        - { GeocodeType: 3, GeocodeScoreMin: 18 }
+    # Comme projection, on peut utiliser "MAP" [Lambert II etendu] (expl : X=607439 , Y:2403317 ) 
+    # ou "EPSG:27572" (expl : X=607439.257 , Y:2403317.08)
+    # ou "WGS84" [Système geodesique standard mondial, notamment utilise par le systeme GPS] ( X=2.437402 , Y=48.628449)
+    # projectionGeocodage: "EPSG:27572" 
+    #projectionGeocodage: "WGS84" 
+    GEOC_WS_GEOCODE_SOAP_OPTION: { connection_timeout: 5000, cache_wsdl: 3, encoding: "UTF-8" }
+    #GEOC_WS_GEOCODE_SOAP_OPTION: { connection_timeout: 5000, cache_wsdl: 3, proxy_host: "10.196.20.193", proxy_port: "80", encoding: "UTF-8" }
+    # 'cache_wsdl' => WSDL_CACHE_BOTH ..... WSDL_CACHE_BOTH correspond a 3
+
+# Logs et alertes MRoad
+    logs_alerts_filename : alertes.log
+    logs_infos_filename : infos.log
+    logs_alim_folder : alimentation
+    logs_carto_folder : carto
+    logs_docs_folder : documents
+    logs_paie_folder : paie
+    logs_envt_folder : environnement
+    logs_crm_folder : crm

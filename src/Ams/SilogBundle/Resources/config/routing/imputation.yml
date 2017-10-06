@@ -1,0 +1,12 @@
+admin_imputation_service:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:Imputations:index" }
+    
+admin_imputation_service_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:Imputations:grid" }
+    
+admin_imputation_service_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:Imputations:MotifCrud" }
+

@@ -1,0 +1,72 @@
+{% extends 'AmsSilogBundle::layout_dashboard.html.twig' %}
+{% block title %}Logos{% endblock %}
+	
+{% block body %} 
+<div class="well container" id="form_fichier" style="overflow: hidden;">
+    <h1>Ajouter une image au serveur</h1>
+    <form method="post" class="formFichier" id="formFichierCreate" action="{{ path('fichier_ajout')}}" {{ form_enctype(form) }} >          
+      {{ form_widget(form) }}
+      <br/>
+      <div id="inputFormCreate">
+          <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+      </div>
+    </form>
+</div>
+<div class="container well" id="liste_fichiers">
+    <h1>Fichiers images disponibles sur le serveur</h1>
+    <br>
+    <div id="modalAlerte"></div>
+    <br>
+     <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Logo</th>
+            <th colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>          
+            {% for image in images %}
+                <tr id="fichier_tab_{{ image.id }}">
+                    <td>{{ image.name }}</td>
+                    <td>
+                        <img src="{{ asset( image.webPath)}}" alt="{{ image.name }}">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#amsModal" onClick="ChargeModal('{{ path('fichier_update') }}',{{image.id}});" >Modifier</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onClick="deleteFileAction({{ image.id }}, this)">Supprimer</button>
+                    </td>
+                </tr>
+            {% endfor %}  
+        </tbody>
+      </table>
+    </div>
+    <br>
+</div>
+<script>
+    function deleteFileAction(fileId, elmButton) {
+        bootbox.confirm('Etes-vous sur de vouloir supprimer cette image ?', function(result) {
+            if (result) {
+                $.ajax({
+                    url: "{{ path('fichier_delete') }}",
+                    type: "POST",
+                    data: {
+                        "fileId" : fileId
+                    },
+                    cache: false,
+                    success: function(data) {
+                        $("#modalAlerte").html(data);
+                        $(elmButton).closest("tr").remove();
+                    },
+                    error: function(data) {
+                         alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+                    }
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}

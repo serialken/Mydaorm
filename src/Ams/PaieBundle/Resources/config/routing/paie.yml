@@ -1,0 +1,345 @@
+ajax_save_session:
+    pattern:  /ajax-save-session
+    defaults: { _controller: "AmsPaieBundle:GlobalPai:ajaxSaveSession" }
+    
+
+modification_pai:
+    pattern:  /modification-pai
+    defaults: { _controller: "AmsPaieBundle:PaiJournal:asupprimer" }
+    
+liste_pai_journal:
+    pattern:  /liste-pai-journal
+    defaults: { _controller: "AmsPaieBundle:PaiJournal:liste" }
+    
+gridliste_pai_journal:
+    pattern:  /grid-pai-journal
+    defaults: { _controller: "AmsPaieBundle:PaiJournal:grid" }
+
+ajax_actualisation_pai_journal:
+    pattern:  /ajax-actualisation-pai-journal
+    defaults: { _controller: "AmsPaieBundle:PaiJournal:ajaxActualisation" }
+
+
+liste_pai_heure:
+    pattern:  /liste-pai-heure
+    defaults: { _controller: "AmsPaieBundle:PaiHeure:liste" }
+
+gridliste_pai_heure:
+    pattern:  /grid-pai-heure
+    defaults: { _controller: "AmsPaieBundle:PaiHeure:grid" }
+
+
+liste_pai_poids_pco:
+    pattern:  /liste-pai-poids-pco
+    defaults: { _controller: "AmsPaieBundle:PaiPoidsPCO:liste" }
+
+gridliste_pai_poids_pco:
+    pattern:  /grid-pai-poids-pco
+    defaults: { _controller: "AmsPaieBundle:PaiPoidsPCO:grid" }
+
+ajax_alimentation_pai_poids_pco:
+    pattern:  /ajax-alimentation-pai-poids-pco
+    defaults: { _controller: "AmsPaieBundle:PaiPoidsPCO:ajaxAlimentation" }
+
+
+liste_pai_poids_depot:
+    pattern:  /liste-pai-poids-depot
+    defaults: { _controller: "AmsPaieBundle:PaiPoidsDepot:liste" }
+
+gridliste_pai_poids_depot:
+    pattern:  /grid-pai-poids-depot
+    defaults: { _controller: "AmsPaieBundle:PaiPoidsDepot:grid" }
+
+
+liste_pai_tournee:
+    pattern:  /liste-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:liste" }
+  
+gridliste_pai_tournee:
+    pattern:  /grid-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:grid" }
+
+ajax_alimentation_pai_tournee:
+    pattern:  /ajax-alimentation-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:ajaxAlimentation" }
+
+ajax_suppression_pai_tournee:
+    pattern:  /ajax-suppression-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:ajaxSuppression" }
+
+ajax_ajouter_pai_tournee:
+    pattern:  /ajax-ajouter-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:ajaxAjouter" }
+
+ajax_splitter_pai_tournee:
+    pattern:  /ajax-splitter-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:ajaxSplitter" }
+
+ajax_desplitter_pai_tournee:
+    pattern:  /ajax-desplitter-pai-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:ajaxDeSplitter" }
+
+ajax_combo_modele_pai_tournee:
+    pattern:  /ajax-combo-modele-pai-tournee
+    defaults: { _controller: AmsPaieBundle:PaiTournee:ajaxComboModele }
+
+ajax_combo_split_pai_tournee:
+    pattern:  /ajax-combo-split-pai-tournee
+    defaults: { _controller: AmsPaieBundle:PaiTournee:ajaxComboSplit }
+    
+ajax_combo_desplit_pai_tournee:
+    pattern:  /ajax-combo-desplit-pai-tournee
+    defaults: { _controller: AmsPaieBundle:PaiTournee:ajaxComboDeSplit }
+    
+    
+liste_pai_produit:
+    pattern:  /liste-pai-produit
+    defaults: { _controller: "AmsPaieBundle:PaiProduit:liste" }
+  
+gridliste_pai_produit:
+    pattern:  /grid-pai-produit
+    defaults: { _controller: "AmsPaieBundle:PaiProduit:grid" }
+
+
+liste_pai_abonne:
+    pattern:  /liste-pai-abonne
+    defaults: { _controller: "AmsPaieBundle:PaiAbonne:liste" }
+  
+gridliste_pai_abonne:
+    pattern:  /grid-pai-abonne
+    defaults: { _controller: "AmsPaieBundle:PaiAbonne:grid" }    
+
+ajax_dupliquer_pai_abonne:
+    pattern:  /ajax-dupliquer-pai-abonne
+    defaults: { _controller: "AmsPaieBundle:PaiAbonne:ajaxDupliquer" }
+
+ajax_ajouter_pai_abonne:
+    pattern:  /ajax-ajouter-pai-abonne
+    defaults: { _controller: "AmsPaieBundle:PaiAbonne:ajaxAjouter" }
+
+ajax_supprimer_pai_abonne:
+    pattern:  /ajax-supprimer-pai-abonne
+    defaults: { _controller: "AmsPaieBundle:PaiAbonne:ajaxSupprimer" }
+    
+ajax_combo_ajouter_pai_abonne:
+    pattern:  /ajax-combo-ajouter-pai-abonne
+    defaults: { _controller: AmsPaieBundle:PaiAbonne:ajaxComboAjouter }
+    
+ajax_combo_supprimer_pai_abonne:
+    pattern:  /ajax-combo-supprimer-pai-abonne
+    defaults: { _controller: AmsPaieBundle:PaiAbonne:ajaxComboSupprimer }
+    
+ajax_combo_dupliquer_org_pai_abonne:
+    pattern:  /ajax-combo-dupliquer-org-pai-abonne
+    defaults: { _controller: AmsPaieBundle:PaiAbonne:ajaxComboDubliquerOrg }
+    
+ajax_combo_dupliquer_dst_pai_abonne:
+    pattern:  /ajax-combo-dupliquer-dst-pai-abonne
+    defaults: { _controller: AmsPaieBundle:PaiAbonne:ajaxComboDubliquerDst }
+
+
+liste_pai_reperage:
+    pattern:  /liste-pai-reperage
+    defaults: { _controller: "AmsPaieBundle:PaiReperage:liste" }
+  
+gridliste_pai_reperage:
+    pattern:  /grid-pai-reperage
+    defaults: { _controller: "AmsPaieBundle:PaiReperage:grid" }    
+
+
+
+liste_pai_diffuseur:
+    pattern:  /liste-pai-diffuseur
+    defaults: { _controller: "AmsPaieBundle:PaiDiffuseur:liste" }
+  
+gridliste_pai_diffuseur:
+    pattern:  /grid-pai-diffuseur
+    defaults: { _controller: "AmsPaieBundle:PaiDiffuseur:grid" }    
+
+ajax_ajouter_pai_diffuseur:
+    pattern:  /ajax-ajouter-pai-diffuseur
+    defaults: { _controller: "AmsPaieBundle:PaiDiffuseur:ajaxAjouter" }
+
+ajax_supprimer_pai_diffuseur:
+    pattern:  /ajax-supprimer-pai-diffuseur
+    defaults: { _controller: "AmsPaieBundle:PaiDiffuseur:ajaxSupprimer" }
+
+ajax_dupliquer_pai_diffuseur:
+    pattern:  /ajax-dupliquer-pai-diffuseur
+    defaults: { _controller: "AmsPaieBundle:PaiDiffuseur:ajaxDupliquer" }
+    
+ajax_combo_ajouter_pai_diffuseur:
+    pattern:  /ajax-combo-ajouter-pai-diffuseur
+    defaults: { _controller: AmsPaieBundle:PaiDiffuseur:ajaxComboAjouter }
+    
+ajax_combo_supprimer_pai_diffuseur:
+    pattern:  /ajax-combo-supprimer-pai-diffuseur
+    defaults: { _controller: AmsPaieBundle:PaiDiffuseur:ajaxComboSupprimer }
+    
+ajax_combo_dupliquer_org_pai_diffuseur:
+    pattern:  /ajax-combo-dupliquer-org-pai-diffuseur
+    defaults: { _controller: AmsPaieBundle:PaiDiffuseur:ajaxComboDubliquerOrg }
+    
+ajax_combo_dupliquer_dst_pai_diffuseur:
+    pattern:  /ajax-combo-dupliquer-dst-pai-diffuseur
+    defaults: { _controller: AmsPaieBundle:PaiDiffuseur:ajaxComboDubliquerDst }
+
+
+liste_pai_horspresse:
+    pattern:  /liste-pai-horspresse
+    defaults: { _controller: "AmsPaieBundle:PaiHorsPresse:liste" }
+  
+gridliste_pai_horspresse:
+    pattern:  /grid-pai-horspresse
+    defaults: { _controller: "AmsPaieBundle:PaiHorsPresse:grid" }    
+
+ajax_ajouter_pai_horspresse:
+    pattern:  /ajax-ajouter-pai-horspresse
+    defaults: { _controller: "AmsPaieBundle:PaiHorsPresse:ajaxAjouter" }
+
+ajax_supprimer_pai_horspresse:
+    pattern:  /ajax-supprimer-pai-horspresse
+    defaults: { _controller: "AmsPaieBundle:PaiHorsPresse:ajaxSupprimer" }
+    
+ajax_combo_ajouter_pai_horspresse:
+    pattern:  /ajax-combo-ajouter-pai-horspresse
+    defaults: { _controller: AmsPaieBundle:PaiHorsPresse:ajaxComboAjouter }
+    
+ajax_combo_supprimer_pai_horspresse:
+    pattern:  /ajax-combo-supprimer-pai-horspresse
+    defaults: { _controller: AmsPaieBundle:PaiHorsPresse:ajaxComboSupprimer }
+
+
+liste_pai_presse:
+    pattern:  /liste-pai-presse
+    defaults: { _controller: "AmsPaieBundle:PaiPresse:liste" }
+  
+gridliste_pai_presse:
+    pattern:  /grid-pai-presse
+    defaults: { _controller: "AmsPaieBundle:PaiPresse:grid" }    
+
+ajax_ajouter_pai_presse:
+    pattern:  /ajax-ajouter-pai-presse
+    defaults: { _controller: "AmsPaieBundle:PaiPresse:ajaxAjouter" }
+
+ajax_supprimer_pai_presse:
+    pattern:  /ajax-supprimer-pai-presse
+    defaults: { _controller: "AmsPaieBundle:PaiPresse:ajaxSupprimer" }
+    
+ajax_combo_ajouter_pai_presse:
+    pattern:  /ajax-combo-ajouter-pai-presse
+    defaults: { _controller: AmsPaieBundle:PaiPresse:ajaxComboAjouter }
+    
+ajax_combo_supprimer_pai_presse:
+    pattern:  /ajax-combo-supprimer-pai-presse
+    defaults: { _controller: AmsPaieBundle:PaiPresse:ajaxComboSupprimer }
+    
+    
+liste_pai_activite:
+    pattern:  /liste-pai-activite
+    defaults: { _controller: "AmsPaieBundle:PaiActivite:liste" }
+  
+gridliste_pai_activite:
+    pattern:  /grid-pai-activite
+    defaults: { _controller: "AmsPaieBundle:PaiActivite:grid" }
+
+ajax_alimentation_pai_activite:
+    pattern:  /ajax-alimentation-pai-activite
+    defaults: { _controller: "AmsPaieBundle:PaiActivite:ajaxAlimentation" }
+    
+ajax_suppression_pai_activite:
+    pattern:  /ajax-suppression-pai-activite
+    defaults: { _controller: "AmsPaieBundle:PaiActivite:ajaxSuppression" }
+    
+liste_pai_activiteHP:
+    pattern:  /liste-pai-activiteHP
+    defaults: { _controller: "AmsPaieBundle:PaiActiviteHP:liste" }
+  
+gridliste_pai_activiteHP:
+    pattern:  /grid-pai-activiteHP
+    defaults: { _controller: "AmsPaieBundle:PaiActiviteHP:grid" }
+
+    
+liste_pai_incident:
+    pattern:  /liste-pai-incident
+    defaults: { _controller: "AmsPaieBundle:PaiIncident:liste" }
+  
+gridliste_pai_incident:
+    pattern:  /grid-pai-incident
+    defaults: { _controller: "AmsPaieBundle:PaiIncident:grid" }
+
+ajax_pai_incident_employe_date:
+    pattern:  /ajax-pai-incident-employe-date
+    defaults: { _controller: "AmsPaieBundle:PaiIncident:ajaxEmployeDate" }
+
+    
+liste_pai_reclamation:
+    pattern:  /liste-pai-reclamation
+    defaults: { _controller: "AmsPaieBundle:PaiReclamation:liste" }
+  
+gridliste_pai_reclamation:
+    pattern:  /grid-pai-reclamation
+    defaults: { _controller: "AmsPaieBundle:PaiReclamation:grid" }
+
+ajax_pai_reclamation_tournee_date:
+    pattern:  /ajax-pai-reclamation-tournee-date
+    defaults: { _controller: "AmsPaieBundle:PaiReclamation:ajaxTourneeDate" }
+
+ajax_pai_reclamation_tournee_mois:
+    pattern:  /ajax-pai-reclamation-tournee-mois
+    defaults: { _controller: "AmsPaieBundle:PaiReclamation:ajaxTourneeMois" }
+
+
+
+pai_planning:
+    pattern: /pai-planning
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:planning" }
+
+ajax_pai_planning_tournee:
+    pattern:  /ajax-pai-planning-tournee
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:ajaxTournee" }
+
+ajax_pai_planning_activite:
+    pattern:  /ajax-pai-planning-activite
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:ajaxActivite" }
+
+ajax_pai_planning_cycle:
+    pattern:  /ajax-pai-planning-cycle
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:ajaxCycle" }
+
+ajax_pai_planning_ferie:
+    pattern:  /ajax-pai-planning-ferie
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:ajaxFerie" }
+
+ajax_pai_planning_absence:
+    pattern:  /ajax-pai-planning-absence
+    defaults: { _controller: "AmsPaieBundle:PaiPlanning:ajaxAbsence" }
+    
+ajax_combo_employe_pai_planning:
+    pattern:  /ajax-combo-employe-pai-planning
+    defaults: { _controller: AmsEmployeBundle:Employe:ajaxComboPaiPlanning }
+    
+liste_pai_resumeemploye:
+    pattern:  /liste-pai-resumeemploye
+    defaults: { _controller: "AmsPaieBundle:PaiResumeEmploye:liste" }
+  
+gridliste_pai_resumeemploye:
+    pattern:  /grid-pai-resumeemploye
+    defaults: { _controller: "AmsPaieBundle:PaiResumeEmploye:grid" }
+    
+ajax_combo_employe_pai_resume:
+    pattern:  /ajax-combo-employe-pai-resume
+    defaults: { _controller: AmsEmployeBundle:Employe:ajaxComboPaiResume }
+    
+#liste_pai_resumedepot:
+#    pattern:  /liste-pai-resumedepot
+#    defaults: { _controller: "AmsPaieBundle:PaiResumeDepot:liste" }
+#  
+#gridliste_pai_resumedepot:
+#    pattern:  /grid-pai-resumedepot
+#    defaults: { _controller: "AmsPaieBundle:PaiResumeDepot:grid" }
+
+  
+pai_action_dhtmlx:
+    pattern:  /action-dhtmlx/{repositoryName}
+    defaults: { _controller: "AmsPaieBundle:Dhtmlx:gridAction" }

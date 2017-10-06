@@ -1,0 +1,73 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="button" value="Alimentation Employés" id="button_PleiadesNG"/></span>&nbsp;
+    <span  style="float:left;"><input type="button" value="Génération Badges" id="button_Octime"/></span>
+    <span  style="float:center;"><input type="button" value="Rafraichir" id="button_rafraichir"/></span>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+['statut'               ,'#select_filter'           ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['date_debut'           ,null                       ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['duree'                ,null                       ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['utilisateur_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['typetrt'              ,'#select_filter'           ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['depot_id'             ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['flux_id'              ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['date_distrib'         ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+['anneemois'            ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goLog(rId)'       ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+    }
+    
+    function goLog(rId){
+        goLinkGrid("{{path('liste_pai_int_log')}}"+"?idtrt=",rId);
+    }
+
+    $(document).ready(function() {
+        $('#button_rafraichir').on('click', function() { onLoadGrid(); });
+        $('#button_PleiadesNG').on('click', function() { confirmAction("Voulez-vous vraiment lancer l'alimentation employé?","alimPleiadesNG()"); });
+        $('#button_Octime').on('click', function() { confirmAction("Voulez-vous vraiment lancer l'alimentation Octime?","alimOctime()"); });
+    });
+    function alimPleiadesNG(){
+        $('#button_PleiadesNG').prop('disabled', true);
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-PleiadesNG",
+            type: "GET",
+            data: { },
+            success: function(data) { 
+                ajaxSucces("Alimentation des employés en cours ...<br/>Merci de consulter la log");
+                onLoadGrid(); 
+                $('#button_PleiadesNG').prop('disabled', false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+                $('#button_PleiadesNG').prop('disabled', false);
+            }
+        });  
+    }
+    function alimOctime(){
+        $('#button_Octime').prop('disabled', true);
+        $.ajax({
+             timeout: 999000,
+             url: "ajax-Octime",
+             type: "GET",
+             success: function(data) { 
+                 ajaxSucces("Génération des badges en cours ...");
+                 onLoadGrid(); 
+                $('#button_Octime').prop('disabled', false);
+             },
+             error: function (xhr, ajaxOptions, thrownError) { 
+                 ajaxErreur(xhr, ajaxOptions, thrownError); 
+                $('#button_Octime').prop('disabled', false);
+             }
+        }); 
+    }
+</script>
+{% endblock %}

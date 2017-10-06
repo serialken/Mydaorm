@@ -1,0 +1,16 @@
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}{{m.bgColorBloque(row.isModif)}}>  
+    <cell>{{row.date_distrib}}</cell>
+    <cell>{{row.type_id}}</cell>
+    <cell>{{row.tournee_id}}</cell>
+    <cell>{{row.employe_id}}</cell>
+    <cell>{{row.societe_id}}</cell>
+    <cell>{{row.nbrec_abonne}}</cell>
+    <cell>{{row.nbrec_diffuseur}}</cell>
+    <cell>{{row.commentaire}}</cell>
+    <cell><![CDATA[{% set crms = row.crm|split(',') %}{% for crm in crms %}{% if crm!='' %}<a href="{{path('crm_edit_and_validate',{'crmId':crm|abs})}}">{{crm}}</a>&nbsp;{% endif %}{% endfor %}]]></cell>
+    {{m.cellSupprimeRow(isModif,row.isModif)}}
+</row> 
+{% endfor %}
+
+

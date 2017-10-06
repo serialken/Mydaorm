@@ -1,0 +1,33 @@
+{% for row in tournees %}
+    <row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}{{m.bgColorLevelBloque(row.valide,row.level,row.isModif)}}>  
+        <cell>{{row.groupe_id}}</cell>
+        <cell>{{row.id}}</cell>
+        <cell><![CDATA[{{m.lienJournal(row.journal_id,row.msg)}}]]></cell>
+        <cell><![CDATA[{{m.lienEmploye()}}]]></cell>
+        <cell>{{row.employe_id}}</cell>
+        <cell>{{row.tournee_mere}}</cell>
+        <cell>{{row.tournee_org_id}}</cell>
+        <cell>{{row.journal_id}}</cell>
+        {% for produit in produits %}
+            {% if qtes[row.id][produit.id] is defined %}
+                {%if produit.type_id==1%}
+                    <cell>{{qtes[row.id][produit.id]['qte']}}</cell>
+                    <cell>{{qtes[row.id][produit.id]['nbcli']}}</cell>
+                {%else%}
+                    <cell></cell>
+                    <cell>{{qtes[row.id][produit.id]['qte']}}</cell>
+                    <cell></cell>
+                {%endif%}
+            {% else %}
+                {%if produit.type_id==1%}
+                    <cell>0</cell>
+                    <cell>0</cell>
+                {%else%}
+                    <cell></cell>
+                    <cell>0</cell>
+                    <cell></cell>
+                {%endif%}
+            {% endif %}
+        {% endfor %}           
+    </row> 
+{% endfor %}

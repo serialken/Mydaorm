@@ -1,0 +1,57 @@
+qtes_quotidiennes_index:
+    pattern: /quantites-quotidiennes/tout/
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:index"}
+    # Voir la definition des parametres %date_du_jour% dans AmsDistributionBundle/DependencyInjection/AmsDistributionExtension.php
+
+qtes_quotidiennes_index_donnees:
+    pattern: /quantites-quotidiennes-donnees/tout/{date}/{passe}/{pId}/{vol_paquet}/{refresh}/{flux}
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:indexDonnees", pId: 0, vol_paquet: 0, refresh: 0, flux: 0 }
+
+    
+qtes_quotidiennes_depot:
+    pattern: /quantites-quotidiennes/depot/
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:qteParTourneePourUnDepot"}
+    
+qtes_quotidiennes_depot_donnees:
+    pattern: /quantites-quotidiennes-donnees/depot/{dId}/{date}
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:qteParTourneePourUnDepotDonnees"}
+        
+qtes_quotidiennes_generation_xls:
+    pattern: /quantites-quotidiennes/generation-xls/
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:generationXls"}
+    
+liste_clients_cd_produit:
+    pattern: /quantites-quotidiennes/liste-clients/
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:listeClientsParCDParProduit"}
+    
+liste_clients_cd_produit_donnees:
+    pattern: /quantites-quotidiennes-donnees/liste-clients/{dId}/{pId}/{date}/{flux}/{export}
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:listeClientsParCDParProduitDonnees", flux: 0, export: null }
+    
+qtes_quotidiennes_save:
+    pattern: /quantites-quotidiennes-save
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:enregistrementClient"}
+    
+qtes_quotidiennes_classify: 
+    pattern: /quantites-quotidiennes-classify
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:classifyClient"}
+    
+qtes_quotidiennes_classify_xml: 
+    pattern: /quantites-quotidiennes-classify-xml/{date}/{depot}
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:classifyXml"}
+
+feuille_portage:
+    pattern: /feuille-portage
+    defaults: { _controller: "AmsDistributionBundle:FeuillePortage:liste"}
+
+feuille_portage_download:
+    pattern: /feuille-portage-download
+    defaults: { _controller: "AmsDistributionBundle:FeuillePortage:download"}
+    
+feuille_portage_generation:
+    pattern: /feuille-portage-generation
+    defaults: { _controller: "AmsDistributionBundle:FeuillePortage:generation"}
+    
+qtes_quotidiennes_depot_update_ordre:
+    pattern: /quantites-quotidiennes-donnees/depot/update_order
+    defaults: { _controller: "AmsDistributionBundle:QtesQuotidiennes:miseAJourOrdre"}   

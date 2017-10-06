@@ -1,0 +1,124 @@
+adresse_liste_rejet:
+    pattern:  /adresse-liste-rejets
+    defaults: { _controller: AmsAdresseBundle:Rejet:liste }
+    
+adresse_liste_rejet_xml:
+    pattern:  /adresse-liste-rejets-xml
+    defaults: { _controller: AmsAdresseBundle:Rejet:grid }
+    
+adresse_modif_rejet:
+    pattern:  /adresse-modif-rejet
+    defaults: { _controller: AmsAdresseBundle:Rejet:modif }
+
+adresse_rejet_geocode:
+    pattern:  /adresse-liste-geocode
+    defaults: { _controller: AmsAdresseBundle:Rejet:adresseGeocode }
+       
+       
+adresse_point_livraison:
+    pattern:  /adresse-point-livraison
+    defaults: { _controller: AmsAdresseBundle:PointLivraison:index}
+
+point_livraison_geocode:
+    pattern:  /point-livraison-geocode
+    defaults: { _controller: AmsAdresseBundle:PointLivraison:geocode}
+    
+adresse_geocode_update:
+    pattern:  /adresse-geocode-update
+    defaults: { _controller: AmsAdresseBundle:PointLivraison:geocodeUpdate}
+    
+adresse_recherche_abonne:
+    pattern:  /adresse-recherche-abonne
+    defaults: { _controller: AmsAdresseBundle:PointLivraison:rechercheAbonne}
+    
+    
+adresse_regroupement_abonne:
+    pattern:  /adresse-regroupement-abonne
+    defaults: { _controller: AmsAdresseBundle:PointLivraison:regroupementAbonne}
+    
+    
+adresse_export_recherche:
+    pattern:  /adresse-export-recherche
+    defaults: { _controller: AmsAdresseBundle:Export:recherche}
+    
+adresse_export_query:
+    pattern:  /adresse-export-query
+    defaults: { _controller: AmsAdresseBundle:Export:exportQuery}
+
+adresse_export_grid:
+    pattern:  /adresse-export-grid
+    defaults: { _controller: AmsAdresseBundle:Export:gridQuery}
+
+adresse_export_enregistre:
+    pattern:  /adresse-export-enregistre
+    defaults: { _controller: AmsAdresseBundle:Export:enregistreQuery}
+    
+
+adresse_export_query_liste:
+    pattern:  /adresse-export-query-liste
+    defaults: { _controller: AmsAdresseBundle:Export:listeQuery}
+    
+adresse_export_query_infos:
+    pattern:  /adresse_export_query_infos
+    defaults: { _controller: AmsAdresseBundle:Export:getProduitByTourneeAjax}
+    
+adresse_bordereau:
+  pattern:  /bordereau_de_livraison
+  defaults: { _controller: AmsAdresseBundle:Bordereau:Index}
+  
+adresse_bordereau_crud:
+  pattern:  /bordereau_de_livraison_crud
+  defaults: { _controller: AmsAdresseBundle:Bordereau:Crud}
+  
+adresse_etiquette:
+  pattern:  /etiquette-abonne
+  defaults: { _controller: AmsAdresseBundle:Etiquette:Index}
+  
+adresse_etiquette_crud:
+  pattern:  /etiquette-abonne_crud
+  defaults: { _controller: AmsAdresseBundle:Etiquette:Crud}
+  
+adresse_etiquette_crud_societe:
+  pattern:  /etiquette-abonne-crud-societe
+  defaults: { _controller: AmsAdresseBundle:Etiquette:crudAllProduit}
+  
+adresse_etiquette_tournees:
+  pattern:  /etiquette-tournees_depot
+  defaults: { _controller: AmsAdresseBundle:Etiquette:getTourneeByDepot}
+  
+adresse_export_verif:
+  pattern:  /adresse_export_verif
+  defaults: { _controller: AmsAdresseBundle:Export:verifQueryImportExport}
+  
+adresse_date_application:
+  pattern:  /adresse_ajax_date-application
+  defaults: { _controller: AmsAdresseBundle:Export:addDateApplication}
+  
+adresse_export_reload:
+  pattern:  /adresse_export-reload
+  defaults: { _controller: AmsAdresseBundle:Export:reloadedExport}
+  
+adresse_delete_query:
+  pattern:  /adresse_delete-query
+  defaults: { _controller: AmsAdresseBundle:Export:deleteQuery}
+  
+adresse_delete_import:
+  pattern:  /adresse_delete-import
+  defaults: { _controller: AmsAdresseBundle:Export:deleteImport}
+  
+change_tournee_abos:
+  pattern:  /change_tournee_abos
+  defaults: { _controller: AmsAdresseBundle:AbonneTournee:Index}
+  
+change_tournee_xmlhttprequest:
+  pattern:  /change_tournee_xmlhttprequest
+  defaults: { _controller: AmsAdresseBundle:AbonneTournee:getTournee}
+  
+change_tournee_abos_xml:
+  pattern:  /change_tournee_abos_xml/{depot}/{flux}/{tournee}/{jour}
+  defaults: { _controller: AmsAdresseBundle:AbonneTournee:getData}
+  
+change_tournee_crud:
+  pattern:  /change_tournee_crud
+  defaults: { _controller: AmsAdresseBundle:AbonneTournee:crud}
+  

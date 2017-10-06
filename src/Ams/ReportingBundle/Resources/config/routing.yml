@@ -1,0 +1,19 @@
+ams_reporting_homepage:
+    pattern:     /reporting
+    defaults: { _controller: AmsReportingBundle:Reporting:index }
+     
+reporting_detail:
+    pattern:     /reporting-detail/{depot}/
+    defaults: { _controller: AmsReportingBundle:Reporting:indexDetail}
+    
+grid_reporting_detail:
+    pattern:     /grid-reporting-detail/{depot}/{flux}/{dateMin}/{dateMax}/
+    defaults: { _controller: AmsReportingBundle:Reporting:gridDetail}
+
+grid_reportings_pilotage_centre:
+    pattern:  /grid-reportings/{flux}/{dateMin}/{dateMax}/
+    defaults: { _controller: AmsReportingBundle:Reporting:grid }
+    
+indicateurs:
+    pattern:  /indicateurs
+    defaults: { _controller: AmsReportingBundle:Indicateur:Indicateur }

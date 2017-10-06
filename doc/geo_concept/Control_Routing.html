@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Control : route</title>
+<link rel="stylesheet" href="http://api.geoconcept.net/htc/htc/skins/htc.css">
+<style>
+html {
+        height: 100%;
+}
+
+body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+}
+#results {
+        background-color:white;
+        position:absolute;
+        width: 300px;
+        right:0px;
+        overflow: auto;
+        z-index:15000;
+        top:0px;
+        font-size: 11px;
+        height: 250px;
+        cursor: pointer;
+}
+ span {
+        display:block;
+        width: 26px;
+        height: 26px;
+}
+
+.tableRoute {
+        width: 99%;
+}
+.tdNav {
+        background-color: #5a87dd;
+        width: 27px;
+}
+.navF {
+        background: url(../scripts/img/signs.png) no-repeat -98px -1px;
+}
+.navFR {
+        background: url(../scripts/img/signs.png) no-repeat -194px -1px;
+}
+.navFL {
+        background: url(../scripts/img/signs.png) no-repeat -164px -1px;
+}
+.navBL {
+        background: url(../scripts/img/signs.png) no-repeat -292px -1px;
+}
+.navBR {
+        background: url(../scripts/img/signs.png) no-repeat -324px -1px;
+}
+.navL {
+        background: url(../scripts/img/signs.png) no-repeat -34px -1px;
+}
+.navR {
+        background: url(../scripts/img/signs.png) no-repeat -65px -1px;
+}
+.navround_about_entry {
+        background: url(../scripts/img/signs.png) no-repeat -450px -1px;
+}
+.navround_about_exit {
+        background: url(../scripts/img/signs.png) no-repeat -482px -1px;
+}
+.tdDist {
+        white-space:nowrap;
+}
+.tdDur {
+        white-space:nowrap;
+}
+.tdSpeed {
+        white-space:nowrap;
+}
+tr:hover,.gcui-route tr:hover.odd {
+        background-color: #D7E1F1;
+}
+tr.odd {
+        background-color: #EBF0F8 ;
+}
+</style>
+<script src="http://api.geoconcept.net/htc/htc.js"></script>
+<script>
+        function init() {
+                var options = {
+                        server : 'http://10.150.5.157:8080/geoweb-easy/maps',
+                        mapName : 'Aulnay_Testgcm',
+                        tab : 'Tournees'
+                };
+                var map = new GCUI.Map('map', options);
+                map.onEvent("load", onMapLoaded);
+        }
+        function onMapLoaded() {
+                var routeLayer = new OpenLayers.Layer.Vector('routeLayer',
+                                OpenLayers.Util.extend(OpenLayers.Feature.Vector.style, {
+                                        'default' : {
+                                                strokeWidth : 4,
+                                                strokeColor : "#1BE01B"
+                                        },
+                                        'select' : {
+                                                strokeWidth : 4,
+                                                strokeColor : "blue"
+                                        }
+                                }));
+                var currentXY = null;
+                var map = GCUI.getMap('map');
+                map.events.register('mousemove', null, function(evt) {
+                        currentXY = evt.xy;
+                });
+                routeLayer.events.on({
+                        'featureselected' : function(feature) {
+                                feature = feature.feature;
+                                var name = feature.attributes.name ? feature.attributes.name
+                                                + '<br>' : '';
+                                var info = "<div style='font-size:.8em'>" + name + 'Durée: '
+                                                + feature.attributes.duration + '<br>Distance: '
+                                                + feature.attributes.distance + "</div>";
+                                var popup = new OpenLayers.Popup.FramedCloud("chicken", GCUI
+                                                .getMap('map').getLonLatFromPixel(currentXY), null,
+                                                info, null, true, null);
+                                feature.popup = popup;
+                                GCUI.getMap('map').addPopup(popup);
+                        },
+                        'featureunselected' : function(feature) {
+                                feature = feature.feature;
+                                GCUI.getMap('map').removePopup(feature.popup);
+                                feature.popup.destroy();
+                                feature.popup = null;
+                        }
+                });
+                map.addLayer(routeLayer);
+                var route = new GCUI.Control.Route({
+                        autoActivate : true,
+                        layer : routeLayer
+                });
+                map.addControl(route);
+                route.route({
+                        origin : new OpenLayers.LonLat(0.18, 48), // Le Mans
+                        destination : new OpenLayers.LonLat(2.35, 48.86), // Paris
+                        waypoints : [ new OpenLayers.LonLat(1.91, 47.90) ], // Orléans
+                        callback : function(resp, options) {
+                                var features = this.displayRoute(resp); // this == the route control
+                                displayRouteSheet(resp); // display route sheet in #results div
+                        },
+                });
+
+                var select = new OpenLayers.Control.SelectFeature(routeLayer, {
+                        hover : true,
+                        autoActivate : true
+                });
+                map.addControl(select);
+        }
+        function displayRouteSheet(route) {
+                var legs = route.legs;
+                var routeSheet = '<table>';
+                for (var i=0; i< legs.length; i++) {
+                        var leg = legs[i];
+                        var steps = leg.steps;
+                        for (var j=0; j< steps.length; j++) {
+                                var step = steps[j];
+                                step.speed = Math.round((3600 * step.distance)
+                                                / (1000 * step.duration));
+                                step.distance = step.distance < 1000
+                                                ? step.distance + ' m'
+                                                : (step.distance / 1000).toFixed(1) + ' km';
+                                step.duration = step.duration < 60 ? step.duration
+                                                + ' s' : Math.round(step.duration / 60)
+                                                + ' mn';
+                                var bounds = new OpenLayers.Bounds();
+                                for (var k = 0; k < step.points.length; k++) {
+                                        var pt = step.points[k].split(',');
+                                        bounds.extendXY(parseFloat(pt[0]), parseFloat(pt[1]));
+                                }
+                                routeSheet += '<tr'+((j%2==0) ? ' class="odd"' : "")+' onclick="zoomOn('+bounds.bottom+','+bounds.left+','+bounds.top+','+bounds.right+')"><td class="tdNav"><span class="nav'+step.navInstruction+'"></span></td><td class="tdName">'+step.name+'</td><td class="tdDist">'+step.distance+'</td><td class="tdDur">'+step.duration+'</td><td class="tdSpeed">'+step.speed+' km/h</td></tr>';
+                        }
+                }
+                document.getElementById('results').innerHTML = routeSheet + '</table>';
+        }
+        function zoomOn(bottom,left,top,right) {
+                var map = GCUI.getMap('map');
+                map.zoomToExtent(new OpenLayers.Bounds(left, bottom, right, top));
+        }
+</script>
+</head>
+<body onload="init()">
+        <div id="map" style="width: 100%; height: 100%;position:relative;"></div>
+        <div id="results"></div>
+</body>
+</html>

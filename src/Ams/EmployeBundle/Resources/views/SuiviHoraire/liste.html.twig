@@ -1,0 +1,72 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+ {#   <span  style="float:left;"><input type="checkbox" id="filtreHCHS" {{app.request.cookies.get('MRoad_filtreHCHS')}}/>Afficher seulement les salariés ayant des HC/HS</span>
+#}    {% if isActu %}
+    <span  style="float:center;">
+        <input type="button" id="button_actualiser" value="Actualiser" onclick='actualisation();'>
+    </span>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+            //ENTETE            ,HEADER1                    ,HEADER2                ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['matricule'            , '#text_filter'            ,null  ,null    ,null    ,null     ,null   ,null],
+['employe_id'           , '#select_filter_strict'   ,null  ,null    ,null    ,null     ,null   ,null],
+['emploi_id'            , '#select_filter_strict'   ,null  ,null    ,null    ,null     ,null   ,null],
+['date_debut'           , '#select_filter'          ,null  ,null    ,null    ,null     ,null   ,null],
+['date_fin'             , '#select_filter'          ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_garanties'   , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbjours_cycle'        , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['horaire_moyen'        , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbjours_travailles'   , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_a_realiser'  , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_realisees'   , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_delegation'  , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_hors_presse' , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['suivi_horaire'        , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_garanties_majorees', '#numeric_filter'   ,null  ,null    ,null    ,null     ,null   ,null],
+['nbheures_garanties_apayer'  , '#numeric_filter'   ,null  ,null    ,null    ,null     ,null   ,null],
+['projection_mensuelle' , '#numeric_filter'         ,null  ,null    ,null    ,null     ,null   ,null],
+ ];
+
+  function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+    }
+{#    function showOrHideHCHS(){
+        if($('#filtreHCHS').attr('checked') == 'checked') {
+            grid.filterBy(0, "1" ,true);
+            $.cookie('MRoad_filtreHCHS', 'checked');
+       }
+       else{
+            grid.filterBy(0,"");
+            grid.filterByAll();
+            $.cookie('MRoad_filtreHCHS', 'false');
+       }
+    }#}
+    function actualisation(){
+        $('#button_actualiser').prop('disabled', true);
+        ajaxMessage("Actualisation en cours ...");
+        $.ajax({
+             timeout: 999000,
+             url: "ajax-actualisation-employe-suivi-horaire",
+             type: "GET",
+             success: function(data) { 
+                ajaxSucces("Actualisation terminée"); 
+                onLoadGrid();
+                $('#button_actualiser').prop('disabled', false);
+             },
+             error: function (xhr, ajaxOptions, thrownError) { 
+                 ajaxErreur(xhr, ajaxOptions, thrownError); 
+                $('#button_actualiser').prop('disabled', false);
+             }
+        }); 
+     }    </script>
+{% endblock %}
+
+   
+
+   

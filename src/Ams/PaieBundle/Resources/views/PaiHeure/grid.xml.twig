@@ -1,0 +1,28 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="depot_id"               type="ro"       hidden="true"></column>
+        <column id="flux_id"                type="ro"       hidden="true"></column>
+        <column id="date_distrib"           type="ro"       hidden="true"></column>
+        <column id="groupe_id"              type="coro"     width="*"   align="left"    sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="heure_debut_theo"       type="ro"       width="50"  align="center"  sort="str">Heure début groupe</column> 
+        <column id="heure_debut"            type="ed"       width="50"  align="center"  sort="str">Heure début forcée</column> 
+        <column id="duree_attente"          type="ed"       width="50"  align="center"  sort="str">Attente</column> 
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}{{m.bgColorBloque(isModif)}}>  
+            <cell>{{row.depot_id}}</cell>
+            <cell>{{row.flux_id}}</cell>
+            <cell>{{row.date_distrib}}</cell>
+            <cell>{{row.groupe_id}}</cell>
+            <cell>{{row.heure_debut_theo}}</cell>
+            <cell>{{row.heure_debut}}</cell>
+            <cell>{{row.duree_attente}}</cell>
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+
+

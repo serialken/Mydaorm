@@ -1,0 +1,147 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import 'AmsReportingBundle:DhtmlxGrid:macros.html.twig' as m %}
+
+{% block title %}Reporting{% endblock %}
+
+{% block body %}
+    <style>
+        .ui-datepicker { z-index: 888888 !important; }
+        {##gridbox{height:300px !important}#}
+        .test {background-color:red !important}
+    </style>
+    
+    <div class="well" style="z-index:100000;position:relative;">
+        <form method="post" name="formRepoting" id="formReporting" action="{{path('ams_reporting_homepage')}}" style="margin-bottom: 15px;">
+            <table>
+                <tr>
+                    <td>
+                        <h4> Pilotage Centre - Vue globale </h4> </br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form_label(form.DateParutionMin) }} : &nbsp;&nbsp;{{ form_widget(form.DateParutionMin, {'attr': {'value': dateMin}, 'id': 'DateParutionMin', 'name': 'DateParutionMin'})}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;{{ form_label(form.DateParutionMax) }} : &nbsp;&nbsp;{{ form_widget(form.DateParutionMax, {'attr': {'value': dateMax},'id': 'DateParutionMax',  'name': 'DateParutionMax'})}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;{{form_label(form.flux)}} : {{ form_widget(form.flux, {'value': flux, 'id': 'flux', 'name': 'flux'}) }}
+                    <td>
+                        &nbsp;&nbsp;
+                        <button type="submit" class="btn-small btn-primary">
+                            <i class="glyphicon glyphicon-search white"></i>
+                                Rechercher
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        <br/>           
+    </div>
+        <span style="float:right">
+            {#<img id="cancel_grid" style='cursor:pointer;visibility:hidden' src="{{asset('images/dhtmlx_undo.png')}}" alt="Annuler"  onclick="dhtmlxgridUndo()">#}
+            <img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Excel"  onclick="grid_reporting.toExcel({{m.urlExcel()}},'color',true);" > 
+        </span>
+        <br/><br/>  
+
+    <div id="gridbox" style="width:93%"></div>
+    
+    <script>
+        function end_Range(){
+            var chosenDate = $("#DateParutionMin").datepicker("getDate");                  
+                if (chosenDate == null ){
+                    $("#DateParutionMin").focus();
+                } else {
+
+                    $("#DateParutionMax").datepicker("option", "minDate", new Date (chosenDate));
+                };
+        };
+
+        $(document).ready(function() {
+            $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+            $("form input#DateParutionMin").datepicker({
+                dateFormat: 'dd-mm-yy',
+                maxDate: new Date(),
+                onSelect: end_Range,     
+            }).attr("readonly","readonly");
+
+            $("form input#DateParutionMax").datepicker({
+                dateFormat: 'dd-mm-yy',
+                maxDate: new Date(),
+                beforeShow: end_Range,
+                firstDay:1
+            }).attr("readonly","readonly");
+
+        });
+        
+        var dateMin = DateParutionMin ;
+        var dateMax = DateParutionMax ;
+        
+        grid_reporting = new dhtmlXGridObject('gridbox');
+       
+        grid_reporting.setImagePath("{{ dhtmlx_img }}");          //the path to images required by grid 
+{#        grid_reporting.splitAt(1);#}
+        grid_reporting.enableAutoHeight(true);
+        grid_reporting.setHeader("Depot, Centre, Nb clients Abo, Nb Ex Abo, Nb Diff, Nb clients Div, Nb Ex Div, Nb ex en suppléments, Nb adresses, Nb Heures, Etalon, Cli/h (Prod), Cli/km (Densité), Nb Reclam Brut, Tx de Sat ‰, Nb Reclam Net, Tx de Svc ‰, Nb Reclam Div Brut, Tx de Sat Div ‰, Nb Reclam Div Net, Tx de Svc Div ‰, Km,id_depot");//the headers of columns 
+        grid_reporting.setInitWidths("150,0,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,70%,0");          //the widths of columns  
+        grid_reporting.setColAlign("center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center,center");       //the alignment of columns   
+        grid_reporting.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ron,ron,ron,ron,ro,ron,ro,ron,ro,ron,ro,ron,ro,ro");                //the types of columns 
+{#        grid_reporting.setColSorting("str,str,int,int,int,int,int,int,int,int,float,float,float,int,float,int,float,int,float,int,float,int,int");          //the sorting types#}
+        grid_reporting.init();      //finishes initialization and renders the grid on the page
+        grid_reporting.setDelimiter("*"); // A cause de l'appel d'une fonction javascript, il vaut mieux utiliser un autre delimiteur
+        grid_reporting.loadXML("{{path('grid_reportings_pilotage_centre',{'flux' : flux, 'dateMin' : dateMin, 'dateMax' : dateMax})}}",function(){
+        var count = grid_reporting.getRowsNum();
+            if(count >= 1 ){
+                for (i = 1; i < 22; i++)
+                {
+                    for(j = 1; j < count+1; j++)
+                    {
+                        var a =grid_reporting.cellById(j,i).getValue().toString().replace(/[\.,]/g, function (m) { return m == '.' ? ',' : '.' });
+                        grid_reporting.cellById(j,i).cell.innerHTML = a ;
+                        grid_reporting.setNumberFormat("00.00000",i,",");
+                    }                    
+                }
+                grid_reporting.groupBy(1,["#title","","#stat_total","#stat_total","#stat_total","#stat_total","#stat_total","#stat_total","#stat_total","#stat_total","#stat_average","#stat_average","#stat_average","#stat_total","#stat_average","#stat_total","#stat_average","#stat_total","#stat_average","#stat_total","#stat_average","#stat_total",""]);
+{#                grid_reporting.collapseAllGroups();  #}
+            }
+        });
+        
+        grid_reporting.attachEvent("onXLE", function() {
+            for(var i =0 ; i <= grid_reporting.getRowsNum();i++){
+                for(var j = 13; j <= 19; j += 4)
+                {
+                    grid_reporting.setCellTextStyle(i,j,"color:#428BCA "); 
+                }
+            }
+            grid_reporting.attachEvent("onRowSelect",function(rowId,cellIndex){
+                grid_reporting.setCellTextStyle(rowId,cellIndex,"color:purple ");
+                var depotId = grid_reporting.cellByIndex((rowId - 1),22).getValue();
+                switch(cellIndex)
+                {
+                    case 13 :
+                        var url = "{{path('crm_display_zoom', {'cId': 1, 'sId': 29, 'dpId': 10, 'fId': 100,'all':true})|raw}}";
+                        url = url.replace(10,depotId).replace(100,{{flux}});
+                        window.location.href = url;
+                        break;
+                    {#case 15 : 
+                        var url = "{{path('crm_display_zoom', {'cId': 1, 'sId': 29, 'dpId': 10, 'fId': 100,'all':true})|raw}}";
+                        url = url.replace(10,depotId).replace(100,{{flux}});
+                        window.location.href = url;
+                        break;#}
+                    case 17 :
+                        var url = "{{path('crm_display_div', {'cId': 1, 'sId': "", 'dpId': 10, 'fId': 100,'all':true})|raw}}";
+                        url = url.replace(10,depotId).replace(100,{{flux}});
+                        window.location.href = url;
+                        break;
+                    {#case 19 :
+                        var url = "{{path('crm_display_div', {'cId': 1, 'sId': "", 'dpId': 10, 'fId': 100,'all':true})|raw}}";
+                        url = url.replace(10,depotId).replace(100,{{flux}});
+                        window.location.href = url;
+                        break;#}
+                }
+              });
+       
+        });
+
+    </script>
+{% endblock %}

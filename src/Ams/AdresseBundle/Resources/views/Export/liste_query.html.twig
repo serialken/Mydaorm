@@ -1,0 +1,318 @@
+<style>
+  .icon-application{width:10px}
+</style>
+<table class='table'>
+    <tr>
+        <th style="text-align:center">Libellé</th>
+        <th style="text-align:center">Commentaire </th>
+        <th style="text-align:center">Nbr lignes </th>
+        <th style="text-align:center">Date Création</th>
+        <th style="text-align:center"> Date d'optimisation <br />(Geoconcept)  </th>
+        <th style="text-align:center"> Date dernière vérification </th>
+        <th style="text-align:center;width:160px"> Etat  </th>
+        <th style="text-align:center;"> Statut d'application  </th>
+        <th style="text-align:center;width:160px"> Date application  </th>
+        <th style="text-align:center" colspan='2' >Traitement</th>
+        <th style="text-align:center">Import</th>
+    </tr>
+    {% for requete in requetes %} 
+    <tr id="{{ requete.id}}">
+        <td>{{requete.libelle}}</td>  
+        <td>{{ requete.commentaire }}</td> 
+        <td>{{ requete.nb_resultat }}</td> 
+        <td>{{ requete.date_creation|date('d/m/Y') }}</td> 
+        <td>
+          {% if requete.reponse == 0 %}
+           --
+          {% else %}
+            {{ requete.date_optim|date('d/m/Y') }} 
+          {% endif %}
+        </td>
+        <td>
+          {% if requete.date_verification %}
+            {{ requete.date_verification|date('d/m/Y') }} 
+          {% else %}
+            --
+          {% endif %}
+        </td>
+        <td style="text-align:left;padding-left:50px">
+          {% if requete.reponse == 0 %}
+            <span style="display:block;width:75px;">
+             <img class="icon-application" src='{{ asset('images/red.jpg')}}' onmouseover="affPopoverLien(this);" data-placement="left" data-content="Pas de retour de Geoconcept" />
+            </span>   
+          {% elseif requete.infoStatut.datas.statusCode == 'A' %}
+            <span style="display:block;width:75px;">
+             <img class="icon-application" src='{{ asset('images/red.jpg')}}' onmouseover="affPopoverLien(this);" data-placement="left" data-content="Optimisation appliquée" />
+            </span>   
+          {% else %}
+            {% if requete.valid %}
+              <img class="icon-application" src='{{ asset('images/green.jpg')}}' onmouseover="affPopoverLien(this);" data-placement="left" data-content="Pas de différences notables à signaler"/>
+              <span class="btn btn-xs btn-primary btn-test"> Appliquer </span>
+            {% else %}
+              <img class="icon-application" src='{{ asset('images/orange.jpg')}}' onmouseover="affPopoverLien(this);" data-placement="left" data-content="Les données doivent être vérifiées."/>
+              <span class="btn btn-xs btn-warning btn-test"> Vérifier </span>
+            {% endif %}
+          {% endif %}
+        </td>
+        <td>
+{#            {{ dump(requete) }}#}
+            {{ requete.infoStatut.datas.statut }}
+            {% if requete.infoStatut.datas.info | default(null) is not null %}
+                {% if requete.infoStatut.datas.statusCode | default(null) == 'E' %}
+                    <div class="progress" style="margin-bottom: 0px;">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{requete.infoStatut.datas.info}}" aria-valuemin="0" aria-valuemax="100" style="width: {{requete.infoStatut.datas.info}}%">
+                      <span class="sr-only">{{requete.infoStatut.datas.info}}% Complete</span>
+                    </div>
+                  </div>
+                    <small>{{requete.infoStatut.datas.info}}%</small>
+                {% elseif requete.infoStatut.datas.statusCode | default(null) == 'A' %}
+                    <div class="progress" style="margin-bottom: 0px;">
+                    <div class="progress-bar  progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: {{requete.infoStatut.datas.info}}%">
+                      <span class="sr-only">100% Complete</span>
+                    </div>
+                  </div>
+                    <small>100%</small>
+                {% elseif requete.infoStatut.datas.statusCode | default(null) == 'N' %}
+                    <br/><span class="notAvailable">{{requete.infoStatut.datas.info}}</span>
+                {% endif %}
+            {% endif %}
+        </td>
+        <td class="date_applic">
+          {% if requete.date_application%} {{ requete.date_application|date('d/m/Y') }} 
+          {% else %} -- {% endif %}
+        </td>
+        <td> 
+          <form method="post" id="FormExport"  action="{{path('adresse_export_query', {'reqId':requete.id} )}}" >
+              <button class="glyphicon glyphicon-play"   type='submit' value='Executer' onmouseover="affPopoverLien(this);" data-placement="top"  data-description="Exécuter {{ requete.libelle}}" data-content="Ce bouton permet de ré-executer la requête enregistrée auparavant." />
+          </form>
+        </td>  
+        <td>
+          <span style="cursor: pointer" class="glyphicon glyphicon-trash" onmouseover="affPopoverLien(this);" data-placement="left"  data-description="Supprimer {{ requete.libelle}}" data-content="Ce bouton permet de supprimer la requête enregistrée auparavant."   ></span>
+        </td>  
+        <td>
+        {% if requete.reponse  %}
+             {% if requete.infoStatut.datas.statusCode | default(null) == 'P' %}
+                <button type="button" class="btn btn-danger btn-xs clearImport">Supprimer l'import</button>
+                {% else %}
+                <button type="button" class="btn btn-danger btn-xs disabled">Supprimer l'import</button>
+            {% endif %}
+          {%  else  %}
+          <span class="notAvailable"> En attente de l'import </span>
+        {% endif %}
+        </td>  
+    </tr>
+    {% endfor %}
+ </table>
+
+ 
+
+ <script>
+    function datepicker(){
+      $("input[name=date_application]").datepicker({
+           dateFormat: 'dd/mm/yy', 
+           firstDay:1,
+           minDate: 2
+       }).attr("readonly","readonly");
+   }
+   
+  $(function(){
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    var id_query='';
+    $('.btn-test').click(function(){
+        var img = $(this).closest('tr').find('.icon-application').attr('src');
+        if (img.indexOf("green") >= 0){
+          img = "{{ asset('images/traffic_green.png')}}";
+          infoTxt = 'Aucune différence notable n\'a été détectée lors de la dernière vérification de cette requête. Souhaitez-vous poursuivre la procédure d\'optimisation ?';
+        }
+        else{
+          img = "{{ asset('images/traffic_orange.png')}}";
+          infoTxt = 'Certains indicateurs nécessitent votre attention. Merci de bien évaluer ces différences avant de d\'appliquer votre optimisation. Voulez-vous (re)lancer une vérification ?';
+        }
+        
+      $('.modal-body').removeAttr('style');
+      id_query = $(this).closest('tr').attr('id');
+      $('#amsModalLabel').html("Vérification des données");
+      $('#amsModalBody').attr('style','height:325px');
+      $('#amsModalBody').html(
+                              '<div style="float:right;width:75%;text-align:left;padding: 0 30px"><div class="panel panel-info"><div class="panel-heading">Un import de geoconcept est disponible,voulez-vous lancer une vérification ?</div><div class="panel-body">La vérification des données permet de s\'assurer que les données optimisées ne sont pas trop éloignées de l\'état actuel des tournées.<br/>Depuis l\'export des données ayant servies de base à l\'optimisation, des points de livraison et des clients ont pu être ajoutés aux tournées concernées par cette optimisation.<br/><strong>Il est nécessaire de lancer une vérification avant toute application d\'optimisation de tournée.</strong></div></div><strong>'+infoTxt+'</strong></div>'+
+                              "<div style='float:right;width:75%;text-align:center;padding: 0 30px; margin-top: 10px;'> <div class='btn btn-xs btn-default close-modal'> Non </div> <div class='btn btn-xs btn-primary verif' style='margin-left:20px;'> Oui, vérifier avant d'appliquer </div> </div>"+
+                              '<img style="display:block;margin-left;" src="'+img+'"/>'
+                             );
+
+       $('#amsModal').modal('show');
+    });
+    
+    /** MODAL EFFACER LA REQUETE **/
+    $(document).on('click','.glyphicon-trash',function(){
+        $('.modal-body').removeAttr('style');
+        id_query = $(this).closest('tr').attr('id');
+        $('#amsModalLabel').html("Effacer la requête");
+        $('#amsModalBody').html('<div class="alert alert-warning"> Voulez-vous effacer cette requête ? </div>' +
+                                  '<div class="panel panel-danger" style="text-align: left;"><div class="panel-heading">La suppression entraine l\'annulation d\'import si celui-ci est programmé</div><div class="panel-body">En supprimant cette requête vous perdez la possibilité d\'optimiser la ou les tournées concernées via Geoconcept.<br/>Si l\'optimisation a déjà été effectuée et que les données ont été importées dans MRoad, il ne sera pas possible d\'appliquer l\'optimisation.<br/><strong>Le travail effectué en amont sera donc perdu.</strong></div></div>'+
+                                  '<div align="center" style="margin-bottom: 10px;"><strong>Souhaitez-vous tout de même supprimer cette requête ?</strong></div>' +
+                                  "<div class='btn btn-xs btn-default close-modal'> Non, annuler </div> <div class='btn btn-xs btn-danger delete_query'> Oui, supprimer la requête </div>"
+                              );
+        $('#amsModal').modal('show');
+    });
+    
+        /** ACTION EFFACER LA REQUETE **/
+     $(document).on('click','.delete_query',function(){
+        $.ajax({
+        url: "{{path('adresse_delete_query')}}",
+        type: 'POST',
+        data: { 
+          id_query : id_query
+        },
+        success: function(data) { 
+          $('tr#'+id_query).remove();
+          $('#amsModalBody').html('<div class="alert alert-success"> La requête a été supprimé avec succès </div>');
+        }
+      });
+     });
+    
+    /** MODALE SUPPRESSION DE L'IMPORT **/
+    $(document).on('click','.clearImport',function(){
+        $('.modal-body').removeAttr('style');
+        id_query = $(this).closest('tr').attr('id');
+        $('#amsModalLabel').html("Supprimer les tournées importées");
+        $('#amsModalBody').html('<div class="alert alert-warning"> Voulez-vous supprimer l\'import de cette requête ? </div>' +
+                                  '<div class="panel panel-danger" style="text-align: left;"><div class="panel-heading">Vous devrez à nouveau utiliser le client Géoconcept afin d\'optimiser les tournées</div><div class="panel-body">Supprimer les données importées vous oblige à retourner dans le client lourd Géoconcept afin de refaire le transfert des tournées optimisées vers MRoad.<br/><strong>Cette étape n\'est nécessaire que si vous avez prévu de refaire l\'optimisation des tournées.</strong></div></div>'+
+                                  '<div align="center" style="margin-bottom: 10px;"><strong>Souhaitez-vous tout de même supprimer l\'import ?</strong></div>' +
+                                  "<div class='btn btn-xs btn-default close-modal'> Non, annuler </div> <div class='btn btn-xs btn-danger delete_import'> Oui, supprimer les données importées </div>"
+                              );
+        $('#amsModal').modal('show');
+    });
+    
+    /** ACTION EFFACER L'IMPORT **/
+     $(document).on('click','.delete_import',function(){
+        $('#amsModalBody').append('<div class="loadingIcon"><img src="{{ asset('images/ajaxLoader.gif')}}"/></div>');
+        $.ajax({
+        url: "{{path('adresse_delete_import')}}",
+        type: 'POST',
+        dataType: "json",
+        data: { 
+          id_query : id_query
+        },
+        success: function(data) { 
+        $('#amsModalBody div.loadingIcon').remove();
+        if (data.returnCode == 1){
+            $('tr#'+id_query+' td:last').html('<span class="noLongerAvailable"> Import supprimé </span>');
+            $('tr#'+id_query+' td.date_applic').addClass('noLongerAvailable').html(' -- ');
+            $('#amsModalBody').html('<div class="alert alert-success">'+data.msg+'</div><div class="btn btn-xs btn-default close-modal"> Fermer </div>');
+        }
+        else{
+             $('#amsModalBody').html('<div class="alert alert-danger">'+data.errMsg+'</div><div class="btn btn-xs btn-default close-modal"> Fermer </div>');
+        }
+        }
+      });
+     });
+     
+    /** VERIFICATION D'EVENTUEL DELTA ENTRE L'IMPORT ET L'EXPORT **/
+    $(document).on('click','.verif',function(){
+      $.ajax({
+        url: "{{path('adresse_export_verif')}}",
+        type: 'POST',
+        data: { 
+          id_query : id_query
+        },
+        beforeSend :function(){
+          var img = "{{ asset('images/traffic_flashlight.gif')}}";
+            $('#amsModalBody').html('<div class="alert alert-warning" style="float:right;width:75%"> Veuillez patienter pendant la vérification des données </div>'+
+                                    '<img style="width:20px;position:absolute;top:115px;margin-left:65px;left:50%" src="{{ asset('images/ajaxLoader.gif')}}"/> '+
+                                    '<img style="display:block;margin-left;" src="'+img+'"/> ');
+        },
+        success: function(data) { 
+          if(data.result){
+            var img = "{{ asset('images/traffic_green.png')}}";
+            $('#'+id_query +' .icon-application').attr('src','{{ asset('images/green.jpg')}}');
+            $('#'+id_query +' .btn-test').removeClass('btn-warning btn-info');
+            $('#'+id_query +' .btn-test').addClass('btn-primary');
+            $('#'+id_query +' .btn-test').text('Appliquer');
+            $('.modal-body').attr('style','height:400px');
+          }
+          else {
+            var img = "{{ asset('images/traffic_orange.png')}}";
+            $('#'+id_query +' .icon-application').attr('src','{{ asset('images/orange.jpg')}}');
+            $('.modal-body').attr('style','height:370px');
+            $('#'+id_query +' .btn-test').addClass('btn-warning');
+            $('#'+id_query +' .btn-test').removeClass('btn-primary btn-info');
+            $('#'+id_query +' .btn-test').text('Vérifier');
+          }
+          $('#amsModalBody').attr('style','height:520px');
+          $('#amsModalBody').html('<div class="alert alert-info" style="float:right;width:75%"> Synthèse de la vérification </div>' +
+                                  '<div style="float:right;width:75%;text-align:left;padding: 0px">'+data.comment+'</div> </div>'+
+                                  '<img style="display:block;margin-left;" src="'+img+'"/>');
+          datepicker();
+        }
+      });
+     });
+     
+     
+    $(document).on('click','#apply-optimization',function(){
+      var value = $('input[name=date_application]').val();
+      var day = $("#day_type").multipleSelect("getSelects");
+      var valid = true;
+      
+      if(day ==''){
+        $('.ms-choice').attr('style','border:solid 1px red');
+        valid = false;
+      }
+      if(!value){
+        $('input[name=date_application]').attr('style','border:solid 1px red');
+        valid = false;
+      }
+      if(valid){
+          $.ajax({
+          url: "{{path('adresse_date_application')}}",
+          type: 'POST',
+          data: { 
+            date_application : value,
+            jour_type : day,
+            id_query : id_query
+          },
+          beforeSend :function(){
+            $('.modal-body').removeAttr('style');
+            var img = "{{ asset('images/traffic_flashlight.gif')}}";
+            $('#amsModalBody').html('<div class="alert alert-warning" style="float:right;width:75%"> Veuillez patienter pendant la vérification des requêtes </div>'+
+                                     '<img style="width:20px;position:absolute;top:115px;margin-left:65px;left:50%" src="{{ asset('images/ajaxLoader.gif')}}"/> '+
+                                     '<img style="display:block;margin-left;" src="'+img+'"/>');
+          },
+          success: function(data) { 
+             $('#amsModalBody').html(data.comment);
+             $('#'+id_query +' td:nth-child(8)').html(data.date);
+          }
+        }); 
+      }
+    });
+     
+    $(document).on('click','#reflate',function(){
+        $.ajax({
+          url: "{{path('adresse_export_reload')}}",
+          type: 'POST',
+          data: {
+            id_query : id_query
+          },
+          beforeSend :function(){
+            var img = "{{ asset('images/traffic_flashlight.gif')}}";
+            $('.modal-body').removeAttr('style');
+            $('#amsModalBody').html('<div class="alert alert-warning" style="float:right;width:75%"> Veuillez patienter pendant que la requête  d\'export s\'effectue </div>'+
+                                     '<img style="width:20px;position:absolute;top:115px;margin-left:65px;left:50%" src="{{ asset('images/ajaxLoader.gif')}}"/> '+
+                                     '<img style="display:block;margin-left;" src="'+img+'"/>');
+          },
+          success: function(data) {
+            $('#amsModalBody').html('<div class="alert alert-info"> La requête a été effectué avec succes </div>');
+            $('#'+id_query +' td:nth-child(5)').html('--');
+            $('#'+id_query +' td:nth-child(6)').html('--');
+            $('#'+id_query +' td:nth-child(7) img.icon-application').attr('src',"{{ asset('images/red.jpg')}}");
+            $('#'+id_query +' td:nth-child(7) span.btn-test').hide();
+          }
+        }); 
+    });
+    
+    $(document).on('click','.close-modal',function(){
+       $('#amsModal').modal('hide');
+    });
+  });
+   
+   
+ </script>

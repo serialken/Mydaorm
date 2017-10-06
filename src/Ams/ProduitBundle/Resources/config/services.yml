@@ -1,0 +1,7 @@
+parameters:
+#    ams_produit.example.class: Ams\ProduitBundle\Example
+
+services:
+#    ams_produit.example:
+#        class: %ams_produit.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

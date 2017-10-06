@@ -1,0 +1,103 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreSplit"/> Cacher les tournées splittées</span>
+    <span><a href="{{path('emargemement')}}"><img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Export Excel" >Emargement</a></span>
+{% endblock %}
+
+{% block operation %}
+    <div class="row well" style="margin: 10px">
+        {% if isModif %}
+            <div class="col-md-6">
+                <select id="comboAdd" style="width:150px;">{{comboProduitAdd|raw}}</select>
+                <input type="button" value="Ajouter" style="width:150px;" onclick="ajouter()">
+            </div>
+            <div class="col-md-6">
+                <select id="comboSup" style="width:150px;">{{comboProduitSup|raw}}</select>
+                <input type="button" value="Supprimer" style="width:150px;" onclick="supprimer()">
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['groupe_id'    ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['>Journal'     ,null                       ,null               ,null               ,null                   ,null                   ,'goJournal(rId)'   ,null],
+['>Planning'    ,null                       ,null               ,null               ,null                   ,null                   ,'goPlanning(rId)'  ,null],
+['employe_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_mere' ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_org_id',null                      ,null               ,null               ,null                   ,null                   ,null               ,null],
+['journal_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+    ];
+
+    $(document).ready(function() {
+        dhtmlxLoadCookieObject($('#filtreSplit'));
+    });
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        grid.enableColumnMove(false);
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+    }
+    function dhtmlxgridOnLoad(){
+        gridFilter(5);
+        $('#filtreSplit').on('change', function() {
+            gridFilter(5);
+            dhtmlxSaveCookieObject($('#filtreSplit'));
+        });
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd<=7) return false; // groupe_id, tournee_id, employe_id
+        return true;
+    }
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,7).getValue());
+        }
+    function goPlanning(rId){
+        goLinkGrid("{{path('pai_planning')|raw}}"+"?employe_id=",grid.cellById(rId,4).getValue());
+        }
+        
+    function ajouter(){
+        ajaxMessage("Ajout du produit en cours ...");
+        $.ajax({
+            url: "ajax-ajouter-pai-presse",
+            type: "GET",
+            data: { produit_add_id: $('#comboAdd').val() },
+            success: function(data) {
+                ajaxSucces("Ajout terminé");
+                onLoadGrid();
+                $("#comboAdd option:selected").remove();
+                ajaxReloadComboSup();
+                ajaxReloadComboOrg();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }   
+    function supprimer(){
+        ajaxMessage("Suppression du produit en cours ...");
+        $.ajax({
+            url: "ajax-supprimer-pai-presse",
+            type: "GET",
+            data: { produit_sup_id: $('#comboSup').val() },
+            success: function(data) {
+                ajaxSucces("Suppression terminée");
+                onLoadGrid();
+                $("#comboSup option:selected").remove();
+                ajaxReloadComboAdd();
+                ajaxReloadComboOrg();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ajaxErreur(xhr, ajaxOptions, thrownError);
+            }
+        });  
+    }   
+    function ajaxReloadComboAdd() { ajaxReloadCombo($('#comboAdd'),"ajax-combo-ajouter-pai-presse",{}); }
+    function ajaxReloadComboSup() { ajaxReloadCombo($('#comboSup'),"ajax-combo-supprimer-pai-presse",{}); }
+    </script>
+{% endblock %}

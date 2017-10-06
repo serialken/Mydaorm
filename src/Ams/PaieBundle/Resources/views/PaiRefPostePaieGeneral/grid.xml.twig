@@ -1,0 +1,37 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="code"           type="ed"   width="80"  align="left"    sort="str">Code</column> 
+        <column id="libelle"        type="ed"   width="*"   align="left"    sort="str">Libellé</column> 
+        <column id="typeurssaf_id"  type="coro" width="*"   align="left"    sort="sortCombo">Urssaf{{m.combo(comboTypeUrssaf,true)}}</column> 
+        <column id="semaine"        type="ch"   width="50"  align="center"  sort="int">Semaine</column> 
+        <column id="dimanche"       type="ch"   width="50"  align="center"  sort="int">Dimanche</column> 
+        <column id="ferie"          type="ch"   width="50"  align="center"  sort="int">Ferié</column> 
+        <column id="majoration"     type="coro" width="80"  align="center"  sort="int">Majoration<option value="0.00">0</option><option value="5.00">5</option><option value="10.00">10</option><option value="25.00">25</option><option value="50.00">50</option><option value="100.00">100</option><option value="110.00">110</option><option value="125.00">125</option><option value="150.00">150</option><option value="200.00">200</option></column> 
+        <column id="poste"          type="ed"   width="80"  align="center"  sort="str">Poste Paie</column> 
+        <column id="taux"           type="ch"   width="50"  align="center"  sort="int">Envoi Taux</column> 
+        <column id="montant"        type="ch"   width="50"  align="center"  sort="int">Envoi Montant</column> 
+        <column id="annexe"         type="ed"   width="80"  align="center"  sort="str">Code Annexe</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.typeurssaf_id}}</cell>
+            <cell>{{row.semaine}}</cell>
+            <cell>{{row.dimanche}}</cell>
+            <cell>{{row.ferie}}</cell>
+            <cell>{{row.majoration}}</cell>
+            <cell>{{row.poste}}</cell>
+            <cell>{{row.taux}}</cell>
+            <cell>{{row.montant}}</cell>
+            <cell>{{row.annexe}}</cell>
+            {{m.cellSupprime(isModif)}}
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+

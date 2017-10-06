@@ -1,0 +1,35 @@
+#parameters:
+#    ams_silog.example.class: Ams\SilogBundle\Example
+
+#services:
+#    ams_silog.example:
+#        class: %ams_silog.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+
+
+parameters:
+    droits.class: Ams\SilogBundle\Services\Droits
+    parametres.class: Ams\SilogBundle\Services\Parametres
+    app_session.class: Ams\SilogBundle\Services\App_session
+    email.class: Ams\SilogBundle\Services\Amsemail
+    alertlog.class: Ams\SilogBundle\Services\Alerts
+
+services:           
+    app_session:
+        class: %app_session.class%             
+    droits:
+        class:     %droits.class%
+        #arguments: [@doctrine.dbal.mroad_connection, @session, @param]       # le parametre du constructeur de la classe "Droits" est le 'service' "doctrine.dbal.mroad_connection"    
+        arguments: [@doctrine.orm.entity_manager, @session, @param]
+    param:
+        class:     %parametres.class%
+        arguments: [@doctrine.orm.entity_manager]
+    email:
+        class: %email.class%
+        calls:
+             - [ setContainer,[ @service_container ] ]
+    alertlog:
+        class: %alertlog.class%
+        calls:
+             - [ setContainer,[ @service_container ] ]

@@ -1,0 +1,70 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE                ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['depot_id'             ,null                       ,null               ,null               ,null               ,null                   ,null               ,null],
+['flux_id'              ,null                       ,null               ,null               ,null               ,null                   ,null               ,null],
+['date_distrib'         ,null                       ,null               ,null               ,null               ,null                   ,null               ,null],
+['groupe_id'            ,'#select_filter_strict'    ,null               ,null               ,null               ,null                   ,null               ,null],
+['heure_debut_theo'     ,null                       ,null               ,isTime             ,null               ,null                   ,null               ,null],
+['heure_debut'          ,null                       ,null               ,isTimeOrNull       ,null               ,null                   ,null               ,null],
+['duree_attente'        ,null                       ,null               ,isDureeMax5        ,null               ,null                   ,null               ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+    }
+    
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (rowIsInserted) return true;
+        if (cInd==3) return false; // groupe_id, tournee_id, employe_id
+        return true;
+    }
+/*
+    var changeAttente=false;
+    var changeHeure=false;
+    function onChangeAttente(id){
+        if (gridIsLoaded===true){ // ATTENTION : la condition est exécutée même si gridIsLoaded=false !!!
+            changeAttente=true;
+            if (!changeHeure) {
+                hg = moment.duration(grid.cellById(id,4).getValue());
+                at = moment.duration(grid.cellById(id,5).getValue());
+                h = hg.add(at);
+                grid.cellById(id,6).setValue(("00" + h.hours()).substr(-2,2)+':'+("00" + h.minutes()).substr(-2,2));
+//                dp.setUpdated(id,true);
+            }
+        }
+        changeAttente=false;
+        return true;
+    }
+    function onChangeHeure(id){
+        if (gridIsLoaded===true){
+            changeHeure=true;
+            if (!changeAttente) {
+                // Heure de début réelle < Heure du groupe
+               if (grid.cellById(id,6).getValue()<grid.cellById(id,4).getValue()){
+                   grid.cellById(id,5).setValue('00:00');
+               } else {
+                   hg = moment.duration(grid.cellById(id,4).getValue());
+                   h = moment.duration(grid.cellById(id,6).getValue());
+                   at = h.subtract(hg);
+                   grid.cellById(id,5).setValue(("00" + at.hours()).substr(-2,2)+':'+("00" + at.minutes()).substr(-2,2));
+               }
+//               dp.setUpdated(id,true);
+           }
+        }
+        changeHeure=false;
+        return true;
+    }
+    */
+    </script>
+{% endblock %}

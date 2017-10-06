@@ -1,0 +1,102 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Rejets{% endblock %}
+{% block body %} 
+    {# Affichage du bloc des msg  #}
+<div id="listeGeoNotifications">
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        Vos modifications ont été enregistrées avec succés.
+    </div>
+</div>
+    {# affichage du nombre de lignes du tableau #}
+<div id="infoResRejet" class="alert alert-info" role="alert">...</div>
+
+    {# Affichage de la grid #}
+<div  style='position:relative; height:700px; width:100%;'>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                    Chargement ...
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="recinfoArea"></div>
+            </td>
+        </tr>
+    </table>  
+</div>
+
+<script>
+    /** Initialisation  */
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{dhtmlx_img }}");
+
+    grid.setHeader("Traitement,CD,Complément d'adresse,Adresse,Lieu-dit,CP,Ville,Voir emplacement,Etat");
+    grid.attachHeader(",#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,,#select_filter");
+    grid.setColAlign("center");
+    grid.init();
+
+    grid.attachEvent("onXLS", function() {
+        document.getElementById('cover').style.display = 'block';
+        $('#infoResRejet').html('Veuillez patientez pendant le chargement du tableau ...');
+    });
+    grid.attachEvent("onXLE", function() {
+        document.getElementById('cover').style.display = 'none';
+        var res = "Résultat de la recherche: <strong>" + grid.getRowsNum() + " </strong> ligne(s)";
+        $('#infoResRejet').html(res);
+    });
+    
+    grid.attachEvent("onFilterEnd", function() {
+        var res = "Résultat de la recherche: <strong>" + grid.getRowsNum() + " </strong> ligne(s)";
+        $('#infoResRejet').html(res);
+    });
+  
+    grid.setSkin("dhx_skyblue");
+    grid.enableSmartRendering(true);
+
+    /** pagination */
+    grid.enablePaging(true, 20, 3, "recinfoArea");
+    grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+    // pour desactiver la generation automatique d'infos bulles
+    grid.enableTooltips("false");
+
+    grid.loadXML("{{path('adresse_liste_rejet_xml')}}");
+
+    /* Opérations lancées au chargement de la page */
+    $(document).ready(function() {
+        // On masque les alertes par défaut
+        $('#listeGeoNotifications .alert').hide();
+    });
+
+    
+
+    /** Affichage du formulaire de modification */
+    function modifRow(adresseId, typeRejet) {
+        $.ajax({
+            url: "{{ path('adresse_modif_rejet') }}",
+            type: "GET",
+            data: {
+                adresseId: adresseId,
+                type_rejet: typeRejet
+            },
+            success: function(data) {
+                $('#amsModal').html(data);
+                $('#amsModal').modal();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                $('#amsModalLabel').html('Une erreur est survenue.');
+                $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+            }
+        });
+    }
+
+
+</script>
+<script src="{{asset('js/jquery.toaster.js')}}"></script>
+
+{% endblock %}

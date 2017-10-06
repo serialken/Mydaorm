@@ -1,0 +1,88 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreActif" {{app.request.cookies.get('MRoad_filtreActif')}}/>Afficher seulement les contrats actifs</span>
+    {% if isAlim %}<input type="button" value="Alimenter" onclick='alimentation();'>{% endif %}
+    <span  style="float:right;">
+    <a id="export" href="{{path('export_annexe_fichier')}}"><img src="{{ asset('images/dhtmlx_pdf.png') }}" alt="Annexes contrat" ></a>
+    </span>
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['actif'            ,''                         ,null               ,null               ,null                   ,null                   ,null              ,null],
+['annexe'           ,null                       ,null               ,null               ,null                   ,null                   ,'goAnnexe(rId)'    ,null],
+['matricule'        ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_debut'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_fin'         ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['date_stc'         ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['depot_id'         ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['flux_id'          ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['rc'               ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['emploi_id'        ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['typecontrat_id'   ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['societe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['typetournee_id'   ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['heure_debut'      ,'#select_filter'           ,null               ,null               ,null                   ,null                   ,null              ,null],
+['nbheures_garanties','#numeric_filter'         ,null               ,null               ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+    }
+    function dhtmlxgridOnLoad(){
+        showOrHideActif();
+        $('#filtreActif').on('change', function() {
+            showOrHideActif();
+        });
+    }
+    function showOrHideActif(){
+        if($('#filtreActif').attr('checked') == 'checked') {
+            grid.filterBy(0, "1" ,true);
+            $.cookie('MRoad_filtreActif', 'checked');
+       }
+       else{
+            grid.filterBy(0,"");
+            grid.filterByAll();
+            $.cookie('MRoad_filtreActif', 'false');
+       }
+    }
+   function goAnnexe(rId){
+      goLinkGrid("{{path('export_annexe_employe')|raw}}","?employe_id="+grid.cellById(rId,3).getValue());
+    }
+        
+    function alimentation(){
+        dhtmlx.message({
+            id:"alimentationBox",
+            text:"Alimentation en cours ...",
+            expire:-1
+        });
+        $.ajax({
+            timeout: 999000,
+            url: "{{ path('alimentation_employe') }}",
+            type: "GET",
+            success: function(data) {
+               dhtmlx.message.hide("alimentationBox");
+               onLoadGrid();
+               dhtmlx.message({
+                   id:"alimentationBox",
+                   text:"Alimentation terminée",
+                   expire:-1
+               });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                dhtmlx.message.hide("alimentationBox");
+                dhtmlx.alert({
+                             title:"Erreur!",
+                             type:"alert-error",
+                             text:thrownError+' - code erreur:'+xhr.status,
+                             expire: -1
+                         });
+             }
+         });  
+     }
+    </script>
+{% endblock %}

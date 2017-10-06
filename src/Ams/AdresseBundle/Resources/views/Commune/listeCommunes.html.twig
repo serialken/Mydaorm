@@ -1,0 +1,19 @@
+{% if depot.depotCommunes is defined and depot.depotCommunes|length > 0 %}
+    {% for depotCommune in depot.depotCommunes %}
+        {% if depotCommune.commune is defined %}
+            <tr>
+                <td>{{ depotCommune.commune.insee }}</td>
+                <td>{{ depotCommune.commune.libelle }}</td>
+                <td>{% if depotCommune.dateDebut != null %}{{ depotCommune.dateDebut|date('d/m/Y') }}{% endif %}</td>
+                <td>{% if depotCommune.dateFin != null %}{{ depotCommune.dateFin|date('d/m/Y') }}{% endif %}</td>
+                <td></td>
+            </tr>
+         {% endif %}
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="9" style="text-align:center;">
+            Pas de commune disponible pour ce dépôt.
+        </td>        
+    </tr>
+{% endif %}

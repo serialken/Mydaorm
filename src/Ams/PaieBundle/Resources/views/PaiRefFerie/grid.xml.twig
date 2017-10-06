@@ -1,0 +1,19 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="societe_id"     type="coro"         width="*"   align="left"    sort="sortCombo">Société{{m.combo(comboSociete)}}</column> 
+        <column id="jfdate"         type="dhxCalendar"  width="70"  align="center"  sort="date">Date</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(false)}}>  
+            <cell>{{row.societe_id}}</cell>
+            <cell>{{row.jfdate|date('d/m/Y')}}</cell>
+            {{m.cellSupprime(isModif and row.isModif)}}
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+

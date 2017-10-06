@@ -1,0 +1,40 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        Gestion du report des fichiers pour  
+        {% if produit.image.webPath is defined %}
+            <img src="{{ asset( produit.image.webPath)}}" alt="{{ produit.image.name }}">
+        {% else %}
+            {{ produit.libelle }}
+        {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="">
+                <div id="modalAlerte">
+                </div>
+                <div class="well" id="formReportFichier">
+                    {% include 'AmsProduitBundle:Produit:formReport.html.twig' %}
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#form').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputFormCreate').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                          url: $(this).attr('action'),
+                          type: $(this).attr('method'),
+                          data: $(this).serialize(),
+                          cache: false,
+                          success: function(data) {
+                                $('#amsModal').html(data.modal);
+                                $('#modalAlerte').html(data.alert);
+                          },
+                          error: function(data) {
+                               alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                          },
+                        });
+                        return false; //
+                    });
+                });
+            </script>  
+{% endblock %}

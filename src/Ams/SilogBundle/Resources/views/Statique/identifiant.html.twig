@@ -1,0 +1,16 @@
+<td class="interfaceuserlogged">
+    {% if nom_prenom is defined %}
+        {{ nom_prenom }}
+     <br />
+        {{ profil }}
+    {% else %}
+      &nbsp;
+    {% endif %}
+</td>
+<td width="30" class="interfacelogout">									
+    {% if nom_prenom is defined %}
+        <a href="{{ path('_ams_deconnexion') }}"><img src="{{ asset('images/trans.png') }}" alt="Déconnexion"></a>
+    {% else %}
+        &nbsp;
+    {% endif %}
+</td>

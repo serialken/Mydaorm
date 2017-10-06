@@ -1,0 +1,1131 @@
+body{margin:auto; text-align:center; background:#fbfbf9 url('../images/bg.png') repeat-x top left; width:100%;}
+
+TD, TH, DIV, SPAN, INPUT, TEXTAREA, BUTTON{font-family:calibri,verdana,arial;}
+IMG{border:0px}
+FORM{margin:0; padding:0}
+
+
+table.interface{margin:auto; margin-top:20px; width:90%;}
+td.sublogoline{background:#000 url('../images/header_sub_bg.png') repeat-x; height:16px; color:#FFF; font-family:calibri,verdana,arial; font-size:12px; padding-left:10px}
+td.interfaceuserlogged{width:100%; text-align:right; color:#FFF; font-family:calibri,verdana,arial; font-size:14px; padding-right:10px}
+td.interfacelogout{padding-right:10px;}
+td.interfacelogout a img{width:29px; height:29px; background:url('../images/interface_logout.png') no-repeat top left;}
+td.interfacelogout a:hover img{width:29px; height:29px; background:url('../images/interface_logout_over.png') no-repeat top left;}
+
+td.top10{height:10px; line-height:10px; margin:0; padding:0}
+td.top10 IMG{margin:0; padding:0}
+td.top{vertical-align:top;}
+td.middle{vertical-align:middle;}
+td.bottom{vertical-align:bottom;}
+
+table.right, td.right{text-align:right;}
+table.center, td.center{text-align:center;}
+table.left, td.left{text-align:left;}
+table.full, td.full{width:100%;}
+
+td.topbg{background: url('../images/interface_top_bg.png') repeat-x bottom left; width:100%;}
+td.shadowleft{background:url('../images/interface_shadow_left.png') repeat-y top right;}
+td.shadowright{background:url('../images/interface_shadow_right.png') repeat-y top left;}
+td.mainbg{background:#000 url('../images/header_main_bg.png') repeat-x; height:55px; padding-left:10px;}
+td.bottomshadow{background:url('../images/interface_bottom_shadow.png') repeat-x; width:100%; height:19px;}
+td.bottombar{background:#f0f0f0; width:100%; text-align:center; font-size:10px}
+
+td.interfacemain{background:#fff; height:16px; color:#000; font-family:calibri,verdana,arial; text-align:center; font-size:12px; padding:10px;position:relative}
+
+/* Tableau des abonnés avec regroupement */
+table.table.nocollapse{border-collapse: initial;}
+
+/* fil d'ariane */
+div#breadcrumb{text-align:left; color:#000; font-size:14px; font-weight:bold}
+div#breadcrumb a{color:#000; font-size:15px; font-weight:bold; text-decoration:underline;}
+div#breadcrumb a:hover{text-decoration:none;}
+div#breadcrumb a.active{color:#9d080b; text-decoration:none;}
+div#breadcrumb a.level0{font-size:15px;}
+div#breadcrumb a.level1{font-size:14px;}
+div#breadcrumb a.level2{font-size:13px;}
+div#breadcrumb a.level3{font-size:12px;}
+div#breadcrumb a.level4{font-size:11px;}
+
+/* contenu page */
+div#contenu{margin-top:10px; width:100%; color:#000; font-size:14px;}
+div#contenu input.text{border-top:1px solid #929292;
+border-left:1px solid #929292; border-right:1px solid #CCC; border-bottom:1px solid #CCC;
+background:#dddee0 url('../images/form_input_background.png') repeat-x top left;}
+div#contenu input.button{border-top:1px solid #CCC;
+border-left:1px solid #CCC; border-right:1px solid #929292; border-bottom:1px solid #929292;
+background:#fff url('../images/form_button_background.png') repeat-x top left; cursor:pointer; padding:2px 10px 2px 10px}
+div#contenu input.button:hover{background:#fff url('../images/form_button_background_over.png') repeat-x top left;}
+
+/* bloc simple avec bordure et titre*/
+div#contenu DIV.bloc{width:100%; margin:auto; border:1px solid #cccccc; margin-bottom:15px}
+div#contenu DIV.bloc TD.border{background:#9d080b; width:10px;}
+div#contenu DIV.bloc TD.title{background:#e4e6e9; width:100%; text-align:center; height:20px; font-size:16px; font-weight:normal; padding: 1px 10px 1px 10px;}
+div#contenu DIV.bloc TD.title TD.link, div#contenu DIV.bloc TD.title TD.link a{font-size:13px; font-weight:normal; color:#000; }
+div#contenu DIV.bloc TD.title TD.link a{font-weight:bold;}
+div#contenu DIV.bloc TD.content{background:#f9f9f9; width:100%; text-align:center; padding:10px 10px 10px 10px;}
+div#contenu DIV.bloc TD.content TD{padding:5px 5px 5px 5px; font-size:13px; }
+div#contenu DIV.bloc TD.error{font-weight:bold; color:#9d080b; }
+div#contenu DIV.bloc TD.error{font-weight:bold; color:#64FE2E; }
+
+/* Datagrid */
+TABLE.datagrid{border-collapse:collapse}
+TABLE.datagrid TR.header{}
+TABLE.datagrid TR.header TH{background:#e4e6e9; padding:5px 0px 5px 0px;}
+TABLE.datagrid TR.header TH, TABLE.datagrid TR.header TH A{font-weight:bold; font-size:13px; color:#000;}
+TABLE.datagrid TR.Grrow TD, TABLE.datagrid TR.Grrow TD A{font-weight:normal; font-size:13px; color:#000;}
+TABLE.datagrid TR.header TH, TABLE.datagrid TR.Grrow TD{border:1px solid #cccccc;}
+TABLE.datagrid TR.first TD{background:#f3f3fa;}
+TABLE.datagrid TR.second TD{background:#f9f9ff;}
+
+/* Datagrid : footer */
+DIV.grid_footer INPUT.current, DIV.grid_footer SELECT.current{text-align: center; width:50px; height:23px; border-top:1px solid #929292;
+border-left:1px solid #929292; border-right:1px solid #CCC; border-bottom:1px solid #CCC; height:23px;
+background:#dddee0 url('../images/form_input_background.png') repeat-x top left; color:#000; font-size:14px;}
+
+/* Datagrid : boutons action */
+TABLE.datagrid A IMG.action-edition{background:url('../images/action_edition.png') no-repeat top left; width:32px; height:32px;}
+TABLE.datagrid A:hover IMG.action-edition{background:url('../images/action_edition_over.png') no-repeat top left;}
+TABLE.datagrid A IMG.action-delete{background:url('../images/action_delete.png') no-repeat top left; width:32px; height:32px;}
+TABLE.datagrid A:hover IMG.action-delete{background:url('../images/action_delete_over.png') no-repeat top left;}
+
+/* Identification */
+div#contenu DIV.identification{width:50%;}
+
+/* Interpage de liens*/
+div#contenu DIV.interlink{display:inline-table; float:left; height:160px; margin:13px; margin-top:0px; margin-bottom:15px; width:22%}
+div#contenu DIV.interlink TD.content{text-align:center; height:140px; padding:0}
+div#contenu DIV.interlink TD.title{font-weight:bold;}
+div#contenu DIV.interlink TD.title a{text-decoration:none; font-size:16px; font-weight:bold; color:#000}
+div#contenu DIV.interlink a img{width:150px; height:110px; background: url('../images/icones_interface/_default.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img{background: url('../images/icones_interface/_default_over.png') no-repeat top left;}
+
+/* Menu Administration */
+div#contenu DIV.interlink a img.administration{background: url('../images/icones_interface/administration.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administration{background: url('../images/icones_interface/administration_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.administrationgroupesdepots{background: url('../images/icones_interface/administrationgroupesdepots.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationgroupesdepots{background: url('../images/icones_interface/administrationgroupesdepots_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.administrationutilisateurs{background: url('../images/icones_interface/administrationutilisateurs.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationutilisateurs{background: url('../images/icones_interface/administrationutilisateurs_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.administrationprofils{background: url('../images/icones_interface/administrationprofils.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationprofils{background: url('../images/icones_interface/administrationprofils_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.administrationlogos{background: url('../images/icones_interface/administrationlogos.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationlogos{background: url('../images/icones_interface/administrationlogos_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.administrationdepots{background: url('../images/icones_interface/administrationdepots.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationdepots{background: url('../images/icones_interface/administrationdepots_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.administrationparutions{background: url('../images/icones_interface/administrationparutions.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationparutions{background: url('../images/icones_interface/administrationparutions_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationmotifarbitrage{background: url('../images/icones_interface/gestion des motifs.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationmotifarbitrage{background: url('../images/icones_interface/gestion des motifs_cover.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationimputationservice{background: url('../images/icones_interface/gestion des imputations.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationimputationservice{background: url('../images/icones_interface/gestion des imputations_cover.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationimprimante{background: url('../images/icones_interface/gestion_printer.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationimprimante{background: url('../images/icones_interface/gestion_printer_cover.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.apropos{background: url('../images/icones_interface/apropos.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.apropos{background: url('../images/icones_interface/apropos_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationinfoportage{background: url('../images/icones_interface/infoportage.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationinfoportage{background: url('../images/icones_interface/infoportage_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationmessage{background: url('../images/icones_interface/gestioninfbulles.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationmessage{background: url('../images/icones_interface/gestioninfbulles_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationrepartitionglobal{background: url('../images/icones_interface/gestiondesrepartitions.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationrepartitionglobal{background: url('../images/icones_interface/gestiondesrepartitions_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationrepartition{background: url('../images/icones_interface/schemarepartition.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationrepartition{background: url('../images/icones_interface/schemarepartition_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.administrationdocument{background: url('../images/icones_interface/mesdocuments.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationdocument{background: url('../images/icones_interface/mesdocuments-over.png') no-repeat top left;}
+
+/* Menu Hors Presse */
+div#contenu DIV.interlink a img.administrationhorspresse{background: url('../images/icones_interface/horspresse.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.administrationhorspresse{background: url('../images/icones_interface/horspresse-over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.hpcalendrier{background: url('../images/icones_interface/hpcalendrier.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.hpcalendrier{background: url('../images/icones_interface/hpcalendrier_over.png') no-repeat top left;}  
+
+/* Menu Adresses */
+div#contenu DIV.interlink a img.adresses{background: url('../images/icones_interface/adresses.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adresses{background: url('../images/icones_interface/adresses_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.adressesrejets{background: url('../images/icones_interface/adressesrejets.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adressesrejets{background: url('../images/icones_interface/adressesrejets_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.adressespointlivraison{background: url('../images/icones_interface/adressespointlivraison.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adressespointlivraison{background: url('../images/icones_interface/adressespointlivraison_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.adressesabonnes{background: url('../images/icones_interface/adressesabonnes.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adressesabonnes{background: url('../images/icones_interface/adressesabonnes_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.adressesptimisation{background: url('../images/icones_interface/adressesptimisation.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adressesptimisation{background: url('../images/icones_interface/adressesptimisation_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.adressebordereau{background: url('../images/icones_interface/bordereau_livraison.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adressebordereau{background: url('../images/icones_interface/bordereau_livraison_cover.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.adresse_etiquette{background: url('../images/icones_interface/gestionetiquettes.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.adresse_etiquette{background: url('../images/icones_interface/gestionetiquettes_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.change_tournee_abos{background: url('../images/icones_interface/change_tournee_abos.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.change_tournee_abos{background: url('../images/icones_interface/change_tournee_abos_over.png') no-repeat top left;}  
+
+/* Menu Produits */
+div#contenu DIV.interlink a img.produits{background: url('../images/icones_interface/produits.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produits{background: url('../images/icones_interface/produits_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.produitsproduits{background: url('../images/icones_interface/produitsproduits.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produitsproduits{background: url('../images/icones_interface/produitsproduits_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.produitscalendrier{background: url('../images/icones_interface/produitscalendrier.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produitscalendrier{background: url('../images/icones_interface/produitscalendrier_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.produitscaracteristiques{background: url('../images/icones_interface/produitscaracteristiques.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produitscaracteristiques{background: url('../images/icones_interface/produitscaracteristiques_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.produitscalendrierlivraisons{background: url('../images/icones_interface/produitscalendrierlivraisons.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produitscalendrierlivraisons{background: url('../images/icones_interface/produitscalendrierlivraisons_over.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.produitstypes{background: url('../images/icones_interface/typeproduits.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.produitstypes{background: url('../images/icones_interface/typeproduits_hover.png') no-repeat top left;} 
+
+/* Menu Distribution */
+div#contenu DIV.interlink a img.distribution{background: url('../images/icones_interface/distribution.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distribution{background: url('../images/icones_interface/distribution_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.distributionquantitesquotidiennes{background: url('../images/icones_interface/distributionquantitesquotidiennes.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributionquantitesquotidiennes{background: url('../images/icones_interface/distributionquantitesquotidiennes_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.distributioncrm{background: url('../images/icones_interface/distributioncrm.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributioncrm{background: url('../images/icones_interface/distributioncrm_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.distributionreperage{background: url('../images/icones_interface/distributionreperage.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributionreperage{background: url('../images/icones_interface/distributionreperage_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.distributionouverturecd{background: url('../images/icones_interface/distributionouverturecd.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributionouverturecd{background: url('../images/icones_interface/distributionouverturecd_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.distributioncomptesrendus{background: url('../images/icones_interface/cr distribution.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributioncomptesrendus{background: url('../images/icones_interface/cr distribution_cover.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.distributionarbitrage{background: url('../images/icones_interface/distributionarbitrage.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.distributionarbitrage{background: url('../images/icones_interface/distributionarbitrage_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.receptioncomptesrendus{background: url('../images/icones_interface/cr reception.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.receptioncomptesrendus{background: url('../images/icones_interface/cr reception_cover.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.feuilleportage{background: url('../images/icones_interface/feuiles de portage.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.feuilleportage{background: url('../images/icones_interface/feuiles de portage_cover.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.etiquette{background: url('../images/icones_interface/etiquettes.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.etiquette{background: url('../images/icones_interface/etiquettes cover.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.calendrieroperationsspeciales{background: url('../images/icones_interface/calendrieroperationsspeciales.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.calendrieroperationsspeciales{background: url('../images/icones_interface/calendrieroperationsspeciales_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.franceroutage{background: url('../images/icones_interface/fr.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.franceroutage{background: url('../images/icones_interface/fr_hover.png') no-repeat top left;} 
+div#contenu DIV.interlink a img.france_routage_prospection{background: url('../images/icones_interface/fr.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.france_routage_prospection{background: url('../images/icones_interface/fr_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.invendus{background: url('../images/icones_interface/invendus.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.invendus{background: url('../images/icones_interface/invendus_hover.png') no-repeat top left;}
+ 
+/* Menu PCO */
+div#contenu DIV.interlink a img.PCO{background: url('../images/icones_interface/PCO.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.PCO{background: url('../images/icones_interface/PCO_cover.png') no-repeat top left;}
+div#contenu DIV.interlink a img.reception_camions{background: url('../images/icones_interface/receptioncamion.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.reception_camions{background: url('../images/icones_interface/receptioncamion_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.cptr_reception_pco{background: url('../images/icones_interface/receptionpco.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.cptr_reception_pco{background: url('../images/icones_interface/receptionpco_over.png') no-repeat top left;}
+
+/* Menu Porteurs */
+div#contenu DIV.interlink a img.porteurs{background: url('../images/icones_interface/porteurs.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteurs{background: url('../images/icones_interface/porteurs_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.porteursreferentieltournee{background: url('../images/icones_interface/porteursreferentieltournee.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteursreferentieltournee{background: url('../images/icones_interface/porteursreferentieltournee_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.porteursreferentielpaie{background: url('../images/icones_interface/porteursreferentielpaie.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteursreferentielpaie{background: url('../images/icones_interface/porteursreferentielpaie_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.porteursmodele{background: url('../images/icones_interface/porteursmodele.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteursmodele{background: url('../images/icones_interface/porteursmodele_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.porteurssaisiepoids{background: url('../images/icones_interface/porteurssaisiepoids.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteurssaisiepoids{background: url('../images/icones_interface/porteurssaisiepoids_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.porteurspaie{background: url('../images/icones_interface/porteurspaie.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteurspaie{background: url('../images/icones_interface/porteurspaie_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.porteursRH{background: url('../images/icones_interface/porteursRH.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.porteursRH{background: url('../images/icones_interface/porteursRH_cover.png') no-repeat top left;}  
+
+div#contenu DIV.interlink a img.pleiades{background: url('../images/icones_interface/pleiades.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.pleiades{background: url('../images/icones_interface/pleiades_cover.png') no-repeat top left;}  
+
+/* Menu Cartographie */
+div#contenu DIV.interlink a img.cartographie{background: url('../images/icones_interface/cartographie.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.cartographie{background: url('../images/icones_interface/cartographie_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.cartographieselectiontournees{background: url('../images/icones_interface/cartographieselectiontournees.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.cartographieselectiontournees{background: url('../images/icones_interface/cartographieselectiontournees_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.cartographieaffichercarte{background: url('../images/icones_interface/cartographieaffichercarte.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.cartographieaffichercarte{background: url('../images/icones_interface/cartographieaffichercarte_over.png') no-repeat top left;}  
+div#contenu DIV.interlink a img.cartographiepointlivraison{background: url('../images/icones_interface/cartographiepointlivraison.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.cartographiepointlivraison{background: url('../images/icones_interface/cartographiepointlivraison_over.png') no-repeat top left;}  
+
+/* Menu Reporting */
+div#contenu DIV.interlink a img.reporting{background: url('../images/icones_interface/reporting.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.reporting{background: url('../images/icones_interface/reporting_over.png') no-repeat top left;}
+div#contenu DIV.interlink a img.reportingpilotagecentre{background: url('../images/icones_interface/pilotagecentre.png') no-repeat top left;}
+div#contenu DIV.interlink a:hover img.reportingpilotagecentre{background: url('../images/icones_interface/pilotagecentre_over.png') no-repeat top left;}
+
+/* Attente traitement/chargement : Affichage d'une image d'attente dans un modal */
+div.imgAttente
+{
+    display:none; position:fixed; z-index:1000; top:0; left:0; height:100%; width:100%; 
+    background: rgba( 255, 255, 255, .8 ) url('../images/ajaxLoader.gif') 50% 50% no-repeat; 
+    opacity:0.80; -ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity = 80); filter:alpha(opacity = 80);
+}
+
+.margin-bottom20{ margin-bottom:20px}
+div.scroll { overflow: scroll; height: 400px;}
+
+/* Pages liées à la cartographie */
+table.listetournees input[type="checkbox"]{margin-right: 5px;}
+
+#listeNotifications .alert{display: none;}
+
+.numberRow{background-color:#E4E6E9;margin:0 0 10px 0; padding:3px;position:relative}
+.numberRow .logo{text-align:left}
+.numberRow .depot{position:absolute;right:5px;top:5px}
+.numberRow .result{ left: 50%;margin-left: -150px;position: absolute;text-align: center;top: 4px;width: 150px;}
+
+/* css liées à la partie crm dans distributionBundle*/
+input#ams_distributionbundle_crmdetail_dateMin, input#ams_distributionbundle_crmdetail_dateMax {
+               /* width: 211px;
+                text-align: center;
+                padding: 0px;*/
+}
+
+select#ams_distributionbundle_crmdetail_crmCategorie { /*margin-left: 28px;*/ }
+
+table.table-center { width: 85%!important; margin-left: auto!important;; margin-right: auto!important; }
+
+table.distrib-dates td { float: left;  }
+table.distrib-dates { border: none!important;  }
+table.table-center tr td, table.table-center tr th{ border-left: 1px solid #E1DDE1; }
+table.table-center tr td, table.table-center tr th:last-child{ border-right: 1px solid #E1DDE1; }
+ table.no-border tr, table.no-border td, table.no-border   {border: none!important;}
+table.table.table-center,  table.table-center tr{ border: 1px solid #E1DDE1; }
+textarea#ams_distributionbundle_crmdetail_cmtDemande, textarea#ams_distributionbundle_crmdetail_cmtReponse { width: 100%;}
+table.table-center th {text-align: center}
+span.recordsInfoBlock { float: left;}
+table.dataTable thead th {
+	/*border: none!important;*/
+}
+
+div.crm-page .table-center td{text-align: left;}
+div.crm-page .table.table-center {/*border: 1px solid gray;*/}
+div.crm-page form .table-center tr:last-child td{text-align: center!important;}
+
+table.dataTable thead th, table.dataTable thead td, table.dataTable tbody td,table.dataTable.no-footer {
+/* padding: 10px 18px; */
+border-bottom: none!important;
+}
+
+table.dataTable.no-footer {
+/* padding: 10px 18px; */
+border-bottom: 1px solid #E1DDE1!important;
+}
+div#tableResult_length {
+margin-left: 8%;
+margin-bottom: 20px;
+}
+
+#formCrmIndex select#ams_distributionbundle_crmdetail_societe, #formCrmIndex select#ams_distributionbundle_crmdetail_depot{
+	width: 86%!important;
+}
+.create-rem {float: right;
+/* padding: 4px 10px!important; */
+/* margin-bottom: -40px; */
+cursor: pointer;
+z-index: 99999999999;
+position: relative;
+text-decoration: none;
+margin-bottom: 24px;
+bottom: 13px;
+left: 19px;
+}
+
+.create-rem > a {
+    padding: 5px;
+    text-decoration: none!important;
+}
+
+table.left{
+    text-align: left;
+}
+table.left label{
+display: inline-block;
+width: 110px;
+}
+span.e textarea {
+      width: 250px;
+}
+table.arb td.small-label label{
+
+    width: 11px !important;
+}
+table.arb td.small-label input.cneter-checkbox{
+    margin-right: 15px !important;
+    margin-left: 15px !important;
+}
+table.arb td.small-label input.cneter-checkbox2{
+   
+    margin-left: 25px !important;
+}
+
+table.left td textarea.big-texarea{width: 100% !important;}
+table.left td.big-label label{display: inline-block; width: 170px!important;}
+td.big-name input {width: 217px;}
+.create-rem > a {padding: 5px; text-decoration: none !important;}
+table.left{text-align: left;}
+table.left label{display: inline-block; width: 110px;}
+
+span.e textarea { width: 250px;}
+input.input-adr{width: 372px;}
+span.start-date label{
+display: inline-block;
+width: 108px;;
+}
+
+div.accordion{
+	height: 100% !important;
+}
+
+table.with-parent{
+	width: 100%!important;
+}
+
+table input.imp-checkbox {
+	margin-right: 56px;
+}
+table td.md-label label{
+	display: inline-block;
+	width: 145px!important;
+}
+
+/* Css liee au lien de suppression */
+span.deleteData {
+    color: #428bca;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+span.deleteData:hover {
+    text-decoration: underline;
+}
+
+/* Css liee a qtés reception */
+.good_figure{
+    color: green;
+    font-weight: bold;
+}
+.bad_figure{
+    color: red;
+    font-weight: bold;
+}
+.qte-recep{
+	width: 70px;
+}
+.succ {
+width: 665px;
+margin: auto;
+}
+.empty-result {
+background-color: rgba(29, 23, 28, 0.06);
+padding: 10px;
+color: black;
+}
+/*lien dans cptr distribution*/
+a.cptr-editlink {
+	text-decoration: underline!important;}
+.split_at table.hdr tr:nth-child(2) td div.hdrcell{height:45px}
+.split_at_Quantite_Q table.hdr tr:nth-child(3) td div.hdrcell{height:45px}
+.overlay-help{background-color: #000;bottom: 0;display: none;height: 100%;left: 0;position: absolute;right: 0;top: 0; width: 100%; z-index: 1040;opacity: 0.5;}
+.overlay-help.active,.open-help.active{display: block;}
+body .popover,.close-help,.open-help{z-index: 1050}
+.open-help,.close-help{
+  cursor:pointer;position:absolute;right:0px;width:120px;top:-1px;border:solid 1px #A80010;height:32px;line-height:32px;display:none;
+  -webkit-border-bottom-left-radius: 5px;-moz-border-radius-bottomleft: 5px;border-bottom-left-radius: 5px;border-right:none;border-top:none;
+}
+.close-help{background-color: #A80010;color:#FFF;}
+.open-help:hover{color:#FFF;background-color: #A80010}
+body .popover-title { font-size: 13px;}
+
+
+
+#grid-distribution div.gridbox_dhx_skyblue table.obj tr td.test {
+overflow:auto;
+height: 90px!important; 
+
+}
+
+#grid-distribution div.gridbox_dhx_skyblue table.obj tr td.test {
+overflow:auto; 
+height: 90px!important;
+
+}
+
+/*modal controle des champs cptr distribution*/
+.modal-dialog.smallWidth {
+	width: 400px!important;
+	color: red;
+	padding: auto;
+	text-align: center!important;
+}
+
+.modal-dialog.mdWidth {
+	width: 550px!important;
+	color: red;
+	padding: auto;
+	text-align: center!important;
+}
+
+div#gridbox table.obj.row20px tr.rowselected td {background-repeat: repeat-y !important;}
+div#gridbox_modal table.obj.row20px tr.rowselected td {background-repeat: repeat-y !important;}
+.emv-dialog {
+   /* position: relative;*/
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url('../img/g.png');
+    background: rgba(50%, 50%, 50%, 0.5);
+    z-index: 10;
+    display: none;
+}
+
+.emv-dialog > div.floater {
+    float: left;
+    height: 50%;
+    margin-bottom: -200px;
+}
+.emv-dialog > div.frame {
+    clear: both;
+   width: 500px;
+    margin : auto;
+    background-color: #fff;
+    box-shadow: 0px 0px 6px 3px #999;
+}
+
+.emv-dialog > div.frame > div.header {
+    padding-left: 12px;
+    border-bottom: 1px solid #969696;
+    background-color: #ececec;
+    background: -webkit-linear-gradient(top, #ffffff, #dbdbdb);
+    background: -moz-linear-gradient(top, #ffffff, #dbdbdb);
+    background: -ms-linear-gradient(top, #ffffff, #dbdbdb);
+    background: -o-linear-gradient(top, #ffffff, #dbdbdb);
+    text-shadow: 0 0px 1px #fff;
+    line-height: 39px;
+    font-weight: bold;
+}
+.emv-dialog > div.frame > div.footer {
+    line-height: 39px;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    padding: 0 10px;
+    text-align: right;
+}
+.emv-button 
+{
+    padding: 0px 16px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    background: -webkit-linear-gradient(top, #f8f8f8, #eee);
+    background: -moz-linear-gradient(top, #f8f8f8, #eee);
+    background: -ms-linear-gradient(top, #f8f8f8, #eee);
+    background: -o-linear-gradient(top, #f8f8f8, #eee);
+    border-radius: 3px;
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+    display: inline-block;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    line-height: 22px;
+}
+
+.emv-button:hover
+{
+    background: #eee;
+    background: -webkit-linear-gradient(top, #eee, #f8f8f8);
+    background: -moz-linear-gradient(top, #eee, #f8f8f8);
+    background: -ms-linear-gradient(top, #eee, #f8f8f8);
+    background: -o-linear-gradient(top, #eee, #f8f8f8);
+}
+button#serachRec {
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.form-control-custum {
+/* display: block; */
+/* width: 100%; */
+/* height: 34px; */
+padding: 5px 6px;
+font-size: 14px;
+line-height: 1.6;
+color: #000;
+background-color: #fff;
+background-image: none;
+border: 1px solid #ccc;
+border-radius: 4px;
+-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+-webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.form-control-custum-inp{
+	padding: 4px 6px;
+	font-size: 14px;
+	/*line-height: 1.9;*/
+	color: #000;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+table#tabSearchRec span.flabel{
+ width: 65px;
+ float: left;
+}
+
+table#tabSearchRec select , table#tabSearchRec input{
+	float: left;
+	width: 85%;
+}
+
+/* Css lié aux liens de suppression de l'infoPortage  */
+.linkSupp{
+    color: #428bca;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th{
+	background: #E3EFFF!important;
+}
+
+
+.table-striped > tbody > tr:nth-child(even) > td, .table-striped > tbody > tr:nth-child(even) > th{
+	background: #FFFFFF!important;
+}
+table.dataTable {
+	border-collapse: collapse!important;
+}
+.dataTables_wrapper .dataTables_paginate {
+	padding: 5px!important;
+	border: 1px solid #E3EFFF!important;
+	margin: auto!important;
+	width: 85%!important;
+	text-align: center!important;
+	position: relative!important;
+	right: 7.5%;
+	border-top: 0px!important;
+}
+
+.dataTables_wrapper .dataTables_paginate a.paginate_button.disabled{
+	border-radius: 20px!important;	
+	border: 1px solid #E3EFFF !important;
+}
+.dataTables_wrapper .dataTables_paginate a.paginate_button{
+	border-radius: 20px!important;	
+	border: 1px solid #E3EFFF !important;
+	color:#0088cc!important;
+}
+table.table.table-center.reclam-grid, table.table.table-center.reclam-grid td, table.table.table-center.reclam-grid th{
+border: 1px solid rgba(58, 75, 255, 0.06)!important;
+}
+
+
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+/* background-color: #f9f9f9; */
+}
+
+/* Css liées  a la modal pour afficher les deplacements de n points d'une tournée A vers une tournée B */
+.modal-carto-points-move{
+    width: 1000px !important;
+    height: 500px;
+    //overflow: hidden;
+    vertical-align: middle;
+    
+}
+
+#moveMultPointsForm {
+    position :relative;
+    overflow: auto;
+    height: 500px;
+}
+#moveMultPointsForm div:nth-child(1){
+    width: 50%;
+    float: left;
+    //margin-right: 8%;
+    //border:solid 1px;
+}
+#moveMultPointsForm div:nth-child(2){
+    width: 50%;
+    float: left;
+    //border:solid 1px;
+}
+.clear{
+    clear:both;
+}
+
+#moveMultPointsForm .listeArrets li span{
+    color: black;
+    margin-left: 10px;
+}
+#moveMultPointsForm .listeArrets li{
+    background-color: white;
+    border: 1px solid silver;
+    border-radius: 5px;
+    cursor: pointer;
+    list-style-position: inside;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    text-align: left;
+}
+#moveMultPointsForm .listeArrets li.selected-point-move{
+    background-color: #FFFFD6;
+    cursor: move;
+/*    border: 1px solid silver;
+    border-radius: 5px;
+    cursor: move;
+    list-style-position: inside;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    text-align: left;*/
+}
+#moveMultPointsForm .listeArrets li.apparenceChange{
+    background-color: grey;
+    cursor: pointer;
+    //color: black;
+    //border: 1px solid silver;
+    //border-radius: 5px;
+    //cursor: move;
+    //list-style-position: inside;
+    //margin-bottom: 5px;
+    //padding-left: 20px;
+    //text-align: left;
+}
+#sortTourneeForm li.selected{background-color: #FFFFD6 !important}
+#closeButton{
+	height: 35px;
+	position: absolute;
+	font-size: 30px;
+	top: -34px;
+	right: 0px;
+	display:none;
+	border-color: transparent;
+	background-color: transparent;
+}
+.table-center tr.tr-no-border th {
+	border: none!important
+}
+
+form.tableLeft td{
+    text-align: left;
+    padding-bottom: 4px;
+}
+
+.notAvailable{
+    font-style: italic;
+    color: #888;
+}
+
+.noLongerAvailable{
+    font-style: italic;
+    color: #F7020E;
+}
+
+.loadingIcon{
+    margin-top: 15px;
+    width: 20px;
+}
+
+/* Schémas de répartition */
+.rightIcon{
+    text-align: right;
+    float: right;
+}
+
+.rightIcon img{
+    width: 64px;
+    height: 64px;
+}
+
+.panneauReglesSte .listeRegles .alert,
+.panneauReglesProd .listeRegles .alert{
+    margin-top: 10px;
+}
+
+.panneauReglesProd h4.labelNomProduit{
+    text-align: left;
+}
+
+.panneauReglesGlobales, .panneauReglesSte, .panneauReglesProd{
+    display: none;
+    margin-top: 10px;
+}
+
+.panneauReglesGlobales span.label,
+.panneauReglesProd span.label,
+.panneauReglesSte span.label{
+    margin: 15px;
+    display: inline-block;
+    font-size: 90%;
+    width: 250px;
+    background-color: #ededed;
+    color: black;
+}
+
+hr.prodSep{
+    width: 50%;
+}
+
+.panneauReglesSte span.label{
+    background-color: #CCE8FF;
+}
+
+.panneauReglesProd span.label{
+    background-color: #C2FFC1;
+}
+
+.panneauReglesGlobales .labelNomDepot,
+.panneauReglesSte .labelNomDepot,
+.panneauReglesProd .labelNomDepot{
+    font-weight: bold;
+}
+
+.rep_schema_ste{
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: none;
+}
+
+.rep_schema_ste img{
+    margin-right: 10px;
+}
+
+.backToTop{
+    text-align: right;
+    text-decoration: none;
+}
+
+.backToTop a,
+.backToTop a:hover{
+    color: #393939;
+    text-decoration: none;
+}
+
+.panneauReglesProd div.delBtn,
+.panneauReglesSte div.delBtn
+{
+    text-align: right;
+    padding-right: 20px;
+}
+
+.panneauReglesProd div.listeRegles div.exceptionFlux{
+    border-left: 5px solid silver;
+    padding-left: 5px;
+    
+}
+
+#prodFluxNuit{
+    border-left-color: #505960;
+}
+
+#prodFluxJour{
+    border-left-color: #FFFB0F;
+}
+
+
+div.delBtn button,
+.btn.editProd{
+    font-weight: bold;
+}
+
+div.ams-modal .modal-footer.repartprod,
+div.ams-modal .modal-footer.editRepart{
+    padding-top: 10px;
+    height:45px;
+}
+
+div.ams-modal .nomSociete{
+    text-decoration: underline;
+}
+
+.ams-modal .modal-footer btn{
+    margin-left: 15px;
+}
+
+#editDiagMult{
+    height:500px;
+    overflow:scroll;
+}
+
+#editDiagMult li {
+    text-align: left;
+    list-style-type: none;
+    cursor: move;
+    border: 1px solid silver;
+    height: 20px;
+    margin-bottom: 5px;
+    margin-right: 4px;
+    padding: 3px;    
+    background-color: #F4F4F4;
+}
+
+.modal-body #selectsTbl td select{
+    margin: 5px;
+}
+
+.modal-body .listeContainer{
+    height:500px;
+    border: 1px dashed silver;
+}
+
+.modal-body .listeContainer ul#ExceptionTarget{
+    height: 100%;
+    padding-left: 0px;
+    overflow: scroll;
+}
+
+.modal-body .listeContainer ul#ExceptionTarget li{
+    list-style-type: none;
+    border-radius: 0.25em;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0.2em 0.6em 0.3em;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+    display: inline-block;
+    font-size: 90%;
+    margin: 15px;
+    width: 240px;
+    cursor: move;
+    margin-left: 0px;
+}
+
+.modal-body .listeContainer ul#ExceptionTarget.produits li{
+    background-color: #C2FFC1;
+}
+
+.modal-body .listeContainer ul#ExceptionTarget.produits li.non-sortable{
+    background-color: #F2F2F2;
+        cursor: not-allowed;
+}
+
+ul.modalRecapRepartInfo{
+    padding-left: 55px;
+}
+
+ul.modalRecapRepartInfo li{
+    text-align: left;
+}
+
+div.repartEditBtn{
+    margin-bottom: 15px;
+}
+
+.exceptionProd .prodSep:last-child{
+    display: none;
+}
+
+/* MULTISELECT MODULE */
+
+/**
+ * @author zhixin wen <wenzhixin2010@gmail.com>
+ */
+
+.ms-parent {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.ms-choice {
+    display: block;
+    width: 100%;
+    height: 26px;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #aaa;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 26px;
+    color: #444;
+    text-decoration: none;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.ms-choice.disabled {
+    background-color: #f4f4f4;
+    background-image: none;
+    border: 1px solid #ddd;
+    cursor: default;
+}
+
+.ms-choice > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    padding-left: 8px;
+}
+
+.ms-choice > span.placeholder {
+    color: #999;
+}
+
+.ms-choice > div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 25px;
+    background: url('../images/multiple-select.png') left top no-repeat;
+}
+
+.ms-choice > div.open {
+    background: url('../images/multiple-select.png') right top no-repeat;
+}
+
+.ms-drop {
+    width: 100%;
+    overflow: hidden;
+    display: none;
+    margin-top: -1px;
+    padding: 0;
+    position: absolute;
+    z-index: 1000;
+    background: #fff;
+    color: #000;
+    border: 1px solid #aaa;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.ms-drop.bottom {
+    top: 100%;
+    -webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+    -moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+}
+
+.ms-drop.top {
+    bottom: 100%;
+    -webkit-box-shadow: 0 -4px 5px rgba(0, 0, 0, .15);
+    -moz-box-shadow: 0 -4px 5px rgba(0, 0, 0, .15);
+    box-shadow: 0 -4px 5px rgba(0, 0, 0, .15);
+}
+
+.ms-search {
+    display: inline-block;
+    margin: 0;
+    min-height: 26px;
+    padding: 4px;
+    position: relative;
+    white-space: nowrap;
+    width: 100%;
+    z-index: 10000;
+}
+
+.ms-search input {
+    width: 100%;
+    height: auto !important;
+    min-height: 24px;
+    padding: 0 20px 0 5px;
+    margin: 0;
+    outline: 0;
+    font-family: sans-serif;
+    font-size: 1em;
+    border: 1px solid #aaa;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background: #fff url('../images/multiple-select.png') no-repeat 100% -22px;
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, -ms-linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+    background: url('../images/multiple-select.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+}
+
+.ms-search, .ms-search input {
+    -webkit-box-sizing: border-box;
+    -khtml-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ms-drop ul {
+    overflow: auto;
+    margin: 0;
+    padding: 5px 8px;
+}
+
+.ms-drop ul > li {
+    list-style: none;
+    display: list-item;
+    background-image: none;
+    position: static;
+}
+
+.ms-drop ul > li .disabled {
+    opacity: .35;
+    filter: Alpha(Opacity=35);
+}
+
+.ms-drop ul > li.multiple {
+    display: block;
+    float: left;
+}
+
+.ms-drop ul > li.group {
+    clear: both;
+}
+
+.ms-drop ul > li.multiple label {
+    width: 100%;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ms-drop ul > li label {
+    font-weight: normal;
+    display: block;
+    white-space: nowrap;
+}
+
+.ms-drop ul > li label.optgroup {
+    font-weight: bold;
+}
+
+.ms-drop input[type="checkbox"] {
+    vertical-align: middle;
+}
+
+.ms-drop .ms-no-results {
+    display: none;
+}
+
+
+
+table.adresse td, table.adresse th {
+   height: 30px; 
+   text-align: left;
+}
+
+.plus-minus{
+    float:right; 
+    font-weight:bold;
+    cursor: pointer
+    
+}

@@ -1,0 +1,533 @@
+/**
+ * CSS Reset
+ * From Blueprint reset.css
+ * http://blueprintcss.googlecode.com
+ */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;}
+body {line-height:1.5;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;}
+table, td, th {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:"";}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+
+
+/**
+ * Basic Typography
+ */
+body {
+    font-family: "Lucida Grande", Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+    font-size: 80%;
+    color: #222;
+    background: #fff;
+}
+pre, code {
+    margin: 1.5em 0;
+    white-space: pre;
+}
+pre, code {
+    font: 1em 'andale mono', 'lucida console', monospace;
+    line-height:1.5;
+}
+a[href] {
+    color: #436976;
+    background-color: transparent;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #003a6b;
+    background-color: transparent;
+    font: 100% 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+h1 {
+    font-size: 130%;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #fcb100;
+}
+h2 {
+    font-size: 120%;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #aaa;
+}
+h3 {
+    font-size: 110%;
+    margin-bottom: 0.5em;
+    text-decoration: underline;
+}
+h4 {
+    font-size: 100%;
+    font-weight: bold;
+}
+h5 {
+    font-size: 100%;
+    font-weight: bold;
+}
+h6 {
+    font-size: 80%;
+    font-weight: bold;
+}
+
+#mapDatas{
+    width: 30%;
+    display: inline-block;
+    background-color: #EEEEEE;
+    height: 100%;
+}
+
+#mapDatas h4{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#mapDatas h3{
+    text-decoration: none;
+}
+
+#mapDatas .tourneeInfos .windowTools{
+    margin-top: 4px;
+    margin-right: 10px;
+    text-align: right;
+}
+
+#mapDatas .tourneeInfos .windowTools span{
+    cursor: pointer;
+}
+
+#map{
+    border: 1px solid silver;   
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+#map .olMapViewport {
+    min-height: 500px;
+}
+
+#mapContainer{
+    float: left;
+    width: 75%;
+    min-width: 700px;
+    min-height: 500px;
+}
+
+#mapNotifications .alert{
+    display: none;
+}
+
+.tourneeInfos{
+    text-align: left;
+    padding: 0px !important;
+}
+
+.tourneeInfos span{
+    display: inline;
+}
+
+.tourneeInfos .infosContent,
+#pointInfos .infosContent{
+    padding: 5px;
+}
+
+.tourneeInfos .toolbar,
+#pointInfos .toolbar{
+    padding-top: 4px;
+    min-height: 25px;
+    background-color: #F7F7F7;
+    border-bottom: none;
+    text-align: right;    
+}
+
+.tourneeInfos .toolbar a,
+#pointInfos .toolbar a{
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+}
+
+#movePointToTourBtn{
+    margin-top: 10px;
+}
+
+.windowTools .popover-title,
+.toolbar .popover-title{
+    text-decoration: none;
+}
+
+.mapErrPointsMsg{
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#pointInfos, .tourneeInfos{
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: none;
+    width: 90%;
+    padding: 0px;
+    background-color: white; 
+    text-align: left;
+    border: 1px solid silver;
+}
+
+#pointInfos .toolbar #toolPointAddCustomer{
+    display: none;
+}
+
+.legende{
+    margin: auto;
+    width: 50%;
+}
+
+.tourneeInfos{
+    border: none;
+    border: 1px solid silver;
+    border-top: 2px solid #1BE01B;    
+    display: block;
+}
+
+#searchTourBtn{
+    
+}
+
+#multi_abonnes_infos_carousel{
+    display:none;
+}
+
+#multi_abonnes_infos_block{
+    display: none;
+    margin-top: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#multi_abonnes_infos_block .glyphicon-barcode{
+    margin-left: 5px;
+}
+
+#multi_abonnes_infos_carousel .carousel-control{
+    width: 0px;
+    top: 20px;
+    margin-top: 50px;
+}
+
+#multi_abonnes_controls_block {
+    height: 50px;
+    position: relative;
+}
+
+#multi_abonnes_controls_block .carousel-control.left,
+#multi_abonnes_controls_block .carousel-control.right{
+    background: none;
+}
+
+#multi_abonnes_infos_carousel .carousel-indicators{
+    display: none;
+}
+
+#multi_abonnes_infos_carousel .logoProduit{
+    margin:auto;
+}
+
+#multi_abonnes_infos_carousel .titreProduit{
+    text-align: center;
+    font-weight: bold;
+}
+
+#multi_abonnes_infos_carousel .nomAbonne{
+    font-weight: bold;
+}
+
+#multi_abonnes_infos_carousel .typeAbonne{
+    font-style: italic;
+    font-weight: normal;
+}
+
+#multi_abonnes_infos_carousel .item{
+    min-height: 60px;
+}
+
+#multi_abonnes_infos_carousel .item img.typeClient{
+    float: left;
+}
+
+.cartoTitrePop{
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.cartoPopMainContent p{
+    text-align: center;
+}
+
+p.sortClientsLink{
+    display: block;cursor:pointer;
+}
+
+#pointInfos h5{
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+#mapLegende ul{
+    list-style-type: none;
+}
+
+#mapLegende ul li{
+    display: inline-block;
+}
+
+h4#amsModalLabel{
+    color: white;
+}
+
+#listeTournees{
+    display: none;
+}
+
+#infosMapPoint{
+    background-color: #EEEEEE;
+    height: 2em;
+    border: 1px solid silver;
+    border-bottom: none;
+    text-align: left;
+    padding: 4px;
+    vertical-align: middle;
+}
+
+#infosMapPoint .glyphicon-sort-by-order{
+    margin-left: 10px;
+}
+
+#infosMapPoint .infosCarte{
+    float: left;
+}
+
+#infosMapPoint .infosPoint{
+    display: none;
+    line-height: 25px;    
+}
+
+#infosMapPoint .infosPoint #newP2L_lnk{
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#infosMapPoint .btn{
+    margin-bottom: 10px;
+}
+
+#infosMapPoint .infosPoint #newP2L_lnk .glyphicon {
+    margin-right: 5px;
+}
+
+#infosMapPoint .infosPoint strong,
+#infosMapPoint .infosCarte strong{
+    margin-left: 4px;
+}
+
+div.tourneeListeElement label{
+    margin-left: 5px;
+}
+
+#findAboBtn {
+    margin-top: 10px;
+}
+
+#findAboBtn i.glyphicon{
+    margin-right: 5px;
+}
+
+div#searchNumAbo, div#searchNameAbo{
+    display: inline-block;
+    text-align: left;
+    margin: 20px;
+}
+
+div#amsModalSearch .select2-container{
+    width: 100% !important;
+    min-width: 400px;
+    z-index: 1050;
+}
+
+div#amsModalSearch #results{
+    background-color: white;
+    border: 2px dashed silver;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    display: none;
+}
+
+div#amsModalSearch #results .produit{
+    font-style: italic;
+}
+
+div#amsModalSearch #results .nom{
+    font-weight: bold;
+}
+
+/**
+ * Map Examples Specific
+ */
+.smallmap {
+    width: 512px;
+    height: 256px;
+    border: 1px solid #ccc;
+}
+#tags {
+    display: none;
+}
+
+#docs p {
+    margin-bottom: 0.5em;
+}
+
+#sortTourneeForm .listeArrets{
+}
+
+#sortTourneeForm .listeArrets li,#sortOrderInStopForm .listeArrets li{
+    text-align: left;
+    padding-left: 20px;
+    cursor: move;
+    background-color: white;
+    border: 1px solid silver;
+    list-style-position: inside;
+    margin-bottom: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#sortTourneeForm .listeArrets li span{
+    color: black;
+    margin-left: 10px;
+}
+
+.titreFormModale{
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#cancelSortTourBtn{
+    color: black;
+}
+
+#printMap{
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* mobile specific */
+@media only screen and (max-width: 600px) {
+    body {
+        height           : 100%;
+        margin           : 0px;
+        padding          : 0px;
+        width            : 100%;
+    }
+    #map {
+        background : #7391ad;
+        width      : 100%;
+    }
+    #map {
+        border : 0;
+        height : 250px;
+    }
+    #title {
+        font-size   : 1.3em;
+        line-height : 2em;
+        text-indent : 1em;
+        margin      : 0;
+        padding     : 0;
+    }
+    #docs {
+        bottom     : 0;
+        padding    : 1em;
+    }
+    #shortdesc {
+        color      : #aaa;
+        font-size  : 0.8em;
+        padding    : 1em;
+        text-align : right;
+    }
+    #tags {
+        display : none;
+    }
+}
+@media only screen and (orientation: landscape) and (max-width: 600px) {
+    #shortdesc {
+       float: right;
+       width: 25%;
+    }
+    #map {
+        width: 70%;
+    }
+    #docs {
+        font-size: 12px;
+    }
+}
+body {
+    -webkit-text-size-adjust: none;
+}
+
+/* Controles Open Layers */
+olControlClickActive{
+    cursor: pointer;
+}
+#sortTourneeForm li.non-livrer,body #sortTourneeForm li.non-livrer span{
+  background-color: #B51322 !important;color:#FFF !important;
+}
+#sortTourneeForm li.selected.non-livrer,#sortTourneeForm li.selected.non-livrer span{
+  background-color: #ffffd6 !important;color:#000 !important;
+}
+  
+.switch-button-label {
+  float: left;
+  font-size: 10pt;
+  cursor: pointer;
+}
+
+.switch-button-label.off {
+    color: #adadad;
+}
+
+.switch-button-label.on {
+    color: #0088CC;
+}
+
+.switch-button-background {
+    float: left;
+    position: relative;
+
+    background: #ccc;
+    border: 1px solid #aaa;
+
+    margin: 1px 10px;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.switch-button-button {
+    position: absolute;
+
+    left: -1px;
+    top : -1px;
+
+    background: #FAFAFA;
+    border: 1px solid #aaa;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.switch-wrapper{position:absolute;right:40px}
+.switch-wrapper span{float:left}
+.switch-wrapper .legend{font-size:12px;margin-right:10px}

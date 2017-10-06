@@ -1,0 +1,218 @@
+<rows>
+    {% if societes|length !=0%}
+    <head>
+        <column type="ro" width="200" align="center" sort="str"><![CDATA[&nbsp;]]></column>
+        <column type="ro" width="100" align="center" sort="str">Total Recl</column>
+        <column type="ro" width="100" align="center" sort="str">Total Info</column>
+        <column type="ro" width="120" align="center" sort="str">Total Demande Client</column>
+        {% for item1 in societes %}
+                <column type="ro" width="100" align="center" sort="na"><![CDATA[<div style="text-align: center;">
+                    {% if item1.societe.image.webPath is defined and file_exists(item1.societe.image.webPath) %}
+                       <img src="{{ asset(item1.societe.image.webPath) }}" alt="{{ item1.societe.libelle }}" /> <br/>
+                        {{ item1.societe.libelle }}   
+                    {% else %}
+                        {{ item1.societe.libelle }}
+                    {% endif %}</div>]]>
+                </column>
+                <column type="ro" align="center" width="100" sort="na">
+                    #cspan
+                </column>
+        {% endfor %}
+        <afterInit>
+            <call command="attachHeader">
+                <param><![CDATA[<div style="text-align: center;">Dépôt</div>*<div style="text-align: center;"></div>*<div style="text-align: center;"></div>*<div style="text-align: center;"></div>{% for i in 1.. (societes|length)*2 %}*<div style="text-align: center;">Info</div>*<div style="text-align: center;">Reclam</div>{% endfor %}]]>
+                </param>
+            </call>
+
+            {% set totalReclam = '0' %}
+            {% set totalReclamRep = '0' %}
+            {% set totalRem = '0' %}
+            {% set totalRemRep = '0' %}
+            {% set totalDem = '0' %}
+            {% set totalDemRep = '0' %}
+
+            {% for depotId, depotLibelle in depots %}
+                <!-- Reclamation -->
+                {% for ite in allreclamations %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalReclam = totalReclam + ite['countRec']%}
+                    {%endif%}
+                {%endfor%} 
+                {% for ite in totalreclamationsResponse %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalReclamRep = totalReclamRep + ite['countRecResponse']%}
+                    {%endif%}
+                {%endfor%}
+
+                <!-- Remonte information -->
+                {% for ite in allrminfo %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalRem = totalRem + ite['countRem']%}
+                    {%endif%}
+                {%endfor%}
+                {% for ite in totalBackUpInformationResponse %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalRemRep = totalRemRep + ite['countRemResponse']%}
+                    {%endif%}
+                {%endfor%}
+
+                <!-- Demande Client -->
+                {% for ite in allDemandeCliants %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalDem = totalDem + ite['countDemClient']%}
+                    {%endif%}
+                {%endfor%}
+                {% for ite in totalDemClientResponses %}
+                    {% if ite[0].depot.id ==  depotId %}
+                        {% set totalDemRep = totalDemRep + ite['countDemClientResponse']%}
+                    {%endif%}
+                {%endfor%}
+
+            {%endfor%} 
+
+            <call command="attachFooter"><param><![CDATA[<b>Total</b>
+            *<div style="text-align: center;"><span>{{totalReclam}} ({{totalReclamRep}})</span></div>
+            *<div style="text-align: center;"><span>{{totalRem}} ({{totalRemRep}})</span></div>
+            *<div style="text-align: center;"><span>{{totalDem}} ({{totalDemRep}})</span></div>
+            {% for i in 1..societes|length %}  
+                {% set tmpRem = '0' %}
+                {% set tmpRemRep = '0' %}
+                {% set tmpReclam = '0' %}
+                {% set tmpReclamRep = '0' %}
+                {% set societeId = societes[loop.index0].societe.id%}
+                {% for depotId, depotLibelle in depots %}
+                    <!-- Remonte Info  -->
+                    {% if countRemBySociete[societeId] is defined  and  countRemBySociete[societeId]['countRem'][depotId]  is defined %}
+                        {% set tmpRem = tmpRem + countRemBySociete[societeId]['countRem'][depotId] %}
+                    {%endif%}
+                    {% if countRemResBySociete[societeId] is defined and countRemResBySociete[societeId]['countRemRes'][depotId] is defined %}
+                        {% set tmpRemRep = tmpRemRep + countRemResBySociete[societeId]['countRemRes'][depotId] %}
+                    {%endif%}
+
+                    <!-- Reclamation -->
+                    {% if countRecBySociete[societeId] is defined  and  countRecBySociete[societeId]['countRec'][depotId]  is defined %}
+                        {% set tmpReclam = tmpReclam + countRecBySociete[societeId]['countRec'][depotId] %}
+                    {%endif%}
+                    {% if countRecResBySociete[societeId] is defined and countRecResBySociete[societeId]['countRecRes'][depotId] is defined %}
+                        {% set tmpReclamRep = tmpReclamRep + countRecResBySociete[societeId]['countRecRes'][depotId] %}
+                    {%endif%}
+
+                {% endfor %} 
+                *<div style="text-align: center;"><span>{{tmpRem}} ({{tmpRemRep}})</span></div>
+                *<div style="text-align: center;"><span>{{tmpReclam}} ({{tmpReclamRep}})</span></div>
+            {% endfor %} 
+            *#cspan]]></param></call>
+
+        </afterInit>
+        <settings> 
+            <colwidth>px</colwidth>
+        </settings>
+    </head>
+        {% for depotId, depotLibelle in depots %}
+        {%set totalReclamation=0%} {%set totalRemInformation=0%}
+        {%set totalReclamationResponse=0%} {%set totalRemInformationResponse=0%} {% set totalDemClient= 0%} {% set totalDemClientResponse=0 %}
+            <row id="{{ depotLibelle }}">
+                <cell><![CDATA[{{ depotLibelle }} ]]></cell>
+                <cell><![CDATA[
+                            <a  href="{{path('crm_display_detail',{'cId': 1,'sId':'','dpId':depotId,'all':true})}}"> 
+                                {% for ite in allreclamations %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalReclamation = ite['countRec']%}
+                                    {%endif%}
+                                {%endfor%}
+                                {% if  totalReclamation != 0 %}{{ totalReclamation}}</a>{%else%}</a>{{ totalReclamation}}{% endif%}
+                         
+                            <a href="{{path('crm_display_detail',{'cId': 1,'sId':'','dpId':depotId, 'rep':1,'all':true})}}"> 
+                                {% for ite in totalreclamationsResponse %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalReclamationResponse = ite['countRecResponse']%}
+                                    {%endif%}
+                                {%endfor%}
+                                
+                                 {% if totalReclamationResponse != 0 %}({{ totalReclamationResponse}})</a>{%else%}</a>({{ totalReclamationResponse}}){% endif%}
+                            </a>]]>
+                </cell>
+
+                <cell><![CDATA[
+                            <a href="{{path('crm_display_detail',{'cId': 2,'sId':'','dpId':depotId,'all':true})}}"> 
+                                {% for ite in allrminfo %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalRemInformation = ite['countRem']%}
+                                    {%endif%}
+                                {%endfor%}
+                                {% if  totalRemInformation != 0 %} {{totalRemInformation}}</a>{%else%}</a>{{ totalRemInformation}}{% endif%}
+                               
+                            </a>
+                            <a href="{{path('crm_display_detail',{'cId': 2,'sId':'','dpId':depotId, 'rep':1,'all':true})}}"> 
+                                {% for ite in totalBackUpInformationResponse %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalRemInformationResponse = ite['countRemResponse']%}
+                                    {%endif%}
+                                {%endfor%}
+                                 {% if totalRemInformationResponse != 0 %} ({{ totalRemInformationResponse}})</a>{%else%}</a>({{ totalRemInformationResponse}}){% endif%}
+                               
+                            </a>]]>
+                </cell>
+                <cell><![CDATA[
+                            <a href="{{path('crm_display_detail',{'cId': 3,'sId':'','dpId':depotId,'all':true})}}"> 
+                                {% for ite in allDemandeCliants %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalDemClient = ite['countDemClient']%}
+                                    {%endif%}
+                                {%endfor%}
+                                {% if  totalDemClient != 0 %} {{totalDemClient}}</a>{%else%}</a>{{ totalDemClient}}{% endif%}
+                               
+                            </a>
+                            <a href="{{path('crm_display_detail',{'cId': 3,'sId':'','dpId':depotId, 'rep':1,'all':true})}}"> 
+                                {% for ite in totalDemClientResponses %}
+                                    {% if ite[0].depot.id ==  depotId %}
+                                        {% set totalDemClientResponse = ite['countDemClientResponse']%}
+                                    {%endif%}
+                                {%endfor%}
+                                 {% if totalDemClientResponse != 0 %} ({{ totalDemClientResponse}})</a>{%else%}</a>({{ totalDemClientResponse}}){% endif%}
+                               
+                            </a>]]>
+                </cell>
+                
+               {% for i in 1..societes|length %}  
+                    {% set societeId = societes[loop.index0].societe.id%}      
+                   <cell><![CDATA[
+                    {% if countRemBySociete[societeId] is defined  and  countRemBySociete[societeId]['countRem'][depotId]  is defined %}
+                        <a href="{{path('crm_display_detail',{'cId': 2,'sId':societeId,'dpId':depotId,'all':false})}}">
+                            {{ countRemBySociete[societeId]['countRem'][depotId] }}
+                        </a>
+                        {%else%}
+                        0
+                    {%endif %}
+
+                    {% if countRemResBySociete[societeId] is defined  and  countRemResBySociete[societeId]['countRemRes'][depotId]  is defined %}
+                        <a href="{{path('crm_display_detail',{'cId': 2,'sid':societeId,'dpId':depotId,'rep':1,'all':false})}}">
+                            ({{ countRemResBySociete[societeId]['countRemRes'][depotId] }})
+                        </a>
+                    {%else%}
+                        (0)
+                    {%endif %}]]>
+                   </cell>
+                    <cell><![CDATA[
+                        {% if countRecBySociete[societeId] is defined  and  countRecBySociete[societeId]['countRec'][depotId]  is defined %}
+                            <a href="{{path('crm_display_detail',{'cId': 1,'sId':societeId,'dpId':depotId,'all':false})}}">
+                                {{ countRecBySociete[societeId]['countRec'][depotId] }}
+                            </a>
+                        {%else%}
+                        0
+                        {%endif %}&nbsp;
+                        {% if countRecResBySociete[societeId] is defined  and  countRecResBySociete[societeId]['countRecRes'][depotId]  is defined %}
+                            <a href="{{path('crm_display_detail',{'cId': 1,'sId':societeId,'dpId':depotId,'rep':1,'all':false})}}">
+                                ({{ countRecResBySociete[societeId]['countRecRes'][depotId] }})
+                           </a>
+                        {%else%}
+                            (0)
+                        {%endif %}
+                        ]]>
+                    </cell>
+                {% endfor %}
+            </row>
+    {% endfor %}
+{%endif%}
+</rows>
+ 

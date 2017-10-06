@@ -1,0 +1,26 @@
+<rows>
+	<head>      
+		<column type="ro" width="0" align="left" sort="str"> Produit </column>
+		<column type="ro" width="0" align="left" sort="str"> Date </column>
+		<column type="ro" width="100" align="center" sort="str"> Titre </column>
+		<column type="ro" width="100" align="center" sort="str"> Qté Prévues </column>
+		<column type="ed" width="100" align="center" sort="string">Qté Reçue</column>
+		<column type="dhxCalendar" width="200" align="center" sort="date" format='%d/%m/%Y %H:%i'>Heure de reception </column>
+		<column type="ed" width="*" align="left" sort="str">Commentaire</column>
+		<afterInit>
+			<call command='attachHeader'><param>,,,#select_filter,#select_filter,#select_filter,#text_filter</param> </call>   
+		</afterInit>  
+	</head> 
+	{% for row in aReception %}
+	<row>
+		<cell> {{ row.id_produit }} </cell>
+		<cell> {{ row.casl_id }} </cell>
+        <cell>{% if row.path is not empty%}<![CDATA[<img src="{{ asset('uploads/documents/'~row.path) }}" alt="" style="width: 90px;padding:5px"/>]]>{%endif%}</cell>
+		<cell> {{ row.qte }} </cell>
+		<cell> {% if row.qte_recue  is not empty %} {{ row.qte_recue }} {%  else %}  {{ row.qte }}{%endif%}</cell>
+		<cell> {% if row.heure_reception  is not empty %}{{ row.heure_reception|date("d/m/Y H:i") }} {%endif%}</cell>
+		<cell> {{ row.commentaires }} </cell>
+			
+	</row>
+	{% endfor %}
+</rows>

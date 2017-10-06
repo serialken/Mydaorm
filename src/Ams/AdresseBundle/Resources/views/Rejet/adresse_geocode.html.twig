@@ -1,0 +1,179 @@
+ <div class="panel panel-default" id="geocodageLoader2"  >
+    <div class="panel-heading">
+        <h4 class="panel-title"> 
+                 Géocodage de l'adresse
+        </h4>
+    </div>
+    <div class="panel-body row ams-grid">   
+        <div class="col-md-4" >
+            <h5><b> Adresse à géocoder</b> </h5> 
+            <small> Cette adresse ne sera pas sauvegardée, elle sert uniquement à calculer les coordonnées géo.</small>
+            <form method="post"  action="{{path('adresse_rejet_geocode')}}"  id="formGecodage2">
+                {{ form_widget(form._token) }}
+                <table  class="adresse">
+                    <tr>
+                                <th> Adresse </th>
+                                 <td> {{form_widget(form.vol4, { 'id': 'geocode_vol4' })}}</td>
+                            </tr>
+                            <tr>
+                                <th> CP </th>
+                                <td> {{form_widget(form.cp , { 'id': 'geocode_cp' })}}</td>
+                              </tr>
+                            <tr>
+                                <th> Ville </th>
+                                 <td>{{form_widget(form.ville , { 'id': 'geocode_ville' })}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center">
+                                    <span>   <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search icon-white"></i> Géocoder cette adresse </button> 
+                                    </span>
+                                    <span>
+                                          <img src='{{ asset('images/maps.jpg')}}' id ="maps"/>
+                                        </a></span>
+                                </td>
+                             </tr>
+                    </table>
+                </form> 
+                            
+        </div>  
+        <div  class="col-md-8" >
+        {% if listeAdrGeoconcept|length >  0 %}     
+            <h5> <b>Résultat du géocodage</b> </h5>
+            <table class="full adresse table">
+                <tr>
+                    <th width="60%">Adressse</th>
+                    <th style="text-align: center"> Score </th>
+                    <th style="text-align: center"> Action</th>
+                </tr>
+            <!-- Geocodage geoconcept -->
+            {% for key, adresse in listeAdrGeoconcept.GeocodedAddress %} 
+                {% if loop.index < 4 %}
+                    <input type="hidden" id="X_{{key}}" value="{{adresse.X }}" >
+                    <input type="hidden" id="Y_{{key}}" value="{{adresse.Y }}" >
+                    <input type="hidden" id="Type_{{key}}" value="{{adresse.GeocodeType}}" >
+                    <input type="hidden" id="Score_{{key}}" value="{{adresse.GeocodeScore}}" >
+                    <tr> 
+                        <td style="text-align: left">
+                            {% if adresse.AddressLine is defined %} <B>{{adresse.AddressLine}} </B> <BR> {% endif %}
+                            {% if adresse.PostalCode is defined %} {{ adresse.PostalCode }}{% endif %}
+                            {% if adresse.City is defined %} {{adresse.City}}{% endif %}
+                            
+                        </td> 
+                        <td style="text-align: center">
+                           {% if adresse.GeocodeScore is defined %} {{adresse.GeocodeScore}} {% endif %}     
+                        </td>
+
+                        <td style="text-align: center"> 
+                             {% if adresse.GeocodeType >= 3 %}
+                                <button type='button' value="Valider" class="btn btn-success"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée  
+                                        {% if adresse.GeocodeType == 4 %} à l'adresse exacte 
+                                        {% else %} au numéro interpolé
+                                        {% endif %}    
+                                        <BR>(X={{adresse.X }}, Y= {{adresse.Y }}).">   
+                                    Valider 
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    {% if adresse.GeocodeScore >= 16 %}
+                                        <span class="glyphicon glyphicon-star"></span>
+                                    {% endif %}
+                                    {% if adresse.GeocodeScore == 20 %}
+                                        <span class="glyphicon glyphicon-star"></span> 
+                                    {% endif %}
+                                </button>
+                              {% elseif adresse.GeocodeType == 2 %}
+                                  <button type='button' value="Valider" class="btn btn-warning"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée à la rue  <BR>(X={{adresse.X }}, Y= {{adresse.Y }}).">   
+                                    Valider <span class="glyphicon glyphicon-warning-sign"></span>
+                                  </button>
+                            {% else %}
+                                <button type='button' value="Valider" class="btn btn-secondary"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée à la ville <BR>(X={{adresse.X }}, Y= {{adresse.Y }})." disabled >   
+                                    Valider <span class="glyphicon glyphicon-warning-sign"></span>
+                                </button>
+                            {% endif %}
+                           
+                        </td>
+                      
+                    </tr>
+                {% endif %}
+           {% endfor %}
+        {% endif %}
+
+        {% if listeAdrGoogle|length >  0   %} 
+           <!--  Geocodage google ---->
+           {% for key, adresse in listeAdrGoogle.GeocodedAddress %} 
+                {% if loop.index < 4 %}
+                    <input type="hidden" id="X_{{key}}" value="{{adresse.X }}" >
+                    <input type="hidden" id="Y_{{key}}" value="{{adresse.Y }}" >
+                    <input type="hidden" id="Score_{{key}}" value="{{adresse.GeocodeScore}}" >
+                    <input type="hidden" id="Type_{{key}}" value="{{adresse.GeocodeType}}" >
+                    <tr>
+                        <td style="text-align: left">
+                            {% if adresse.AddressLine is defined %} <B>{{adresse.AddressLine|upper}}</B> {% endif %}
+                            {% if adresse.PostalCode is defined %} {{ adresse.PostalCode }}{% endif %}
+                            {% if adresse.City is defined %} {{adresse.City|upper}}{% endif %}
+                        </td> 
+                        <td style="text-align: center">
+                             Google
+                        </td>
+                        <td style="text-align: center"> 
+                             {% if adresse.GeocodeType == 4 %}
+                                <button type='button' value="Valider" class="btn btn-success"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée à l'adresse exacte <BR>(X={{adresse.X }}, Y= {{adresse.Y }}).">   
+                                    Valider 
+                                    <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span> 
+                                </button>
+                             {% elseif adresse.GeocodeType == 3 %}
+                                <button type='button' value="Valider" class="btn btn-success"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée au numéro interpolé<BR>(X={{adresse.X }}, Y= {{adresse.Y }}).">   
+                                    Valider 
+                                    <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span> 
+                                </button>
+                              {% elseif adresse.GeocodeType == 2 %}
+                                  <button type='button' value="Valider" class="btn btn-warning"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); ' onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée à la rue <BR>(X={{adresse.X }}, Y= {{adresse.Y }}).">   
+                                    Valider <span class="glyphicon glyphicon-warning-sign"></span>
+                                  </button>
+                            {% else %}
+                                
+                                <button type='button' value="Valider" class="btn btn-secondary"  Onclick='updateGeocodage("{{path('adresse_rejet_geocode')}}" , document.getElementById("X_{{key}}").value, document.getElementById("Y_{{key}}").value, document.getElementById("Score_{{key}}").value, document.getElementById("Type_{{key}}").value); '  onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cette adresse a été géocodée à la ville <BR>(X={{adresse.X }}, Y= {{adresse.Y }})." disabled >   
+                                    Valider <span class="glyphicon glyphicon-warning-sign"></span>
+                                </button>
+                            {% endif %}
+                           
+                        </td>
+                    </tr>   
+                {% endif %}
+           {% endfor %}      
+        </table>
+    {% endif %}
+       <div>    
+    </div>
+</div>
+
+<script type="text/javascript">    
+   $(document).ready(function() {
+         $('#formGecodage2').submit(function(e) {
+             e.preventDefault();
+             $('#geocodageLoader2').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+             $.ajax({
+               url: $(this).attr('action'),
+               type: $(this).attr('method'),
+               data: $(this).serialize(),
+               cache: false,
+               success: function(data) {
+                    $('#geocodageLoader2').html(data);
+                    $('#amsModal').animate({ scrollTop: 175 }, 'slow');
+               },
+               error: function(data) {
+                    alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+               }
+             });
+             return false; //
+         });
+ 
+         $('#maps').click(function(){
+                var vol4 = $("#geocode_vol4").val();
+                var cp =  $("#geocode_cp").val();
+                var ville = $("#geocode_ville").val();     
+                window.open("https://www.google.fr/maps/place/"+ vol4 +' '+ cp + ' ' + ville, '_blank');
+ 
+          });
+
+     });
+   
+</script> 

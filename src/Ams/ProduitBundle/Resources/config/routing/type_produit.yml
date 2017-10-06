@@ -1,0 +1,17 @@
+type_produit:
+    pattern:  /
+    defaults: { _controller: "AmsProduitBundle:TypeProduit:index" }
+    
+type_produit_modification_ajax:
+    pattern:  /update_ajax
+    defaults: { _controller: "AmsProduitBundle:TypeProduit:updateType" }
+    
+type_produit_creation:
+    pattern:  /creation
+    defaults: { _controller: "AmsProduitBundle:TypeProduit:create" }
+    
+type_produit_suppression:
+    pattern:  /supression/{typeId}
+    defaults: { _controller: "AmsProduitBundle:TypeProduit:deleteType" }
+    requirements:
+        societeId: \d+

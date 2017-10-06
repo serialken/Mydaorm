@@ -1,0 +1,199 @@
+{% extends '::modal.html.twig' %}
+{% block modalCss %}
+<style>
+        .modal-dialog {
+        width: 1000px; 
+        height: 100px;
+        margin: 100px auto;
+    }
+    
+  #listeGeocode {
+    overflow: scroll;
+    height: 200px;
+}
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4> Correction d'une adresse rejetée</h4>
+{% endblock %}
+{% block modalContenu %}
+
+<div id='rejetAdresse' class="well">
+    {% if listeAbonnes|length %}
+    <div class="row">
+        
+        <h3> 
+            {% if listeAbonnes|length > 1 %}
+                Listes des abonnés rattachés à l'adresse rejetée.
+            {% else %}
+               Abonné rattaché à l'adresse rejeté.
+            {% endif %}
+                
+        </h3>
+         <table class="table">
+                 <tr>
+                     <th>Numero</th> 
+                     <th>Volet 1</th>
+                     <th> Volet 2</th>
+                     <th> Volet 3 4 5 </th>
+                     <th> Cp </th>
+                     <th> Ville </th>
+                     <th> Société </th> 
+                 </tr>
+                 {% for listeAbonne in listeAbonnes %}
+                 <tr>
+                    <td>{{listeAbonne.abonneSoc.numaboExt}}</td> 
+                     <td>{{listeAbonne.vol1}}</td>
+                     <td> {{listeAbonne.vol2}} </td>
+                     <td> {{listeAbonne.vol3}} {{listeAbonne.vol4}}  {{listeAbonne.vol5}} </td>
+                     <td> {{listeAbonne.cp}} </td>
+                     <td> {{listeAbonne.ville}} </td>
+                    <td> {{listeAbonne.abonneSoc.socCodeExt}} </td> 
+                 </tr>
+                 {% endfor %}
+         </table>
+
+    </div>
+    {% endif %}
+  
+    <div class="row">
+      <div class="col-md-6">
+          <h3> Adresse Rejetée </h3>
+          <form method="post"   id="formRejet" action="{{path('adresse_modif_rejet')}}" >
+              {{ form_widget(form) }}
+                         <BR>
+               <div id ="" >
+                <table>
+                    <tr>
+                        <td > <input type="submit" value="Rechercher" class="btn btn-primary" /></td>
+                    </tr>
+                </table>
+              </div>
+          </form>
+           
+      </div>
+        
+     <div class="col-md-6" id="formRejetLoader">
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                    <div class="flash-notice">
+                        {%if ResRNVP.etatRetourRnvp =="RNVP_OK" %}
+                             <p class="bg-success"> {{ flashMessage }} </p>
+                        {% else %}
+                              <p class="bg-danger"> {{ flashMessage }}</p>
+                        {% endif %}
+                {% endfor %}
+                    </div>
+                  {% if ResRNVP.etatRetourRnvp is defined %}
+                    <form method="post"  id="formRnvp" action="{{path('adresse_rejet_geocode')}}" >
+                     <table class="table"> 
+                         <tr>
+                             <th>Compl. Adressse</th>
+                              <td>{{ResRNVP.pio_cadrs}}</td>
+                         </tr>
+                         
+                          <tr>
+                             <th>Adressse</th>
+                             <td>{{ResRNVP.pio_adresse}}</td>
+                         </tr>
+                         <tr>
+                             <th> Lieu dit </th>
+                               <td> {{ResRNVP.pio_lieudit}} </td>
+                         </tr>
+                         <tr>
+                             <th> CP </th>
+                             <td> {{ResRNVP.po_cp}} </td>
+                         </tr>
+                         <tr>
+                             <th> Ville</th>
+                              <td> {{ResRNVP.po_ville}}</td>
+                         </tr>
+
+                         <tr>
+                            <td colspan="2"> <input type='submit'  value='Valider' class="btn btn-primary" /></td>
+                         </tr>
+                       
+                     </table>
+                      </form>
+                 <div id="formRnvpLoader"> </div>
+                  {% endif %}
+              </div>
+        </div>  
+ 
+    </div>
+      
+  <div class="row"> 
+      <div id="geocodageLoader"> </div>
+  </div>
+
+
+<script type="text/javascript">    
+    $(document).ready(function() {
+         $('#formRejet').submit(function(e) {
+             e.preventDefault();
+             $('#formRejetLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+             $.ajax({
+               url: $(this).attr('action'),
+               type: $(this).attr('method'),
+               data: $(this).serialize(),
+               cache: false,
+               success: function(data) {
+                     $('#amsModal').html(data);
+                     //$('#modalAlerte').html(data.alert);
+
+               },
+               error: function(data) {
+                    alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+               },
+             });
+             return false; //
+         });
+
+
+
+         $('#formRnvp').submit(function(e) {
+             e.preventDefault();
+             $('#formRnvpLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+             $.ajax({
+               url: $(this).attr('action'),
+               type: $(this).attr('method'),
+               data: $(this).serialize(),
+               cache: false,
+               success: function(data) {
+                     $('#rejetAdresse').append(data);
+                     $('#formRnvpLoader').hide();
+               },
+               error: function(data) {
+                    alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+               },
+             });
+             return false; //
+         });
+     });
+   
+   
+    function updateGeocodage (path,x, y) {
+        $('#geocodageLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+        $.ajax({
+            url: path,
+            data: '&geox='+ x + '&geoy='+ y ,
+            type: 'POST',
+            dataType: 'text',   
+            success : function(data){
+               $('#amsModal').html(data);
+               $('#amsModal').on('hidden.bs.modal', function () {
+                          self.parent.location.reload();
+                  });
+                $('#amsModal').modal('hide');
+   
+            },
+
+             error : function(text){
+                  $('#erreur').text("Attention une erreur est survenue."); 
+                  $("erreur").addClass("alert alert-danger");
+               
+             },
+             
+     });
+ }
+</script>  
+{% endblock %}

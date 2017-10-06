@@ -1,0 +1,48 @@
+
+AmsDistributionBundle_calendrier:
+    resource: "@AmsDistributionBundle/Resources/config/routing/calendrier.yml"
+    prefix: /calendrier
+    
+AmsDistributionBundle_jourFerie:
+    resource: "@AmsDistributionBundle/Resources/config/routing/jourFerie.yml"
+    prefix: /feries
+    
+AmsDistributionBundle_portage:
+    resource: "@AmsDistributionBundle/Resources/config/routing/portage.yml"
+    prefix: /portage
+    
+AmsDistributionBundle_qtesQuotidiennes:
+    resource: "@AmsDistributionBundle/Resources/config/routing/qtesQuotidiennes.yml"
+    prefix: /distribution
+
+AmsDistributionBundle_crm:
+    resource: "@AmsDistributionBundle/Resources/config/routing/crm.yml"
+    prefix: /distribution
+    
+AmsDistributionBundle_reperage:
+    resource: "@AmsDistributionBundle/Resources/config/routing/reperage.yml"
+    prefix: /reperage
+    
+AmsDistributionBundle_arbitrage:
+    resource: "@AmsDistributionBundle/Resources/config/routing/arbitrage.yml"
+    prefix: /arbitrage
+
+AmsDistributionBundle_ouverture:
+    resource: "@AmsDistributionBundle/Resources/config/routing/ouverture.yml"
+    prefix: /ouverture
+    
+AmsDistributionBundle_etiquette:
+    resource: "@AmsDistributionBundle/Resources/config/routing/etiquette.yml"
+    prefix: /etiquette
+    
+AmsDistributionBundle_comptes_rendus:
+    resource: "@AmsDistributionBundle/Resources/config/routing/compte-rendu.yml"
+    prefix: /compte-rendu
+    
+AmsDistributionBundle_france_routage:
+    resource: "@AmsDistributionBundle/Resources/config/routing/france-routage.yml"
+    prefix: /france-routage
+
+AmsDistributionBundle_suiviProduction:
+    resource: "@AmsDistributionBundle/Resources/config/routing/suiviProduction.yml"
+    prefix: /production

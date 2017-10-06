@@ -1,0 +1,21 @@
+{% extends 'AmsReferentielBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['code'             ,'#text_filter'             ,null               ,isLength1          ,null                   ,null                   ,null              ,null],
+['libelle'          ,'#text_filter'             ,null               ,isLibelle          ,null                   ,null                   ,null              ,null],
+['typeurssaf_id'    ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['duree_livraison'  ,null                       ,null               ,isDureeSeconde     ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':'AmsReferentielBundle:RefActivite'})|raw}}");
+        initDataProcessor();
+    }
+    </script>
+{% endblock %}

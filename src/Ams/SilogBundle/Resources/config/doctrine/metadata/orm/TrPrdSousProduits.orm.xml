@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrPrdSousProduits" table="TR_PRD_SOUS_PRODUITS">
+    <id name="sprCode" type="string" column="SPR_CODE" length="20">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="sprPrdCode" type="string" column="SPR_PRD_CODE" length="10" nullable="false"/>
+    <field name="sprLibelle" type="string" column="SPR_LIBELLE" length="45" nullable="false"/>
+    <field name="sprSocCodeExt" type="string" column="SPR_SOC_CODE_EXT" length="10" nullable="false"/>
+    <field name="sprPrdCodeExt" type="string" column="SPR_PRD_CODE_EXT" length="20" nullable="false"/>
+    <field name="sprCodeExt" type="string" column="SPR_CODE_EXT" length="10" nullable="false"/>
+    <field name="sprUtlIdModif" type="string" column="SPR_UTL_ID_MODIF" length="20" nullable="false"/>
+    <field name="sprUtlDateModif" type="datetime" column="SPR_UTL_DATE_MODIF" nullable="false"/>
+    <field name="sprDateDebut" type="date" column="SPR_DATE_DEBUT" nullable="false"/>
+    <field name="sprDateFin" type="date" column="SPR_DATE_FIN" nullable="true"/>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,55 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    {% if isModif %}
+    <span  style="float:center;">
+        <input type="button" id="button_actualiser" value="Maj des contrats" onclick='actualisation();'>
+    </span>
+    {% endif %}
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['Flux'             ,null                       ,null               ,null               ,'{{flux_id}}'          ,null                   ,null              ,null],
+['depot_org_id'     ,'#select_filter_strict'    ,null               ,null               ,'{{depot_org_id}}'     ,null                   ,null              ,null],
+['contrat_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_debut'       ,null                       ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['date_fin'         ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+['depot_dst_id'     ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['commentaire'      ,null                       ,null               ,isCommentaire      ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('emp_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();   
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        return (cInd>=2) && (cInd!=4);
+    }
+
+    function actualisation(){
+        $('#button_actualiser').prop('disabled', true);
+        ajaxMessage("Actualisation en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-actualisation-emp-transfert",
+            type: "GET",
+            success: function(data) { 
+                ajaxSucces("Actualisation terminée"); 
+                onLoadGrid();
+                $('#button_actualiser').prop('disabled', false);
+             },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+                $('#button_actualiser').prop('disabled', false);
+            }
+        }); 
+    }
+ </script>
+{% endblock %}

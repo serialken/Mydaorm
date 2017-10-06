@@ -1,0 +1,28 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['code'             ,'#text_filter'             ,null               ,isLength3          ,null                   ,null                   ,null              ,null],
+['libelle'          ,'#text_filter'             ,null               ,isMax128           ,null                   ,null                   ,null              ,null],
+['typeurssaf_id'    ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,null              ,null],
+['semaine'          ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['dimanche'         ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['ferie'            ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['majoration'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,'0.00'                 ,null                   ,null              ,null],
+['poste'            ,'#text_filter'             ,null               ,isMax10            ,null                   ,null                   ,null              ,null],
+['taux'             ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['montant'          ,'#text_filter'             ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['annexe'           ,'#text_filter'             ,null               ,isLength4          ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+    </script>
+{% endblock %}

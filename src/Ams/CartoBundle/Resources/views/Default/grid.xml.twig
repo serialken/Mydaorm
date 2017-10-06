@@ -1,0 +1,25 @@
+<rows>
+  <head>      
+    <column type="ro" width="30"   sort="date">  </column>
+    <column type="ro" width='*' align="left" sort="str">Tournée(s)</column>
+    <column type="ro" width='*' align="left" sort="str">Libellé</column>
+    <column type="ro" width='*' align="left" sort="int">Nombre d'abonné(s)</column>
+    <column type="ro" width='*' align="left" sort="int">Nombre de produit(s)</column>
+    <column type="ro" width='*' align="left" sort="int">Nombre d'arrêt(s)</column>
+
+    <afterInit>
+      <call command='attachHeader'> <param>,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter</param> </call>   
+    </afterInit>  
+  </head> 
+  {% for row in tournees %}
+  <row>
+    <cell type="ro"><![CDATA[<input class="check" type="checkbox" name="tournees[]" value="{{ row.tournee_id }}">]]> </cell>
+    <cell type="ro">{{ row.code }}</cell>
+    <cell type="ro">{{ row.modele_jour_libelle }}</cell>
+    <cell type="ro" class="nb_abo">{{ row.nb_abos }}</cell>
+    <cell type="ro">{{ row.nb_prods }}</cell>
+    <cell type="ro">{{ row.nb_stops }}</cell>
+  </row>
+  {% endfor %}
+</rows>
+

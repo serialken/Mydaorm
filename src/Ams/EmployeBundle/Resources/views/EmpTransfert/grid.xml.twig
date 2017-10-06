@@ -1,0 +1,14 @@
+{% import 'AmsEmployeBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="flux_id"            type="ro"           hidden="true">Flux</column> 
+        <column id="depot_org_id"       type="coro"         width="*"   align="left"    sort="sortCombo">Centre Administratif{{comboDepot|raw}}</column>
+        <column id="contrat_id"        type="coro"         width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="date_debut"         type="dhxCalendar"  width="70"  align="center"  sort="date">Début</column> 
+        <column id="date_fin"           type="dhxCalendar"  width="70"  align="center"  sort="date">Fin</column> 
+        <column id="depot_dst_id"       type="coro"         width="*"   align="left"    sort="sortCombo">Centre de distribution{{comboDepot|raw}}</column>
+        <column id="commentaire"        type="txttxt"       width="*"   align="left"    sort="str">Commentaire</column>
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% include 'AmsEmployeBundle:EmpTransfert:row.xml.twig' %}
+ </rows>

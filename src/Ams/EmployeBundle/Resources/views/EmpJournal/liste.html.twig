@@ -1,0 +1,55 @@
+{% extends 'AmsEmployeBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    {% if isActu %}
+    <span  style="float:center;">
+        <input type="button" id="button_actualiser" value="Actualiser" onclick='actualisation();'>
+    </span>
+    {% endif %}
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['level'            ,'#numeric_filter'          ,null               ,null               ,null                   ,null               ,null              ,null],
+['rubrique'         ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['code'             ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['msg'              ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['commentaire'      ,null                       ,null               ,null               ,null                   ,null               ,null              ,null],
+    ];
+        
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{journal_id}}");
+    }
+ /*
+    function goDistribution(rId){
+        if (grid.cellById(rId,4).getValue()=='AL' && grid.cellById(rId,5).getValue()=='NAF') {
+            goLinkGrid("{{path('qtes_quotidiennes_classify',{'depot':depot_id,'flux':flux_id})|raw}}","&date="+grid.cellById(rId,2).getValue());
+        } else if (grid.cellById(rId,4).getValue()=='RH' || grid.cellById(rId,4).getValue()=='R6') {
+            goLinkGrid("{{path('liste_employe_recherche')}}","?employe_id="+grid.cellById(rId,7).getValue());
+        }
+    }
+    */
+
+    function actualisation(){
+        $('#button_actualiser').prop('disabled', true);
+        ajaxMessage("Actualisation en cours ...");
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-actualisation-employe-journal",
+            type: "GET",
+            success: function(data) { 
+                ajaxSucces("Actualisation terminée"); 
+                onLoadGrid();
+                $('#button_actualiser').prop('disabled', false);
+             },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+                $('#button_actualiser').prop('disabled', false);
+            }
+        }); 
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,624 @@
+{% extends '::base.html.twig' %}
+ {% block css %}
+ {{parent()}}
+ <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.css">   
+ {% endblock %}
+{% block body %}
+    {% if(isImputationDate is not defined ) or (isImputationDate != 1) %}
+    <div style="margin: auto;width:95%;text-align: right;">
+      
+        <a href="">
+        <img id = "expEcel" style="cursor:pointer;height:25px;" src="{{ asset('images/excel.png') }}"  alt="Imprimer"  onclick="" onmouseover="affPopoverLien(this);"
+            data-description="Export excel du résultat de la recherche ." data-content="Ce lien permet d'exporter les données présentent dans le tableau au format xls." /> 
+        </a> 
+      </div>
+      <br/>
+   
+    <form method="post" name="formCrmDetail" id="formCrmIndex" action="" style="margin-bottom: 25px;" role="form" class="table-center" >
+      <table class="table table-center no-border well" id="tabSearchRec">
+            <tr style="margin-bottom:15px" class="">
+                <td class="">  
+                    <span class="flabel">{{ form_label(form.dateMin) }}</span>
+                    {{ form_widget(form.dateMin, {value : dateMin|date('d/m/Y'),attr:{'class':'form-control-custum-inp' }})}}
+                </td>  
+                <td class="">
+                    <span class="flabel">{{ form_label(form.dateMax) }}</span>{{ form_widget(form.dateMax, {value : dateMax|date('d/m/Y'),attr:{'class':'form-control-custum-inp' }})}}
+                </td>
+                <td class="">  
+                    <span class="flabel">{{ form_label(form.depot) }}</span>{{ form_widget(form.depot,{value : app.request.get('dpId') ,attr:{'class':'form-control-custum' }})}}
+                </td>
+                <td class="" id="tourneContainer">   
+                    {%  if app.request.get('tId') %}
+                        {% set tourneeId =  app.request.get('tId') %}
+                    {% else %}
+                        {% set tourneeId = '' %}
+                    {% endif %}
+    
+                    <span class="flabel" id="tourneeLabel">{{ form_label(form.tournee) }}</span>{{form_widget(form.tournee,{value : tourneeId ,attr:{'class':'form-control-custum' }})}}
+                </td>
+                <td  class="">
+                   <span class="flabel">{{ form_label(form.response) }}</span>{{form_widget(form.response,{attr:{'class':'form-control-custum select-sm'}})}}
+                </td>
+            </tr> 
+
+            <tr class="" style=" height: 10px">    
+            </tr>
+
+            <tr class="">
+                <td  class="">
+                   <span class="flabel">{{ form_label(form.crmCategorie) }}</span>{{form_widget(form.crmCategorie, {value : categorieId, disabled: false,attr:{'class':'form-control-custum' }})}}</span>
+                </td>
+
+                <td class="" id="crmDemandeContainer">
+                    <span class="flabel">{{ form_label(form.crmDemande) }}</span>{{ form_widget(form.crmDemande,{value : '',attr:{'class':'form-control-custum' }})}}
+                </td>
+       
+                <td class=""> 
+                  
+                    {% if all == 0 %}{%set sId = dataPdf.societeId %}{%else%}{% set sId =''%}{%endif%}
+                    <span class="flabel">{{ form_label(form.societe) }}</span>{{ form_widget(form.societe,{value : app.request.get('sId'),attr:{'class':'form-control-custum' }})}}
+                </td>
+
+
+                <td  class="" id="tourneContainer">
+                    {%  if app.request.get('fId') %}
+                        {% set fluxId =  app.request.get('fId') %}
+                    {% else %}
+                        {% set fluxId = '' %}
+                    {% endif %}
+                    <span class="flabel" id="flux">{{form_label(form.flux) }}</span>{{form_widget(form.flux,{value : fluxId,attr:{'class':'form-control-custum' }})}}
+                </td>
+
+                <td class="" >
+                    <span class="flabel" style="width:125px">{{ form_label(form.demandeArbitrage) }}</span>{{ form_widget(form.demandeArbitrage,{value : '',attr:{'class':'form-control-custum' }})}}
+                </td>
+
+            </tr>
+            <tr style="margin">
+                <td  class="" colspan="4">
+                    <button type="submit" class="btn-small btn-primary"  id="serachRec">
+                        <i class="glyphicon glyphicon-search white"></i>
+                            Rechercher
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    {% endif %}
+
+<div id="loader" style="display:none"><img src="{{ asset('images/ajaxLoader.gif') }}"><br>
+    <div id="wait" style="color:gray;"><b>Recherche en cours...</b></div></div>
+
+{# div chargé de l'export pdf des feuille de reclam. #}
+    <div>
+        
+            {% if(isImputationDate is not defined ) or (isImputationDate != 1) %}
+              {% if result is defined %}
+                  <div id="exportBloc" style="margin-bottom: 15px;">
+                     <span class="link"> A rendre avant: </span>
+                      <input id="dateReclamPdf" type="text" value="" name="dateReclamPdf" class="form-control-custum-inp">
+                      <a id="exportLink" href="{{path('crm_export_pdf_reclam',{ 'dId' : dataPdf.depotId,'sId' : dataPdf.societeId ,'cId' : dataPdf.categorieId, 'cDId' : dataPdf.crmDemandeId, 'rp' : dataPdf.isWithResponse, 'tId' : dataPdf.tourneeId,'fId':dataPdf.fluxId, 'mode' : dataPdf.filtre })}}">
+                          <img id="imgPdf"style="cursor:pointer;height:25px;margin-left:10px" src="{{ asset('images/pdf.png') }}" alt="exporter" 
+                                          onmouseover="affPopoverLien(this);" data-description="Export Fiche de réclamations" 
+                                          data-content="Ce bouton va exporter les fiches de réclamation au format pdf du depôt <strong>{{dataPdf.depotLibelle}}</strong>. Par défaut c'est la date du jour qui sera renseignée dans les fiches"  />
+                      </a>
+                  </div>
+                  <div id="loaderPdf" style="display:none"><img src="{{ asset('images/ajaxLoader.gif') }}"></div>
+              {% endif %}
+            {% endif %}
+    
+     <div id="page" style="font-size:12px;display:block;overflow-x: auto;">
+        <table style="" class=" table-responsive table table-striped table-bordered table-hover table-center reclam-grid" data-show-export="true" id="tableResult" >
+                <thead>
+                    <tr>
+                        <th width="8%!important">N°Demande Mroad/Editeur</th>
+                        <th>Date Réclam</th>
+                        <th>Début préj</th>
+                        <th>Fin préj</th>
+                        <th >N°Abonné</th>
+                        <th >Nom Abonné</th>
+                        <th width="15%!important">Editeur</th>
+                        <th width="15%!important">Adresse</th>
+                        <th>Tournée</th>
+                        <th width="30%!important">Demande</th>
+                        <th  style="display:none">Commentaire demande</th>                       
+                        <th width="30%!important">Réponse</th>
+                        <th style="display:none">Commentaire réponse</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                {% if result is defined %}
+                    {% for reclam in result %}
+                    <tr style="margin-bottom:15px" class="dynamicTr" >
+                        {% if categorieId is defined and categorieId == 2 %}{% set route = 'crm_create_rem' %}{%else%}{% set route = 'crm_edit_and_validate' %}{%endif%}
+                        <td  style="text-align:center">
+                             <a href="{{path(route,{'tId':app.request.get('tId'),'sId':reclam.societe.id,'dpId':reclam.depot.id,crmId: reclam.Id,'all': all})}}" >
+                                {{reclam.id}}
+                                {% if (categorieId == 1) or (categorieId == 3) %}
+                                    <BR> {{reclam.crmIdEditeur}}
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td  style="text-align:center">{{reclam.dateCreat|date('d/m/Y')}}</td>
+                        <td  style="text-align:center">{{reclam.dateDebut|date('d/m/Y')}}</td>
+                        <td  style="text-align:center">{{reclam.dateFin|date('d/m/Y')}}</td>
+                        <td  style="text-align:center" >{{reclam.numaboExt}}</td>
+                        <td  style="text-align:center" >
+                            {% if reclam.vol1 %}
+                                {{reclam.vol1}}
+                            {% else %}
+                                {{reclam.vol2}}
+                            {%  endif %}
+                        </td>
+                        <td  style="text-align:center">{{reclam.societe.libelle}}</td>
+                        <td  style="text-align:left;"> {{reclam.vol4}}&nbsp;&nbsp;{{reclam.vol3}}&nbsp;&nbsp;{{reclam.cp}}&nbsp;&nbsp;{{reclam.ville}}</td>
+                        <td  style="text-align:center">{% if reclam.tourneeJour %}{{reclam.tourneeJour.code}}{%endif%}</td>
+                        <td style="text-align:left;" class="crmDem"><span style="color:gray;"><b>{{reclam.CrmDemande.libelle}}</b></span>:<br/>
+                            {% if reclam.cmtDemande | length > 90 %}
+                                <span id="partOfCmt-{{loop.index}}" style="display:inline;">{{reclam.cmtDemande | slice(0,90)}}....</span>
+                                <span id="allCmt-{{loop.index}}" style="display:none" class="completed-cmt">{{reclam.cmtDemande}}</span>
+                                <img id="dispalyAll-{{loop.index}}" src="{{ asset('images/error_more.gif') }}" style="cursor:pointer;height: 12px;">
+                            {%else%}
+                            <span id="allCmt-{{loop.index}}" class="completed-cmt" style="display:block">{{reclam.cmtDemande}}</span>
+                            {%endif%}
+                        </td>
+                        <td style="text-align:left;" class="crmRep" >
+                            <span style="color:gray;"> {% if reclam.CrmReponse is not empty %}<b>{{reclam.CrmReponse.libelle}}</b>  :<br/>{% endif %}</span>
+                           
+                                {% if reclam.cmtReponse | length > 90 %}
+                                    <span id="rPartOfCmt-{{loop.index}}" style="display:inline;color:black">{{reclam.cmtReponse | slice(0,90)}}....</span>
+                                    <span id="rAllCmt-{{loop.index}}" style="display:none;color:black" class="completed-cmt">{{reclam.cmtReponse}}</span>
+                                    <img id="rDispalyAll-{{loop.index}}" src="{{ asset('images/error_more.gif') }}" style="cursor:pointer;height: 12px;">
+                                {%else%}   
+                                    <span class="completed-cmt" style="color:black"  class="completed-cmt">{{reclam.cmtReponse}}</span>
+                                {% endif %}
+                        </td>
+                    </tr>
+                    {%endfor%}
+                {%endif%}
+        </tbody>
+        </table>
+        {# donnees utilisée pour l'export du résultat de la recherche#}
+        <div  style="display:none">
+            <span id="depotLabel"></span>
+            <span id="societeLabel"></span>
+            <span id="demandeLabel"></span>
+            <span id="categorieLabel"></span>
+            <span id="response"></span>
+            <span id="tournee"></span>
+        </div>
+         </div>
+    </div> 
+</div>
+{#
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.js"></script>
+<script src="{{ asset('js/tableExport.js')}}"></script>
+<script src="{{ asset('js/jquery.base64.js')}}"></script>#}
+<script type="text/javascript">  
+   
+
+       /* $('#tableResult').DataTable( {
+             "info": false,
+              "searching": false,
+            "language": {"lengthMenu": "Affichez _MENU_ éléments par page",
+            "paginate": {"next": "Suivant ","previous": "Précédent "}
+        }});*/
+
+
+
+ $('#expEcel').on('click', function(e){
+        e.preventDefault(); 
+        periode = setInterval(clignoteText, 200 );    
+        $("#loader").find('div:first').html('<b>Fichier en cours de construction...</b>');
+        $("#loader").show();
+        exportTableCSV('tableResult');
+
+ });
+
+    function saveParamToExcelExport(){
+        $('#depotLabel').text($('#ams_distributionbundle_crmdetail_depot :selected').val());
+        $('#societeLabel').text($('#ams_distributionbundle_crmdetail_societe :selected').val());
+        $('#demandeLabel').text($('#ams_distributionbundle_crmdetail_crmDemande :selected').val());
+        $('#categorieLabel').text($('#ams_distributionbundle_crmdetail_crmCategorie :selected').val());
+        $('#response').text($('#ams_distributionbundle_crmdetail_response :selected').text());
+        $('#tournee').text($('#ams_distributionbundle_crmdetail_tournee :selected').val()); 
+    }
+
+   function end_Range(){
+        var chosenDate = $("#ams_distributionbundle_crmdetail_dateMin").datepicker("getDate");                  
+            if (chosenDate == null ){
+                $("#ams_distributionbundle_crmdetail_dateMin").focus();
+            } else {
+             
+                $("#ams_distributionbundle_crmdetail_dateMax").datepicker("option", "minDate", new Date (chosenDate));
+            };
+    };
+
+    $(document).ready(function() {
+        $('#ams_distributionbundle_crmdetail_societe').select2();
+         {% if result is empty %}
+        $('#tableResult  > tbody').append( '<tr><td colspan="11">Il n\'y a aucun résultat correspondant à ces paramètres !</td></tr>');
+        {% endif %}
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("form input#ams_distributionbundle_crmdetail_dateMin").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            onSelect: end_Range,     
+        }).attr("readonly","readonly");
+
+        $("form input#ams_distributionbundle_crmdetail_dateMax").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),
+            beforeShow: end_Range,
+            firstDay:1
+        }).attr("readonly","readonly");
+        
+        $("input#dateReclamPdf").datepicker({
+            dateFormat: 'dd/mm/yy' 
+        }).attr("readonly","readonly");
+        
+        $("input#dateReclamPdf").datepicker('setDate', new Date());
+        
+        var defaultDate = new Date();
+        $.cookie.defaults.path = '/';
+        $.cookie("toDeliverDate", defaultDate.getDate()+"/"+(defaultDate.getMonth() + 1) +"/"+defaultDate.getFullYear());
+
+        $("input#dateReclamPdf").change(function(){
+            $.cookie("toDeliverDate", $(this).val());
+        });
+        saveParamToExcelExport();
+    }); 
+   
+    function transformDate(date){
+        var date = date.split(" "),
+        newDate = new Date(date[0]),
+        year = newDate.getFullYear(),
+        day  = newDate.getDate(),
+        month = parseInt(newDate.getMonth())+1,
+        date = day+'/'+month+'/'+year;
+         
+        return  date;
+    }
+
+    function transformDateInfrenshFormat(date){
+        
+        var  newDate = date.split("/");
+        return  newDate[2]+'/'+newDate[1]+'/'+newDate[0];
+    }
+
+    function updateResultTable(result){
+
+        $("#tableResult > tbody").html(""); 
+        var newContent = '', 
+            dateMin = transformDateInfrenshFormat($('#ams_distributionbundle_crmdetail_dateMin').val()).replace(/\//g,'-'),
+            dateMax = transformDateInfrenshFormat($('#ams_distributionbundle_crmdetail_dateMax').val()).replace(/\//g,'-'),
+            socIdInForm = $('#ams_distributionbundle_crmdetail_societe').val(),
+            tourneeId = $('#ams_distributionbundle_crmdetail_tournee :selected').val();
+            fluxId = $('#ams_distributionbundle_crmdetail_flux :selected').val();
+            all = (socIdInForm == '') ? 1: 0;
+           // console.log(tourneeId);return;
+        for (var i =0; i < result.length ; i++) {
+            var crmCategorie = result[i].cat_libelle;
+            url = "";
+            crm_id_editeur ="";
+         
+            if(result[i].crm_categorie_id == 1 || result[i].crm_categorie_id == 3){
+                url = '{{ path("crm_edit_and_validate", {'tId':'tourneeId','fId':'fluxId', 'dpId': 'depotId','crmId': 'crm_Id', 'all':'a_ll'}) }}';
+                crm_id_editeur = result[i].crm_id_editeur;
+            }else{
+                url = '{{ path("crm_create_rem", {'dpId': 'depotId','crmId': 'crm_Id'}) }}';
+            }
+             
+            var mapObj = {"dtMin": dateMin, "dtMax": dateMax ,"categorieId" :result[i].crm_categorie_id,"societeId": result[i].societe_id,"depotId":result[i].depot_id,"crm_Id":result[i].crm_id, "tourneeId":tourneeId ,"fluxId":fluxId, "a_ll":all };
+            var url = url.replace(/dtMin|dtMax|categorieId|societeId|depotId|crm_Id|tourneeId|fluxId|a_ll/gi, function(matched){
+            return mapObj[matched];
+        });
+            var  numabo_ext = (result[i].numabo_ext != null) ? result[i].numabo_ext : '',
+            nom_abonne = (result[i].vol1 != "") ? result[i].vol1 :  result[i].vol2,
+            crmReponse = (result[i].response_libelle != null) ? result[i].response_libelle : '',
+            cmt_demande = (result[i].cmt_demande != null) ? result[i].cmt_demande: '',
+            cmt_response = (result[i].cmt_response != null) ? result[i].cmt_response: '',
+            //pai_tournee = (result[i].pai_tournee != null) ? result[i].tournee_code: '',
+            {#tournee_code = (result[i].pai_tournee_code == null) ? result[i].pai_tournee_code: result[i].tournee_code,#} // Modification suite au mail de JL du 21/08/15
+            date_creat = (result[i].date_creat != null) ? transformDate(result[i].date_creat): '',
+            date_debut = (result[i].date_debut != null) ? transformDate(result[i].date_debut): '',
+            date_fin = (result[i].date_fin != null) ? transformDate(result[i].date_fin): '',
+            newContent = newContent + '<tr style="margin-bottom:15px" class="dynamicTr">'+
+                '<td  style="text-align:justify"><a href='+url+'>'+result[i].crm_id+ '<BR>'+ crm_id_editeur +'</a></td>'+
+                '<td  style="text-align:justify">'+date_creat+'</td>'+
+                '<td  style="text-align:justify">'+date_debut+'</td>'+
+                '<td  style="text-align:justify">'+date_fin+'</td>'+
+                '<td  style="text-align:justify" >'+numabo_ext+'</td>'+
+                '<td  style="text-align:justify" >'+nom_abonne+'</td>'+
+                '<td>'+result[i].societe_libelle+'</td>'+
+                '<td  style="text-align:left" width="10%">'+result[i].vol4+'&nbsp;&nbsp;'+result[i].vol3+'&nbsp;&nbsp;'+result[i].cp+'&nbsp;&nbsp;'+result[i].ville+'</td>'+
+                 '<td  style="text-align:center">'+result[i].tournee_code+'</td>'+
+                '<td style="text-align:justify;color:gray;" class="crmDem"><b><span>'+result[i].demande_libelle+'</span></b><br/>';
+               // '<td>'+crmCategorie +'</td>'+
+             
+            if(cmt_demande.length > 90){
+                 newContent = newContent +  '<span id=partOfCmt-'+i+ ' style="display:inline;color:black">'+cmt_demande.substring(0,90)+'...</span>'+
+                                '<span id=allCmt-'+i+ ' style="display:none;color:black" class="completed-cmt">'+cmt_demande+'</span>'+
+                                '<img id=dispalyAll-'+i+' src="{{ asset("images/error_more.gif") }}" style="cursor:pointer"></td>';
+            }else{
+                  newContent = newContent +'<span style="color:black" class="completed-cmt">'+cmt_demande+'</span></td>';
+            }
+            newContent = newContent +'<td  style="text-align:justify; color:gray;" class="crmRep"><b><span>'+crmReponse+'</span></b><br/>';
+            if(cmt_response.length > 90){
+                 newContent = newContent +  '<span id=rPartOfCmt-'+i+ ' style="display:inline;color:black">'+cmt_response.substring(0,90)+'...</span>'+
+                                '<span id=rAllCmt-'+i+ ' style="display:none;color:black" class="completed-cmt">'+cmt_response+'</span>'+
+                                '<img id=rDispalyAll-'+i+' src="{{ asset("images/error_more.gif") }}" style="cursor:pointer"></td>';
+            }else{
+                  newContent = newContent +'<span style="color:black" class="completed-cmt">'+cmt_response+'</span></td>';
+            }
+             
+
+               // newContent = newContent +'<td  style="text-align:justify">'+crmReponse+'<br/>'+cmt_response+'</td></tr>';
+        }
+        $('#tableResult  tbody').empty();
+        $('#tableResult  tbody').append( newContent);
+       //$('#tableResult_length select').val('10').trigger('change');
+   
+        $('#tableResult ').show();
+        $('#tableResult > thead').show();
+        
+   /*
+        //table.destroy();
+        $('#tableResult').DataTable( {
+             "info": false,
+              "searching": false,
+            "language": {"lengthMenu": "Affichez _MENU_ éléments par page",
+            "paginate": {"next": "Suivant ","previous": "Précédent "}
+        }});*/
+
+    }
+
+    $('#serachRec').on('click',function(e){
+        e.preventDefault();
+        $('#serachRec').hide();
+        $('#tableResult ').hide();
+        $('#tableResult_length').hide();
+        $('#tableResult_info').hide();
+        $('#tableResult_paginate').hide();
+        $('#exportBloc').hide();
+        $('#tableResult > thead > tr#countResult').remove();
+        periode = setInterval(clignoteText, 200 );
+        $('#loader').show();
+        saveParamToExcelExport();
+        var parameters = {};
+        parameters['dateMax']= $('#ams_distributionbundle_crmdetail_dateMax').val();
+        parameters['dateMin']= $('#ams_distributionbundle_crmdetail_dateMin').val();
+        parameters['depotId']= $('#ams_distributionbundle_crmdetail_depot').val();
+        parameters['depotlibelle']= $('#ams_distributionbundle_crmdetail_depot :selected').text();
+        parameters['societeId']= $('#ams_distributionbundle_crmdetail_societe').val();
+        parameters['crmDemandeId']= $('#ams_distributionbundle_crmdetail_crmDemande').val();
+        parameters['categorieId']= $('#ams_distributionbundle_crmdetail_crmCategorie').val();
+        parameters['isWithResponse'] = $('#ams_distributionbundle_crmdetail_response').val();
+        parameters['tourneeId'] = $('#ams_distributionbundle_crmdetail_tournee').val();
+        parameters['fluxId'] = $('#ams_distributionbundle_crmdetail_flux').val();
+        parameters['demandeArbitrage'] = $('#ams_distributionbundle_crmdetail_demandeArbitrage').val();
+
+       // console.log(parameters);return;
+           
+        // MAJ du lien pour prendre en compte les param du formulaire tableau de param pour lextract pdf
+        var url = "{{path('crm_export_pdf_reclam',{ 'dId':'depotId','sId':'societeId','cId':'categorieId','cDId':'crmDemandeId','rp':'isWithResponse','tId':'tourneeId', 'fId':'fluxId', 'mode':'custom' })}}";
+        var mapObj = { "depotId":parameters['depotId'],'societeId':parameters['societeId'],'categorieId':parameters['categorieId'],'crmDemandeId':parameters['crmDemandeId'],'isWithResponse':parameters['isWithResponse'],'tourneeId':parameters['tourneeId'] , 'fluxId':parameters['fluxId'] };
+        url = url.replace(/depotId|societeId|categorieId|crmDemandeId|isWithResponse|tourneeId|fluxId/g, function(matched){
+            return mapObj[matched];
+        });
+        //on remplace l'url généré dans le HTML    
+        $('#exportLink').attr("href", url.replace(/&amp;/g,"&"));
+        $('#imgPdf').attr("data-content", "Ce bouton va exporter les fiches de réclamation au format pdf du depôt <strong>"+parameters['depotlibelle']+"</strong>. Par défaut c'est la date du jour qui sera renseignée dans les fiches")
+        
+        
+            $.ajax({
+                serverSide: true,
+                type:"POST",
+                url: "{{path('crm_serach_reclam')}}",
+                dataType :'json',
+                data : { parameters : parameters },
+                cache: false,
+                success: function(data){
+                    $('#loader').hide();
+                   
+                    $('#serachRec').show();
+                     $('#exportBloc').show();
+                        if( parameters['categorieId'] != 1 ){
+                           // $('#exportBloc').hide();
+                        }
+                    if(data.result.length == 0 ){
+                        $('#tableResult > tbody').empty();
+                        $('#tableResult > thead').hide();
+                        $('#tableResult  > tbody').append( '<tr><td>Il n\'y a aucun résultat correspondant à ces paramètres !</td></tr>');
+                        $('#tableResult ').show();
+                        $('#exportBloc').hide();
+                    }else{
+                       /*  var table = $('#tableResult').DataTable();
+                        table.destroy();*/ 
+                        $('#tableResult_length').show();
+                        $('#tableResult_info').show();
+                        $('#tableResult_paginate').show();
+                        $('#tableResult > thead ').prepend('<tr id="countResult"><td colspan="12"  style="background-color:#D1E5FE"><b>'+data.result.length+' élément(s) </b></td></tr>');
+                       
+                        updateResultTable(data.result);  
+                        return;
+                    }
+                }
+            });
+
+    });
+
+    
+    function getTournneByDepotAndUpdateSelectItems(depotId, socId, startDate, endDate){
+        var filter = true;//pour récupérer les tournée entre deux dates
+        $("#tourneContainer").append('<div id="loaderTourne" style=""><img src="{{ asset('images/ajaxLoader.gif') }}"></div>');
+        $('#ams_distributionbundle_crmdetail_tournee').hide();
+        $('#tourneeLabel').hide();
+        $('#no-result-info').remove();
+        
+        if(depotId == '' ){ 
+            $("#loaderTourne").remove();
+            $("#ams_distributionbundle_crmdetail_tournee").empty().append('<option>Choisissez un depot...</option>').show();
+            return false;
+        }
+  
+      $.ajax({
+        type: "POST",
+        url:"{{path('crm_get_tourne_by_depot')}}" ,
+       dataType : 'json',
+        data: {depotId: depotId, socId: socId, startDate:startDate, endDate:endDate, filter:filter },
+        cache: false,
+        success: function(data){
+            $("#loaderTourne").remove();
+
+            $("#ams_distributionbundle_crmdetail_tournee").empty();
+            if(data.result.length == 0){
+                $("#ams_distributionbundle_crmdetail_tournee").hide();
+                 $('#tourneeLabel').show();
+                $("#tourneContainer").append('<br/><span id="no-result-info" style="width: 200px;display: inline-block;">Pas de tourneé(s) pour ce dépot</span>');  
+            }else{
+                var tourneeId ='{{ app.request.get('tId') }}';
+                if(tourneeId != '')
+                {
+                    $("#ams_distributionbundle_crmdetail_tournee").append('<option value="">'+tourneeId+'</option>');
+                }
+                $("#ams_distributionbundle_crmdetail_tournee").append('<option value="">Toute(s)</option>');
+                $.each(data.result, function(key, value){
+                    $("#ams_distributionbundle_crmdetail_tournee").append('<option value="'+key+'">'+value+'</option>');
+                });
+
+                $("#ams_distributionbundle_crmdetail_tournee").show();
+                 $('#tourneeLabel').show();
+            }
+        }
+      });
+    }
+    $('#ams_distributionbundle_crmdetail_depot').ready( function(){
+       
+        var depotId = '{{app.request.get('dpId')}}' ,
+            socId = $('#ams_distributionbundle_crmdetail_societe').val(),
+            startDate =$('#ams_distributionbundle_crmdetail_dateMin').val(),
+            endDate = $('#ams_distributionbundle_crmdetail_dateMax').val();
+           // slectId = $(this).attr('id');
+        getTournneByDepotAndUpdateSelectItems(depotId, socId, startDate, endDate);
+        
+    }); 
+
+    $('#ams_distributionbundle_crmdetail_depot').on('change', function(){
+       
+        var depotId = $(this).val(),
+            socId = $('#ams_distributionbundle_crmdetail_societe').val(),
+            startDate =$('#ams_distributionbundle_crmdetail_dateMin').val(),
+            endDate = $('#ams_distributionbundle_crmdetail_dateMax').val();
+           // slectId = $(this).attr('id');
+        getTournneByDepotAndUpdateSelectItems(depotId, socId, startDate, endDate);
+        
+    }); 
+
+
+    $('#ams_distributionbundle_crmdetail_crmCategorie').on('change', function(){
+        var crmCategorieId = $(this).val();
+        $("#crmDemandeContainer").append('<div id="loaderTourne" style=""><img src="{{ asset('images/ajaxLoader.gif') }}"></div>');
+        $("#ams_distributionbundle_crmdetail_crmDemande").hide();
+        $('#serachRec').hide();
+        $.ajax({
+        type: "POST",
+        url:"{{path('crm_get_crm_demane_by_id')}}" ,
+        dataType : 'json',
+        data: {crmCategorieId: crmCategorieId},
+        cache: false,
+        success: function(data){
+                $('#serachRec').show();
+                $('#loaderTourne').remove();
+                $("#ams_distributionbundle_crmdetail_crmDemande").empty().append('<option value="">Toute(s)</option>').show();
+                $.each(data.result, function(key, value){
+                    $("#ams_distributionbundle_crmdetail_crmDemande").append('<option value="'+data.result[key].id+'">'+data.result[key].libelle+'</option>');
+                });
+
+            }
+      });
+
+
+    });
+
+    $('body ').on('click','[id^=dispalyAll]', function(e){
+       
+        $(this).siblings('[id^=partOfCmt-]').toggle();
+        $(this).prev('[id^=allCmt-]').toggle();
+
+        var cmSrc =  $(this).attr('src'),
+        cmSrcn = cmSrc.split('/');
+        var src  = cmSrcn[cmSrcn.length - 1]; 
+        var nsrc = (src == 'error_more.gif') ? cmSrc.replace('error_more', 'error_less') : cmSrc.replace('error_less','error_more');
+        $(this).attr('src', nsrc    );
+    });
+    $('[id^=rDispalyAll]').on('click', function(e){
+        $(this).siblings('[id^=rPartOfCmt-]').toggle();
+        $(this).prev('[id^=rAllCmt-]').toggle();
+ 
+        var cmSrc =  $(this).attr('src'),
+        cmSrcn = cmSrc.split('/');
+        var src  = cmSrcn[cmSrcn.length - 1]; 
+        var nsrc = (src == 'error_more.gif') ? cmSrc.replace('error_more', 'error_less') : cmSrc.replace('error_less','error_more');
+        $(this).attr('src', nsrc);
+    });
+    
+
+  function exportTableCSV(table){
+   var  parameters = {};
+        parameters['depotId']= $('#depotLabel').text();
+        parameters['societeId']=$('#societeLabel').text();
+        parameters['crmDemandeId'] =$('#demandeLabel').text();
+        parameters['categorieId']=$('#categorieLabel').text();
+        parameters['isWithResponse'] = $('#ams_distributionbundle_crmdetail_response').val();
+        parameters['tourneeId'] = $('#tournee').text();
+        parameters['fluxId'] = $('#ams_distributionbundle_crmdetail_flux').val();
+        parameters['isWithResponseLabel'] = $('#response').text();
+       
+        var line = new Array(),
+        nbFields = 0,
+        firstIteration =  $('body').find('#'+table+'');
+        
+
+        $(firstIteration[0]).find(' th').each(function(event){
+            if ($(this).text()!= undefined && $(this).text!= '' ) {
+                line.push($(this).text());
+            }
+        });
+       // lines.push(line);
+            var name = 'export_';//+table.split('-').pop()+'_'+date;
+            var params = {};
+            params['excelHeader'] = line;
+           
+            $.ajax({
+                url: "{{path('crm_export_excel')}}",
+                type: 'POST',
+                data:{parameters:parameters,excelHeader: params['excelHeader']},
+                cache: false,
+                processData: true,
+                dataType: "html",
+                complete: function () {               
+                     $("#loader").hide().find('div:first').html('<b>Recherche en cours...</b>') 
+                },
+                success: function(result){     
+                    window.location.href= "{{path('crm_exp')}}";
+                }
+            });
+
+    }
+
+  var opaCoef = -1; 
+  var clignoteText = function(){ 
+   var item = $('#wait'); 
+   if (item.css('opacity') >= 1){ 
+      opaCoef = -1; 
+   } 
+   if (item.css('opacity') <= 0.08){ 
+      opaCoef = 1; 
+   } 
+   var opa = item.css('opacity');
+   item.css('opacity', opa * 1 + (opaCoef * 0.06)); 
+};
+</script>
+
+{% endblock %}

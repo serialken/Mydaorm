@@ -1,0 +1,80 @@
+<rows>
+	<head>      
+		<column type="ro" width="0" align="left" sort="str"  > id </column>
+                <column width="100" type="coro" align="left" sort="str">Actif {{actif|raw}} </column> 
+                <column width="200" type="ro" align="left" sort="str">Type info </column> 
+                <column width="*" type="ro" align="left" sort="str">Valeur </column> 
+                <column width="180" type="ro" align="left" sort="str">Date début</column> 
+                <column width="180" type="ro" align="center" sort="str">Date de fin </column> 
+                <column width="180" type="ro" align="center" sort="str">Origine </column>  
+                <column width="80" type="ro" align="center" sort="str">Action </column>  
+		<afterInit>
+			<call command='attachHeader'><param>#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#text_filter,#select_filter</param> </call>   
+		</afterInit>  
+	</head> 
+         {% if  infosPortages is not empty %}
+            {% for info in infosPortages %}     
+                {% if info.active == 0  %} 
+                  {% set backgroundStyle = "#ccced1" %}
+                {% else %}
+                     {% set backgroundStyle = "" %}
+                {% endif %}
+                
+                {% if info.dateFin|date('Ymd') < "now"|date('Ymd') %}
+                    {% set cellType = "ro" %}
+                {% else %}
+                     {% set cellType = "" %}  
+                {% endif %}
+                
+       
+                
+                <row style="background-color: {{backgroundStyle}}">
+                    <cell> {{ info.id }}</cell>
+                    <cell type = "{{cellType}}"> {{ info.active == 1 ? 'Activé' : 'Désactivé' }} </cell>
+                    <cell> Abonné </cell> 
+                    <cell type= "{{ info.origine == 0 ? 'ro' : 'ed' }}" > {{ info.valeur }} </cell> 
+                    <cell> {{ info.dateDebut|date('d/m/Y') }} </cell>
+                    <cell> {{ info.dateFin|date('d/m/Y') }}</cell>
+                    <cell> {{ info.origine == 0 ? 'Editeur' : 'Centre' }}</cell>
+                    {% if info.origine !=0  %}
+                        <cell type="ro"><![CDATA[<img src="{{ asset('images/dhtmlx_delete.png') }}"    onclick="gestSupp('abo', {{info.id}}, {{abonneId}});" alt="supression" title="supression" class="delete" width="20" />]]> </cell>
+                    {% else %}
+                    <cell> </cell>
+                    {% endif %}
+                </row>
+            {% endfor %}  
+        {% endif %}
+     
+        {% if  infoLivraisons is not empty %}    
+            {% for infoLivraison in infoLivraisons %}   
+                
+                {% if infoLivraison.active == 0 %} 
+                  {% set backgroundStyle = "#ccced1" %}
+                {% else %}
+                     {% set backgroundStyle = "" %}
+                {% endif %}
+                
+                {% if infoLivraison.date_fin|date('Ymd') < "now"|date('Ymd')  %}
+                    {% set cellType = "ro" %}
+                {% else %}
+                     {% set cellType = "" %}
+                {% endif %}
+                
+                    <row style="background-color: {{backgroundStyle}}">
+                        <cell> {{ infoLivraison.id }}</cell>
+                        <cell type = "{{cellType}}"> {{ infoLivraison.active == 1 ? 'Activé' : 'Désactivé' }} </cell>
+                        <cell> {{ infoLivraison.typeInfoPortage != NULL ? infoLivraison.typeInfoPortage : '' }} / Point livraison</cell>
+                        <cell type= "{{ infoLivraison.origine == 0 ? 'ro' : 'ed' }}"> {{ infoLivraison.valeur }} </cell> 
+                        <cell> {{ infoLivraison.date_debut|date('d/m/Y') }} </cell>
+                        <cell> {{ infoLivraison.date_fin|date('d/m/Y') }}</cell>
+                        <cell> {{ infoLivraison.origine == 0 ? 'Editeur' : 'Centre' }}</cell>
+                        {% if  infoLivraison.origine !=0 %}
+                            <cell type="ro"><![CDATA[<img src="{{ asset('images/dhtmlx_delete.png') }}"  onclick="gestSupp('point', {{infoLivraison.id}}, {{abonneId}});"  alt="supression" title="supression" class="delete" width="20" />]]>    </cell>
+                        {% else %}
+                        <cell> </cell>
+                        {% endif %}
+                    </row>
+            {% endfor %}
+        
+        {% endif %}
+</rows>

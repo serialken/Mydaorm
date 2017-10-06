@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrDepDepots" table="TR_DEP_DEPOTS">
+    <id name="depCode" type="string" column="DEP_CODE" length="5">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="depLibelle" type="string" column="DEP_LIBELLE" length="45" nullable="false"/>
+    <field name="depAdresse" type="string" column="DEP_ADRESSE" length="150" nullable="false"/>
+    <field name="depCodePostal" type="string" column="DEP_CODE_POSTAL" length="5" nullable="false"/>
+    <field name="depVille" type="string" column="DEP_VILLE" length="45" nullable="false"/>
+    <field name="depInsee" type="string" column="DEP_INSEE" length="5" nullable="false"/>
+    <field name="depDateDebut" type="date" column="DEP_DATE_DEBUT" nullable="false"/>
+    <field name="depDateFin" type="date" column="DEP_DATE_FIN" nullable="true"/>
+    <field name="depUtlIdModif" type="string" column="DEP_UTL_ID_MODIF" length="20" nullable="true"/>
+    <field name="depUtlDateModif" type="datetime" column="DEP_UTL_DATE_MODIF" nullable="true"/>
+    <many-to-many field="rgdGrdCode" target-entity="TrDepGroupesDepots" mapped-by="rgdDepCode"/>
+  </entity>
+</doctrine-mapping>

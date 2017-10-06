@@ -1,0 +1,11 @@
+saisie_invendu_index:
+    path:     /saisie/{saisie}
+    defaults: { _controller: AmsInvenduBundle:Invendu:saisieInvendu ,saisie:null}
+
+saisie_nb_ex_invendu:
+    path:     /saisie-nb-invendu
+    defaults: { _controller: AmsInvenduBundle:Invendu:saisieNbExInvendus }
+    
+saisie_change_lieuVente:
+    path:     /saisie-change-lieuVente
+    defaults: { _controller: AmsInvenduBundle:Invendu:changeLv }

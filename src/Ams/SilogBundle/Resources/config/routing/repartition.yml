@@ -1,0 +1,97 @@
+repartition_global:
+    pattern:  /repartition_global
+    defaults: { _controller: "AmsSilogBundle:Repartition:reparGlobal" }
+    
+repartition_grid_commune:
+    pattern:  /grid
+    defaults: { _controller: "AmsSilogBundle:Repartition:gridCommunes" }
+    
+repartition_ajout_commune_ajax:
+    pattern:  /add_commune_ajax
+    defaults: { _controller: "AmsSilogBundle:Repartition:ajoutDepotCommune" }
+    
+repartition_exception:
+    pattern:  /schemas
+    defaults: { _controller: "AmsSilogBundle:Repartition:exceptions" }
+    
+repartition_list_exception:
+    pattern:  /schemas/feedexceptions/{dpt}/{sid}/{fid}
+    defaults: { _controller: "AmsSilogBundle:Repartition:getExceptions", fid:0 }
+    requirements:
+        dpt:  \d+
+        sid:  \d+
+        fid:  \d+
+    
+repartition_list_prod_insee:
+    pattern:  /schemas/feedprodinsee
+    defaults: { _controller: "AmsSilogBundle:Repartition:listProdInseesForDpt" }
+    
+repartition_list_prod_ste:
+    pattern:  /schemas/feedprodste
+    defaults: { _controller: "AmsSilogBundle:Repartition:listProdForSte" }
+    
+repartition_list_depots:
+    pattern:  /schemas/feeddepots
+    defaults: { _controller: "AmsSilogBundle:Repartition:listDepots" }
+    
+repartition_list_flux:
+    pattern:  /schemas/feedflux
+    defaults: { _controller: "AmsSilogBundle:Repartition:listFlux" }
+
+repartition_global_list:
+    pattern:  /schemas/feedglobal/{dpt}/{fid}
+    defaults: { _controller: "AmsSilogBundle:Repartition:getGlobalRepart" , fid: 0}
+    requirements:
+        dpt:  \d+
+        fid:  \d+
+    
+repartition_delete_exception:
+    pattern:  /schemas/delexception
+    defaults: { _controller: "AmsSilogBundle:Repartition:deleteExceptions" }
+    
+repartition_store_exception:
+    pattern:  /schemas/setexception
+    defaults: { _controller: "AmsSilogBundle:Repartition:storeException" }
+    
+repartition_get_exceptions:
+    pattern:  /schemas/getexceptions
+    defaults: { _controller: "AmsSilogBundle:Repartition:getException" }
+    
+repartition_xls:
+    pattern:  /schemas/xls/{societeId}
+    defaults: { _controller: "AmsSilogBundle:Repartition:generateXls" }
+   
+    
+repartition_grid_global:
+    pattern:  /grid_repar_global
+    defaults: { _controller: "AmsSilogBundle:Repartition:gridReparGlobal" }
+
+repartition_ajout_globale_ajax:
+    pattern:  /add_global_ajax
+    defaults: { _controller: "AmsSilogBundle:Repartition:ajoutReparGlobal" }
+    
+  
+repartition_grid_societe:
+    pattern:  /grid_societe
+    defaults: { _controller: "AmsSilogBundle:Repartition:gridReparSoc" }
+    
+repartition_societe:
+    pattern:  /repartition_societe
+    defaults: { _controller: "AmsSilogBundle:Repartition:reparSoc" }
+
+repartition_grid_produit:
+    pattern:  /grid_produit
+    defaults: { _controller: "AmsSilogBundle:Repartition:gridReparProd" }
+repartition_produit:
+    pattern:  /reparatition_produit
+    defaults: { _controller: "AmsSilogBundle:Repartition:reparProd" }
+    
+repartition_ajout_soc_ajax:
+    pattern:  /add_societe_ajax
+    defaults: { _controller: "AmsSilogBundle:Repartition:ajoutReparSoc" }
+    
+repartition_ajout_prod_ajax:
+    pattern:  /add_prod_ajax
+    defaults: { _controller: "AmsSilogBundle:Repartition:ajoutReparProd" }
+    
+    

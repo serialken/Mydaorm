@@ -1,0 +1,33 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="code"               type="ro"   width="70"  align="left"    sort="str">Code NG</column>
+        <column id="libelle"            type="ro"   width="*"   align="left"    sort="str">Libellé</column>
+        <column id="emploi_id"          type="coro" width="*"   align="left"    sort="sortCombo">Emploi{{m.combo(comboEmploi)}}</column> 
+        <column id="typecontrat_id"     type="coro" width="*"   align="left"    sort="sortCombo">Contrat{{m.combo(comboTypeContrat)}}</column> 
+        <column id="urssaf_id"          type="coro" width="*"   align="left"    sort="sortCombo">Urssaf{{m.combo(comboTypeUrssaf)}}</column> 
+        <column id="majoration"         type="ro"   width="80"  align="right"   sort="int">Majoration</column> 
+        <column id="majoration_df"      type="ro"   width="80"  align="right"   sort="int">Majoration Dimanche/Ferié Sans Qualité</column> 
+        <column id="majoration_dfq"     type="ro"   width="80"  align="right"   sort="int">Majoration Dimanche/Ferié Avec Qualité</column> 
+        <column id="majoration_nuit"    type="ro"   width="80"  align="right"   sort="int">Majoration Nuit</column> 
+        <column id="est_badge"          type="ch"   width="50"    align="center"  sort="str">Octime Badge</column> 
+        <column id="km_paye"            type="ch"   width="50"    align="center"  sort="str">Km payés</column> 
+        <column id="ouverture"          type="ch"   width="50"    align="center"  sort="str">Ouverture centre</column> 
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.emploi_id}}</cell>
+            <cell>{{row.typecontrat_id}}</cell>
+            <cell>{{row.typeurssaf_id}}</cell>
+            <cell>{{row.majoration}}</cell>
+            <cell>{{row.majoration_df}}</cell>
+            <cell>{{row.majoration_dfq}}</cell>
+            <cell>{{row.majoration_nuit}}</cell>
+            <cell>{{row.est_badge}}</cell>
+            <cell>{{row.km_paye}}</cell>
+            <cell>{{row.ouverture}}</cell>
+        </row> 
+     {% endfor %}
+ </rows>

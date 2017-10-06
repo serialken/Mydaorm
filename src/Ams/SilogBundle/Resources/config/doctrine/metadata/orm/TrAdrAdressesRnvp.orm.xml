@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrAdrAdressesRnvp" table="TR_ADR_ADRESSES_RNVP">
+    <id name="rnvId" type="integer" column="RNV_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="rnvVol1Ext" type="string" column="RNV_VOL1_EXT" length="38" nullable="true"/>
+    <field name="rnvRnvpCnom" type="string" column="RNV_RNVP_CNOM" length="38" nullable="true"/>
+    <field name="rnvRnvpCadrs" type="string" column="RNV_RNVP_CADRS" length="38" nullable="true"/>
+    <field name="rnvRnvpAdresse" type="string" column="RNV_RNVP_ADRESSE" length="38" nullable="true"/>
+    <field name="rnvRnvpLieudit" type="string" column="RNV_RNVP_LIEUDIT" length="38" nullable="true"/>
+    <field name="rnvRnvpCp" type="string" column="RNV_RNVP_CP" length="5" nullable="true"/>
+    <field name="rnvRnvpVille" type="string" column="RNV_RNVP_VILLE" length="45" nullable="true"/>
+    <field name="rnvRnvpInsee" type="string" column="RNV_RNVP_INSEE" length="5" nullable="true"/>
+    <field name="rnvRnvpGeox" type="integer" column="RNV_RNVP_GEOX" nullable="true"/>
+    <field name="rnvRnvpGeoy" type="integer" column="RNV_RNVP_GEOY" nullable="true"/>
+    <field name="rnvTypeAdresse" type="string" column="RNV_TYPE_ADRESSE" nullable="false"/>
+    <field name="rnvRnvpDateModif" type="datetime" column="RNV_RNVP_DATE_MODIF" nullable="true"/>
+    <many-to-one field="rnvUtl" target-entity="TrUtlUtilisateurs">
+      <join-columns>
+        <join-column name="RNV_UTL_ID" referenced-column-name="UTL_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="rnvRetRnvpEtat" target-entity="TrAdrRnvpEtat">
+      <join-columns>
+        <join-column name="RNV_RET_RNVP_ETAT" referenced-column-name="RET_RNVP_ETAT"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

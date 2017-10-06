@@ -1,0 +1,25 @@
+{% spaceless %}
+    {% macro urlExcel() %}'{{ asset('codebase/grid-excel-php/generate.php')}}'{% endmacro %}
+{#
+    {% macro combo(curseur,withBlank) %}{% if withBlank %}<option value =""></option>{% endif %}{% for row in curseur %}<option value ="{{row.id}}"{% if row.id==1 %} selected="selected"{% endif %}>{{row.libelle}}</option>{% endfor %}{% endmacro %}
+    {% macro bgColorBloque(isModif) %} bgColor={% if not isModif %}"#B2B2B2"{%else%}"#FFFFFF"{% endif %}{% endmacro %}
+    {% macro bgColorLevel(valide,level) %} bgColor={% if not valide %}"#F78181"{%elseif level>0%}"#F5D5A2"{%else%}"#FFFFFF"{%endif%}{% endmacro %}
+    {% macro bgColorLevelEcart(valide,level,ecart) %} bgColor={% if not valide %}"#F78181"{%elseif level>0%}"#F5D5A2"{% elseif ecart>10 %}"#ECF6CE"{%else%}"#FFFFFF"{% endif %}{% endmacro %}
+    {% macro bgColorLevelBloque(valide,level,isModif) %} bgColor={% if not isModif %}"#B2B2B2"{% elseif not valide %}"#F78181"{%elseif level>0%}"#F5D5A2"{%else%}"#FFFFFF"{% endif %}{% endmacro %}
+    {% macro bgColorLevelEcartBloque(valide,level,ecart,isModif) %} bgColor={% if not isModif %}"#B2B2B2"{% elseif not valide %}"#F78181"{%elseif level>0%}"#F5D5A2"{% elseif ecart>10 %}"#ECF6CE"{%else%}"#FFFFFF"{% endif %}{% endmacro %}
+
+    {% macro locked(isModif) %}{% if not isModif %} locked="true"{% endif %}{% endmacro %}
+
+    {% macro columnAjout(isModif) %}{% if isModif %}<column width="32" type="link" align="center" sort="na"><![CDATA[<a href="#" onclick="addRow()"><img src="{{asset('images/dhtmlx_add.png')}}"></a>]]></column>{% endif %}{% endmacro %}
+
+    {% macro cellSupprime(isModif) %}{% if isModif %}<cell><![CDATA[<a href="#" data-content="Supprimer"><img src="{{asset('images/dhtmlx_delete.png')}}"></a>]]></cell>{% endif %}{% endmacro %}
+    {% macro cellSupprime2(isDelete) %}<cell>{% if isDelete %}<![CDATA[<a href="#"><img src="{{asset('images/dhtmlx_delete.png')}}"></a>]]>{% endif %}</cell>{% endmacro %}
+    {% macro cellSupprimeRow(isModif,rowModif) %}{% if isModif %}<cell>{% if rowModif %}<![CDATA[<a href="#" data-content="Supprimer"><img src="{{asset('images/dhtmlx_delete.png')}}"></a>]]>{% endif %}</cell>{% endif %}{% endmacro %}
+
+    {% macro lienSupprime() %}<a href="#"><img src="{{asset('images/dhtmlx_delete.png')}}"></a>{% endmacro %}
+    {% macro lienEmploye() %}<a href="#" data-content="Planning" onMouseOver="affPopoverLien(this)"><img src="{{asset('images/dhtmlx_calendar.png')}}"></a>{% endmacro %}
+    {% macro lienJournal(journal_id,msg) %}{% if journal_id!='' %}<a href="#" data-content="{{msg}}" onMouseOver="affPopoverLien(this)"><img src="{{ asset('images/dhtmlx_journal.png') }}"></a>{% endif %}{% endmacro %}
+    {% macro lienTournee() %}<a href="#" data-content="Tournée" onMouseOver="affPopoverLien(this)"><img src="{{asset('images/dhtmlx_tournee.png')}}"></a>{% endmacro %}
+    
+  #}
+{% endspaceless %}

@@ -1,0 +1,40 @@
+emargemement:
+    pattern: /emargement
+    defaults: { _controller: "AmsPaieBundle:PaiTournee:emargement" }
+    
+#liste_feuille_emargement:
+#    pattern:  /liste-feuille-emargement
+#    defaults: { _controller: "AmsPaieBundle:PaiTournee:listeEmargement" }
+    
+emargement_activite:
+    pattern: /emargement-activite
+    defaults: { _controller: "AmsPaieBundle:PaiActivite:emargementActivite" }    
+    
+
+liste_annexe:
+    pattern:  /liste-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:listeAnnexe" }
+
+liste_pai_annexe:
+    pattern:  /liste-pai-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:liste" }
+
+grid_pai_annexe:
+    pattern:  /grid-pai-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:grid" }
+    
+grid_resume_annexe:
+    pattern:  /grid-resume-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:gridResume" }
+        
+export_annexe:
+    pattern:  /export-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:export" }
+
+download_annexe:
+    pattern:  /download-annexe
+    defaults: { _controller: "AmsPaieBundle:PaiAnnexe:download" }
+    
+ajax_combo_employe_annexe:
+    pattern:  /ajax-combo-employe-annexe
+    defaults: { _controller: AmsEmployeBundle:Employe:ajaxComboPaiAnnexe }

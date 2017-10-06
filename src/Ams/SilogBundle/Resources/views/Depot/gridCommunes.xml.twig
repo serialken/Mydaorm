@@ -1,0 +1,24 @@
+{% if ct == 1 %}
+        {% if depot.depotCommunes is defined and depot.depotCommunes|length > 0 %}
+            <rows>
+                {% for depotCommune in depot.depotCommunes %}
+                    {% if depotCommune.commune is defined %}
+                        <row>
+                            <cell type="ro">{{libelle}}</cell>
+                            <cell type="ro">{{ depotCommune.commune.insee }}</cell>
+                            <cell type="ro">{{ depotCommune.commune.libelle }}</cell>
+                            <cell type="ro">{% if depotCommune.dateDebut != null %}{{ depotCommune.dateDebut|date('d/m/Y') }}{% endif %}</cell>
+                            <cell type="ro">{% if depotCommune.dateFin != null %}{{ depotCommune.dateFin|date('d/m/Y') }}{% endif %}</cell>
+                         </row>
+                     {% endif %}
+                {% endfor %}
+            </rows>
+        {% endif %}
+ {% else %}
+    <rows>
+        <row id="vide" locked ="true">
+            <cell colspan='5'>Pas de commune disponible pour ce dépôt.</cell>
+        </row>
+    </rows>
+{% endif %}
+  

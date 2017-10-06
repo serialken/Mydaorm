@@ -1,0 +1,50 @@
+{% autoescape false %}
+    {% if clients|length > 0%}
+        {% if part == 'T' or part == 'D' %}    
+            {D0370,0700,0350|}
+            {AX;+000,+000,+00|}
+            {AY;+00,1|}
+            {C|}
+            {PV00;0139,0135,0065,0100,J,00,B,P1|}
+            {PV01;0058,0240,0065,0100,J,00,B,P1|}
+            {RV00;{{code_tournee|upper}}|}
+            {RV01;{{nom_porteur|upper}}|}
+            {XR;0000,0000,0702,0352,B|}
+            {XS;I,0001,0002C8000|}
+        {% endif %}
+        {% for client in clients %}
+            {D0370,0700,0350|}
+            {AX;+000,+000,+00|}
+            {AY;+00,1|}
+            {C|}
+            {PV00;0024,0040,0030,0040,J,00,B,P1|}
+            {PV01;0024,0075,0025,0040,J,00,B,P1|}
+            {PV02;0623,0040,0025,0040,J,00,B,P1|}
+            {PC000;0024,0145,06,09,H,00,B,P1|}
+            {PC001;0024,0180,06,09,H,00,B,P1|}
+            {PC002;0024,0210,06,09,H,00,B,P1|}
+            {PC003;0024,0240,06,09,H,00,B,P1|}
+            {PC005;0025,0270,06,09,H,00,B,P1|}
+            {PC006;0025,0340,06,09,H,00,B,P1|}
+            {PC007;0528,0340,06,09,H,00,B,P1|}
+            {RV00;{{client.nom_produit}}|}
+            {RV01;{{client.code_tournee}}|}
+            {RV02;{{client.nb_ex}} ex|}
+            {RC000;{{client.vol1}} {{client.vol2}} |}
+            {%if client.vol3 is not null %}
+                {RC001;{{client.adresse}} {{client.vol3}} |}
+            {% else %} 
+                {RC001;{{client.adresse}} - |}
+            {% endif %}
+            {%if client.vol5 is not null %}
+                {RC002;{{client.vol5}} |}
+            {% else %} {RC002; - |}
+            {% endif %}
+            {RC003;{{client.cp_ville}} |}
+            {RC005;{{client.infoportage|replace({'/':'-'})}}|}
+            {RC006;{{client.numero}}|}
+            {RC007;Ordre : {{client.ordre}}|}
+            {XS;I,0001,0002C8000|}
+        {% endfor %}
+    {% endif %}
+{% endautoescape%}

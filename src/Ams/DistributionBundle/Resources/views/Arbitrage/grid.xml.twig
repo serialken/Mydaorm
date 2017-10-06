@@ -1,0 +1,98 @@
+<rows>{% if  reclamation is not empty %}
+	<head>      
+		<column type="ro" width="0" align="left" sort="str"  > id </column>
+		<column type="ro" width="55" align="left" sort="str" > demande traitée {{ demandeStatus|raw }} </column>
+                {% if isModif%}
+                  <column width="90" type="coro" align="left" sort="str">Motif {{ motif|raw }}</column> 
+                  <column width="100" type="coro" align="left" sort="str">Imputation {{ imputation|raw }}</column> 
+                  <column width="180" type="ed" align="left" sort="str">Commentaire</column> 
+                  <column width="55" type="coro" align="center" sort="str">Réponse réclam {{ ipp|raw }} </column> 
+                {%else%}
+                  <column width="90" type="ro" align="left" sort="str" >Motif {{ motif|raw }}</column> 
+                  <column width="100" type="ro" align="left" sort="str">Imputation {{ imputation|raw }}</column> 
+                  <column width="150" type="ro" align="left" sort="str">Commentaire</column> 
+                  <column width="55" type="ro" align="center" sort="str" >Réponse réclam {{ ipp|raw }} </column> 
+                {%endif%}   
+                <column width="50" type="ro" align="center" sort="str">Réclam. info</column>                      
+               	<column type="ro" width="80" align="center" sort="string" id="dm">Date demande arbitrage</column>
+                <column width="80" type="ro" align="center" sort="str">Date réponse arbitrage</column>    
+		<column type="ro" width="80" align="center" sort="date">Date réclamation </column>
+		<column type="ro" width="140" align="left" sort="str">Centre de distribution</column>
+                <column width="55" type="ro" align="center" sort="str">Flux</column>
+                <column type="ro" width="80" align="center" sort="str">N°Tournée</column>
+		<column type="ro" width="140" align="left" sort="str">Société</column>
+		<column width="150" type="ro" align="left" sort="str">Réclamation</column> 
+		<column width="80" type="ro" align="left" sort="str">N°Abonné</column> 
+		<column width="150" type="ro" align="left" sort="str">Ville</column> 
+		<column width="50" type="link" align="center" sort="str">Comp. Rendu</column>
+		<afterInit>
+			<call command='attachHeader'><param>,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#select_filter,#select_filter,#select_filter,#select_filter,#select_filter,#select_filter,#text_filter,#text_filter,#select_filter,#text_filter,,,</param> </call>   
+		</afterInit>  
+	</head> 
+	{% for row in reclamation %}
+
+		<row>
+                    <cell> {{ row.id }}</cell>
+                    <cell>{% if row.dateReponseArbitrage %} Oui {%else%} Non{% endif %}</cell>
+                    <cell style="border-color: #3170B1;border-width: thin;"> 
+				{% if row.motif is not null %} 
+					{{ row.motif.libelle}} 
+				{% else  %}
+					{{ 'N/A' }}
+				{% endif %}
+                    </cell>
+			<cell style="border-color: #3170B1;border-width: thin;"> 
+				{% if row.imputation is not null %} 
+					{{ row.imputation.libelle }}
+				{% else  %}
+					{{ 'N/A' }}
+				{% endif %}
+			</cell>
+			<cell style="border-color: #3170B1;border-width: thin;"> {{ row.cmtReponseArbitrage }} </cell>     
+                        <cell style="border-color: #3170B1;border-width: thin;"> 
+				{% if row.dateReponse is not null %}
+					 {{ 'Oui' }} 
+				{% else  %}
+					{{ 'Non' }}
+				{% endif %}
+			</cell> 
+                        
+                        <cell class="getData"> 
+			{% if row.dateDemandeArbitrage is not null %} 
+				{{ '<div id="'~row.id~'" class="alert-perso glyphicon glyphicon-zoom-in"> </div>'| raw }} 
+			{% endif %} 
+			</cell>
+                        <cell> {% if row.dateDemandeArbitrage %} {{ row.dateDemandeArbitrage | date('d/m/Y') }} {% endif %} </cell> 
+                        <cell> {% if row.dateReponseArbitrage %} {{ row.dateReponseArbitrage | date('d/m/Y') }} {%else%} {% endif %} </cell> 
+			<cell> {{ row.dateCreat | date('d/m/Y') }} </cell> 
+                        <cell>	{% if row.depot is null%}{%else%}{{row.depot.libelle}}{%endif%}</cell>
+                        <cell>{% if row.tournee is null%}{%else%}
+                                {%if row.tournee.code|slice(3, 1)=="N"%}
+                                    Nuit
+                                    {% set flux_id = 1 %}
+                                {%else%}
+                                    Jour
+                                     {% set flux_id = 0 %}
+                                {%endif%}
+                              {%endif%}
+                        </cell>
+                        <cell>{% if row.tournee is null%}{%else%}{{row.tournee.code}}{%endif%}</cell>
+			<cell> {{ row.societe.libelle}} </cell> 
+			<cell> {{row.crmDemande.libelle}} </cell>
+			<cell> {{ row.numaboExt }}</cell>
+			<cell> {{ row.ville }}</cell>
+			
+                        
+                       
+                        
+			<cell class="getData"> 
+			{% if row.dateCreat is not null  and row.depot  is not null %} 
+			{% set date = row.dateCreat|date('Y-m-d') %}
+                        {% set   url = path('compte_rendu_modif_tournee', {'id': row.depot.id,'date':date,'flux':flux_id,'isGridReadOnly':true}) %}
+                          Voir^{{url}}
+			{% endif %} 
+			</cell>
+		</row>
+	{% endfor %}
+	{% endif %}
+</rows>

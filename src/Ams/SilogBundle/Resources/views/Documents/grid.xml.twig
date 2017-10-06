@@ -1,0 +1,19 @@
+<rows>
+  <head>      
+    <column type="ro" width="0" align="left"> Id </column>
+    <column type="ro" align="left"> Date </column>
+    <column type="ro" align="left"> Commentaires </column>
+    <column type="ro" align="center" width="50">fichier</column>
+    <column type="ro" align="center" width="80">Suppression</column>
+  </head> 
+  {% for row in documents %}
+  <row>
+    <cell> {{ row.id }}</cell>
+    <cell> {{ row.date|date('d/m/Y H:i:s')}} </cell> 
+    <cell> {{ row.comment}}</cell>
+    <cell>{% if row.path == 'waiting'%}<![CDATA[<img src="{{ asset('images/loading/LoadingCircle_md.gif') }}"  alt="en cours de generation" title="en cours de generation"  width="20" />]]> {% else %}<![CDATA[<a href="{{asset('background/'~row.path)}}"><img src="{{ asset('images/dhtmlx_contrat.png') }}"  alt="supression" title="supression" class="delete" width="20" /></a>]]> {%endif%}    </cell>
+    <cell><![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]>  </cell>
+{#    <cell>{% if row.path != 'waiting'%}<![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]> {% endif %}   </cell>#}
+ </row>
+  {% endfor %}
+</rows>

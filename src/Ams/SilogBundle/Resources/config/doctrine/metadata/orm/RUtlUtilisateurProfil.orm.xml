@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="RUtlUtilisateurProfil" table="R_UTL_UTILISATEUR_PROFIL">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <many-to-one field="utpUtl" target-entity="TrUtlUtilisateurs">
+      <join-columns>
+        <join-column name="UTP_UTL_ID" referenced-column-name="UTL_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="utpPrfCode" target-entity="TrUtlProfils">
+      <join-columns>
+        <join-column name="UTP_PRF_CODE" referenced-column-name="PRF_CODE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

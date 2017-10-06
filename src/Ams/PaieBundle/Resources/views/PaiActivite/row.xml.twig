@@ -1,0 +1,23 @@
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}{{m.bgColorLevelBloque(row.valide,row.level,row.isModif)}}>  
+    <cell>{{row.journal_id}}</cell>
+    <cell><![CDATA[{{m.lienJournal(row.journal_id,row.msg)}}]]></cell>
+    <cell>{{row.depot_id}}</cell>
+    <cell>{{row.flux_id}}</cell>
+    <cell>{{row.date_distrib}}</cell>
+    <cell>{{row.activite_id}}</cell>
+    <cell><![CDATA[{{m.lienEmploye()}}]]></cell>
+    <cell>{{row.employe_id}}</cell>
+    <cell>{{row.ouverture}}</cell>
+    <cell>{{row.heure_debut}}</cell>
+    <cell>{{row.heure_debut_calculee}}</cell>
+    <cell>{{row.duree}}</cell>
+    <cell>{{row.duree_nuit}}</cell> 
+    <cell>{{row.nbkm_paye}}</cell>
+    <cell>{{row.transport_id}}</cell>
+    <cell>{{row.commentaire}}</cell>
+    <cell>{{row.employe_id}}</cell>
+    <cell>{{row.est_pleiades}}</cell>
+    {{m.cellSupprime(isModif and row.isDelete)}}
+</row> 
+{% endfor %}

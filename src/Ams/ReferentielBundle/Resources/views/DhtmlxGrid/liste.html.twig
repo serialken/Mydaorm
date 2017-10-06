@@ -1,0 +1,38 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import 'AmsReferentielBundle:DhtmlxGrid:macros.html.twig' as m %}
+{% block title %}{{titre}}{% endblock %}
+{% block body %} 
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':'' , 'route': route }))}}
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                {% block cmd %}{% endblock %}
+                <span style="float:right">
+                    {% if isModif %}<img id="cancel_grid" style='cursor:pointer;visibility:hidden' src="{{ asset('images/dhtmlx_undo.png') }}" alt="Annuler"  onclick="dhtmlxgridUndo()">{% endif %}
+                    <img style='cursor:pointer' src="{{ asset('images/dhtmlx_excel.png') }}" alt="Imprimer"  onclick="grid.toExcel({{m.urlExcel()}},'color',true);"> 
+                </span>
+                <div id="gridbox"  style="width:100%; height:500px; min-height:500px; background-color:white;overflow:hidden"></div>
+                
+                <div id="cover" style='text-align:center; font-family:Tahoma;position:absolute;top:400px;left:500px;height:150px;width:500px;'>
+                    <img src="{{ asset('images/ajaxLoader.gif') }}"> 
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="recinfoArea"></div>
+            </td>
+        </tr>
+    </table>  
+</div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    isModif={{isModif?1:0}};
+    </script>
+{% endblock %}
+{% block js_load %} 
+    onLoadGrid();
+{% endblock %}

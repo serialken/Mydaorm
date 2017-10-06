@@ -1,0 +1,50 @@
+
+{% extends '::modal.html.twig' %}
+{% block modalTitre %}
+    Caractéristiques du produit {{ produit.libelle }}
+{% endblock %}
+{% block modalContenu %}
+    <div class="well">
+        {% if constante == true %}
+            <div id="modalAlerte">
+            </div>
+        {% if produit.image.webPath is defined %}
+                                    <img src="{{ asset( produit.image.webPath)}}" alt="{{ produit.image.name }}">
+                                {% endif %}
+            <div class="" style="text-align:left;">
+                
+                <table class="table table-striped">
+                    <thead>
+                       {# <tr><td>{{data.constlibelle}}</td></tr>#}
+                        <tr>
+                            <th>Libelle</th>
+                            <th>Type</th>
+                            <th>Valeur</th>
+                            <th>Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in liste %}
+                        <tr>
+                            <td>{{data.constLibelle}}</td>
+                            <td>{{data.constType}}</td>
+                            {% if data.constType == "entier" %}
+                                <td>{{data.valInt}}</td>
+                            {% elseif  data.constType == "reel" %}
+                                <td>{{data.valFloat}}</td>
+                            {% elseif data.constType == "chaine" %}
+                                <td>{{data.valString}}</td>
+                            {% endif %}
+                            <td>{{data.constCode}}</td>    
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfooter><tfooter/>
+                </table>
+            </div> 
+        {% else %}
+            Ce produit ne présente pas de caractéristiques spécifiques.
+      {% endif %}
+    </div>
+    
+{% endblock %}

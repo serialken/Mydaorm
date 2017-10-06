@@ -1,0 +1,100 @@
+modele_action_dhtmlx:
+    pattern:  /action-dhtmlx/{repositoryName}
+    defaults: { _controller: AmsModeleBundle:Dhtmlx:gridAction}
+
+    
+liste_modele_journal:
+    pattern:  /liste-modele-journal
+    defaults: { _controller: "AmsModeleBundle:ModeleJournal:liste" }
+    
+gridliste_modele_journal:
+    pattern:  /grid-modele-journal
+    defaults: { _controller: "AmsModeleBundle:ModeleJournal:grid" }
+
+
+liste_modele_groupe:
+    pattern:  /liste-modele-groupe
+    defaults: { _controller: "AmsModeleBundle:GroupeTournee:liste" }
+
+gridliste_modele_groupe:
+    pattern:  /grid-modele-groupe
+    defaults: { _controller: "AmsModeleBundle:GroupeTournee:grid" }
+
+
+liste_modele_tournee:
+    pattern:  /liste-modele-tournee
+    defaults: { _controller: "AmsModeleBundle:ModeleTournee:liste" }
+  
+gridliste_modele_tournee:
+    pattern:  /grid-modele-tournee
+    defaults: { _controller: "AmsModeleBundle:ModeleTournee:grid" }
+
+ajax_transfert_modele_tournee:
+    pattern:  /ajax-transfert-modele-tournee
+    defaults: { _controller: "AmsModeleBundle:ModeleTournee:ajaxTransferer" }
+
+ajax_combo_groupe_modele_tournee:
+    pattern:  /ajax-combo-groupe-modele-tournee
+    defaults: { _controller: AmsModeleBundle:ModeleTournee:ajaxComboGroupe }
+
+
+liste_modele_tournee_jour:
+    pattern:  /liste-modele-tournee-jour
+    defaults: { _controller: "AmsModeleBundle:ModeleTourneeJour:liste" }
+  
+gridliste_modele_tournee_jour:
+    pattern:  /grid-modele-tournee-jour
+    defaults: { _controller: "AmsModeleBundle:ModeleTourneeJour:grid" }    
+
+ajax_combo_tournee_modele_tournee_jour:
+    pattern:  /ajax-combo-tournee-modele-tournee-jour
+    defaults: { _controller: AmsModeleBundle:ModeleTourneeJour:ajaxComboTournee }
+
+    
+liste_modele_supplement:
+    pattern:  /liste-modele-supplement
+    defaults: { _controller: "AmsModeleBundle:ModeleSupplement:liste" }
+  
+gridliste_modele_supplement:
+    pattern:  /grid-modele-supplement
+    defaults: { _controller: "AmsModeleBundle:ModeleSupplement:grid" }
+
+ajax_combo_ajouter_org_modele_supplement:
+    pattern:  /ajax-combo-ajouter-org-modele-supplement
+    defaults: { _controller: AmsModeleBundle:ModeleSupplement:ajaxComboAjouterOrg }
+
+    
+liste_modele_activite:
+    pattern:  /liste-modele-activite
+    defaults: { _controller: "AmsModeleBundle:ModeleActivite:liste" }
+  
+gridliste_modele_activite:
+    pattern:  /grid-modele-activite
+    defaults: { _controller: "AmsModeleBundle:ModeleActivite:grid" }
+
+    
+liste_modele_activiteHP:
+    pattern:  /liste-modele-activiteHP
+    defaults: { _controller: "AmsModeleBundle:ModeleActiviteHP:liste" }
+  
+gridliste_modele_activiteHP:
+    pattern:  /grid-modele-activiteHP
+    defaults: { _controller: "AmsModeleBundle:ModeleActiviteHP:grid" }
+
+
+modele_planning:
+    pattern: /modele-planning
+    defaults: { _controller: "AmsModeleBundle:ModelePlanning:planning" }
+
+ajax_combo_employe_modele_planning:
+    pattern:  /ajax-combo-employe-modele-planning
+    defaults: { _controller: AmsEmployeBundle:Employe:ajaxComboModelePlanning }
+
+
+liste_modele_request:
+    pattern:  /liste-modele-request
+    defaults: { _controller: "AmsModeleBundle:ModeleRequest:liste" }
+  
+gridliste_modele_request:
+    pattern:  /grid-modele-request
+    defaults: { _controller: "AmsModeleBundle:ModeleRequest:grid" }

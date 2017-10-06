@@ -1,0 +1,122 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Caractéristiques Produits{% endblock %}
+{% block body %}
+    <div id="gridManager">
+        <div id="modalAlerte"></div>
+        <div id="gridBox"></div>
+        <br>
+        <button type="button" class="btn btn-primary" onclick="addNewCaract();">Ajouter</button>
+    </div>
+    <style>
+        div#gridManager {
+            width: 100%;
+        }  
+
+        div#gridManager button {
+            color: #FFFFFF;
+        }
+
+        div#gridBox {
+            width:100%;
+            height:500px;
+        }
+
+    </style>
+
+    <script>
+        var caractsGrid;
+
+        function doInitGridCaract()
+        {
+            caractsGrid = new dhtmlXGridObject('gridBox');
+            caractsGrid.setImagePath("{{dhtmlx_img }}");
+
+            caractsGrid.setHeader("Libelle, Code, Type, Produit Type, Ref Saisie, Actif, Supprimer");
+            caractsGrid.setInitWidths("*,*,50,*,*,50,70");
+            caractsGrid.setColAlign("left,center, center,center,center,center,center");
+            caractsGrid.setColTypes("ro,ro,ro,ro,ro,ch,ro");
+            caractsGrid.setColSorting("str,str,str,str,str,int,str");
+            caractsGrid.enableSmartRendering(true);
+
+            caractsGrid.attachEvent("onRowDblClicked", function(rId) {
+                addOrUpdateCaractAction(rId, false);
+                return false;
+            });
+
+            caractsGrid.attachEvent("onCheck", function(rId, cInd, state)
+            {
+                var isConfirm = confirm("Etes vous sure de vouloir " + (state ? "activer" : "désactiver") + " cette caractéristique ?");
+
+                if (isConfirm) {
+                    $.ajax({
+                        url: "{{ path('caract_inactiv_ajax') }}",
+                        type: "POST",
+                        dataType: "html",
+                        data: {
+                            prdCaractId: rId,
+                            actif: state
+                        },
+                        success: function(data) {
+                            $('#modalAlerte').html(data);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            $('#amsModalLabel').html('Une erreur est survenue.');
+                            $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+                        }
+                    });
+                } else {
+                    // Annuler l'effet du clique sur la checkbox (cochage/decochage)
+                    var cell = caractsGrid.cells(rId, cInd);
+                    var i = state ? 0 : 1;
+                    if (cell.isCheckbox())
+                        cell.setValue(i);
+                }
+            });
+
+            caractsGrid.setSkin("dhx_skyblue");
+            caractsGrid.init();
+            caractsGrid.loadXML("{{path('grid_caracts_xml')}}")
+        }
+
+        function addNewCaract() {
+            addOrUpdateCaractAction(false, true);
+        }
+
+        function addOrUpdateCaractAction(prdCaractId, isNew) {
+            $.ajax({
+                url: "{{ path('caract_update_ajax') }}",
+                type: "GET",
+                data: {
+                    prdCaractId: prdCaractId,
+                    isNew: isNew
+                },
+                success: function(data) {
+                    $('#amsModal').html(data);
+                    $('#amsModal').modal();
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    $('#amsModalLabel').html('Une erreur est survenue.');
+                    $('#amsModalBody').html(thrownError + ' - code erreur:' + xhr.status);
+                },
+            });
+        }
+
+        $(document).ready(function() {
+            doInitGridCaract();
+        });
+        function deleteCacactere(id) {
+            $.ajax({
+                url: "{{ path('carat_delete') }}",
+                type: "POST",
+                data: {
+                    id: id
+                },
+                success: function() {
+                    doInitGridCaract();
+
+                }
+            });
+        }
+    </script>
+
+{% endblock %}

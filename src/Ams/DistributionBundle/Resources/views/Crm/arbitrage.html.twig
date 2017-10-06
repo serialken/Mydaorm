@@ -1,0 +1,82 @@
+{% if alowwArbitrage is defined and alowwArbitrage == true %}
+ <form id="reclam-form" method="POST" action="{{path('crm_create_arbitrage')}}" role="form"> 
+     <table class="table table-center left arb">
+        <thead>
+            <tr>
+                <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Demande d'arbitrage</b></th>         
+            </tr>
+        </thead>
+        <tr  class="col-xs-14 ">
+            {% if crmDetail.utlDemandeArbitrage is not empty%}{% set isdisabled = true%}{%else%}{% set isdisabled = false%}{%endif%}
+                <td  class="col-xs-3  big-label">{{ form_label(form.imputation) }}&nbsp;&nbsp;{{ form_widget(form.imputation)}}</td>
+                <td  class="col-xs-4 big-label">{{ form_label(form.dateDemandeArbitrage) }}&nbsp;&nbsp;{% if crmDetail.dateDemandeArbitrage is not empty %}{{ form_widget(form.dateDemandeArbitrage)}}{%else%}{{ form_widget(form.dateDemandeArbitrage,{'attr':{value:'now'|date('d/m/y H:i:s')}})}}{%endif%}</td>
+                {% set demandeurArbitrage =''%}
+                {% if crmDetail.utlDemandeArbitrage is not empty %}
+                    {% set demandeurArbitrage = crmDetail.utlDemandeArbitrage.nom ~' '~ crmDetail.utlDemandeArbitrage.prenom%}
+                {%endif%}
+                <td  class=" col-xs-4 big-label big-name">
+                    {{ form_label(form.utlDemandeArbitrage) }}&nbsp;&nbsp;{{ form_widget(form.utlDemandeArbitrage,{'value':demandeurArbitrage,'disabled': 'disabled'})}}
+                </td>
+         </tr>
+        <tr  class="col-xs-14">
+            <td class="col-xs-4 big-label" ><div class="error_msg"></div>{{ form_label(form.motif) }}&nbsp;&nbsp;{{ form_widget(form.motif,{'disabled': isdisabled})}}</td>
+            <td  class="col-xs-4 big-label">{{ form_label(form.dateReponseArbitrage) }}&nbsp;&nbsp;{{ form_widget(form.dateReponseArbitrage)}}</td>
+            <td  class="col-xs-4 big-label big-name" >
+            {% set arbitre =''%}
+            {% if crmDetail.utlReponseArbitrage is not empty %}
+                {% set arbitre = crmDetail.utlReponseArbitrage.nom ~" "~ crmDetail.utlReponseArbitrage.prenom%}
+            {%endif%}
+            {{ form_label(form.utlReponseArbitrage) }}&nbsp;&nbsp;{{ form_widget(form.utlReponseArbitrage,{'value':arbitre})}}
+        </td>
+        </tr>
+        <tr> 
+            {#<td  class="col-xs-3 small-label " colspan="1">{{ form_label(form.ipp) }}&nbsp;&nbsp;{{ form_widget(form.ipp, {'attr': {'disabled': 'disabled','class':'cneter-checkbox'}})}}
+                {% set ischecked = false%}
+                {% if crmDetail.ipp is empty %}{% set ischecked = true%}{%endif%}
+                &nbsp;&nbsp;{{ form_label(form.nipp) }}&nbsp;&nbsp;{{ form_widget(form.nipp, {'attr': {'disabled': 'disabled','class':'cneter-checkbox2','checked':ischecked}})}}
+            </td>#}
+          
+                <td  class="col-xs-3 small-label big-label" colspan="1"  id="arbStatus">
+                      {% if crmDetail.utlDemandeArbitrage is not empty and crmDetail.utlReponseArbitrage is empty %}
+                    <label><b>Status</label>&nbsp;&nbsp;<span style="color:#F83403;">Demande en cours</span></b>
+
+            {%elseif crmDetail.utlDemandeArbitrage is not  empty and crmDetail.utlReponseArbitrage is not empty %} 
+              <label><b>Status</label>&nbsp;&nbsp;<span style="color:#389127;">Demande traitée</span></b>
+            {%else%}
+            {% endif %}
+            </td>
+            <td>
+                {{ form_widget(form.crId,{'attr':{'value':crmDetail.id}}) }}
+            </td>            
+        </tr>
+        <tr style="display:none">
+            <td>             
+                {{ form_widget(form.societeId,{'value': sId})}}
+                {{ form_widget(form.depot,{'value': dpId})}}
+                {{ form_widget(form.hiddenDateMax,{'attr':{'value': dateMax }})}}
+                {{ form_widget(form.hiddenDateMin,{'attr':{'value': dateMin }})}}
+            </td>
+        </tr>
+        <tr class="col-xs-14" style="text-align:center">
+            <td colspan="3">
+                {{ form_label(form.cmtReponseArbitrage) }}:&nbsp;&nbsp;{{ form_widget(form.cmtReponseArbitrage, { 'attr': {'class': 'big-texarea'} }) }}
+                {% if crmDetail.utlDemandeArbitrage is  empty %}
+                    <button id="validArbitrage" type="submit" class="btn-md btn-primary" >Valider</button>
+                {% endif %}
+            </td>
+        </tr>    
+        </table>
+
+</form>
+    {%else %}
+        <table class="table table-center left arb">
+            <thead>
+                <tr>
+                    <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Demande d'arbitrage</b></th>         
+                </tr>
+                <tr>
+                    <td>Vous ne pouvez pas faire une demande d'arbitrage sur cette reclamation car Les produits sont arrivés avant l'heure de début du service
+                    </td>
+                </tr>
+        </table>
+    {%endif%}

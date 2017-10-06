@@ -1,0 +1,9 @@
+    
+AmsModeleBundle_modele:
+    resource: "@AmsModeleBundle/Resources/config/routing/modele.yml"
+    prefix: /modele
+    
+   
+AmsModeleBundle_etalon:
+    resource: "@AmsModeleBundle/Resources/config/routing/etalon.yml"
+    prefix: /etalon

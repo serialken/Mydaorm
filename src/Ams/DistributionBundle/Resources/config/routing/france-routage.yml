@@ -1,0 +1,24 @@
+france_routage: 
+    pattern:    /
+    defaults:    { _controller: "AmsDistributionBundle:FranceRoutage:index" }
+    
+france_routage_navigate: 
+    pattern:    /navigate
+    defaults:    { _controller: "AmsDistributionBundle:FranceRoutage:navigation" }
+    
+france_routage_crud: 
+    pattern:    /save
+    defaults:    { _controller: "AmsDistributionBundle:FranceRoutage:crud" }
+    
+france_routage_exec: 
+    pattern:    /exec
+    defaults:    { _controller: "AmsDistributionBundle:FranceRoutage:exec" }
+    
+france_routage_list_exec_file: 
+    pattern:    /list_file
+    defaults:    { _controller: "AmsDistributionBundle:FranceRoutage:listFile" }
+    
+    
+    
+
+

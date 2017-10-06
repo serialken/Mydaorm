@@ -1,0 +1,42 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//IDX_ENTETE        ,IDX_HEADER1                ,IDX_HEADER2        ,IDX_VERIFICATOR    ,IDX_LNK_BEFOREINSERT   ,IDX_LINK_AFTERINSERT    ,IDX_FUNC_ONSELECT  
+['type_id'       ,'#select_filter_strict'       ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['annexe'           ,null                       ,null               ,null               ,null                   ,null                   ,'goAnnexe(rId)'    ,null],
+['tournee'          ,'#select_filter'           ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['date_requete'     ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['date_application' ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['demandeur_id'     ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['date_demande'     ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['valideur_id'      ,'#select_filter_strict'    ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['date_validation'  ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['date_refus'       ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['commentaire'      ,'#text_filter'             ,null               ,null               ,null                   ,null                   ,'goEtalon(rId)'    ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{etalon_id}}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+
+    function goEtalon(rId){
+    {% if isModif %}
+        goLinkGrid("{{path('liste_etalon_tournee')|raw}}","?etalon_id="+rId);
+    {% endif %}
+    }
+   function goAnnexe(rId){
+      goLinkGrid("{{path('export_annexe_etalon')|raw}}","?etalon_id="+rId);
+    }
+    
+    function addRow(){ // Surcharge la function dans dhtmlxDataProcessor.js
+        goLinkGrid("{{path('liste_etalon_tournee')|raw}}","?etalon_id=0");
+    }
+</script>
+{% endblock %}

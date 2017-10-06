@@ -1,0 +1,16 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="produit_id"     type="ro"   width="*"   align="left"    sort="str">Produit</column> 
+        <column id="poste_bdc"      type="ed"   width="80"  align="center"  sort="str">Poste Paie BDC</column> 
+        <column id="poste_bf"       type="ed"   width="80"  align="center"  sort="str">Poste Paie BF</column> 
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}">  
+            <cell>{{row.produit_id}}</cell>
+            <cell>{{row.poste_bdc}}</cell>
+            <cell>{{row.poste_bf}}</cell>
+        </row> 
+     {% endfor %}
+ </rows>
+

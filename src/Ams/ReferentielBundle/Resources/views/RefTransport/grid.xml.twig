@@ -1,0 +1,17 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="code"       type="ed"   width="70"  align="left"    sort="str">Code</column>
+        <column id="libelle"    type="ed"   width="*"   align="left"    sort="str">Libellé</column>
+        <column id="km_paye"    type="ch"   width="50"  align="center"  sort="str">Kilomètre Payé</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.code}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.km_paye}}</cell>
+            {{m.cellSupprime(isModif)}}
+        </row> 
+     {% endfor %}
+ </rows>

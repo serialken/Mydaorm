@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrPrdSocietes" table="TR_PRD_SOCIETES">
+    <id name="socCode" type="string" column="SOC_CODE" length="10">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="socLibelle" type="string" column="SOC_LIBELLE" length="100" nullable="false"/>
+    <field name="socDateModif" type="datetime" column="SOC_DATE_MODIF" nullable="false"/>
+    <field name="socDateDebut" type="date" column="SOC_DATE_DEBUT" nullable="false"/>
+    <field name="socDateFin" type="date" column="SOC_DATE_FIN" nullable="true"/>
+    <many-to-one field="socUtlModif" target-entity="TrUtlUtilisateurs">
+      <join-columns>
+        <join-column name="SOC_UTL_ID_MODIF" referenced-column-name="UTL_ID"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="socSprCodeDefaut" target-entity="TrPrdSousProduits">
+      <join-columns>
+        <join-column name="SOC_SPR_CODE_DEFAUT" referenced-column-name="SPR_CODE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

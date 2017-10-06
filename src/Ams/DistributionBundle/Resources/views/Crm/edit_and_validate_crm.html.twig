@@ -1,0 +1,456 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<button id="closeButton" type="button" title="Close" style="">
+  <span aria-hidden="true">&times;</span>
+  <span class="hide">Close</span>
+</button>
+
+
+<div style="padding:20px 10px 10px 10px" class="crm-page">
+    <div  id="errorDiv" style="display:none;" class="alert alert-danger alert-dismissable fade in">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    </div>
+    <div id="record_dialog" class="emv-dialog">
+         <div class="floater"></div>
+         <div class="frame">
+             <div class="header">Enregistrement des données</div>
+             <div id="msg_confirm">
+                 <div align="center">
+                    <img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br>
+                    <span>Veuillez patientez...</span><br>
+                </div>
+             </div>
+             <div class="footer"><span id="validButton" class="emv-button" style="display:none">OK</span></div>
+         </div>
+    </div>
+    
+      {%  if app.request.get('tId') %}
+        {% set tourneeId =  app.request.get('tId') %}
+      {% else %}
+         {% set tourneeId = '' %}
+      {% endif %}
+    
+     {%  if app.request.get('fId') %}
+        {% set fluxId =  app.request.get('fId') %}
+      {% else %}
+         {% set fluxId = '' %}
+      {% endif %}
+    
+    
+   <table class="no-border table-center" style="margin-bottom:15px;" >
+      
+        <thead>
+            <tr style="float:right;" class="tr-no-border">
+                {% if all == '0' %}{% set socId = crmDetail.societe.id%}{%else%}{% set  socId = '' %}{%endif%}
+            <th colspan="14">
+               {% if crmDetail.depot is not null  %}  
+               {# <a href="{{path('crm_display_detail',{'cId': crmDetail.CrmDemande.CrmCategorie.id,'sSId':socId,'dpId':crmDetail.depot.id,'all':all})}}" class="btn btn-primary  active"><i class="icon-arrow-left"></i>Retour</a> #}
+                 <a href="{{path('crm_display_detail',{'cId': crmDetail.CrmDemande.CrmCategorie.id,'sSId':socId,'dpId':crmDetail.depot.id,'tId':tourneeId,'fId':fluxId, 'all':all})}}" class="btn btn-primary  active"><i class="icon-arrow-left"></i>Retour</a>
+              {% else %}
+                 <a href="{{path('crm_display_detail',{'cId': crmDetail.CrmDemande.CrmCategorie.id,'sSId':socId,'dpId':0,'all':all})}}" class="btn btn-primary  active"><i class="icon-arrow-left"></i>Retour</a>
+              {% endif %}  
+            </th> 
+           
+                       
+            </tr>
+        </thead>
+        <tr>
+        </tr>
+    </table>
+
+    <table class="table table-center" >
+     
+        <thead>
+            <tr>
+            <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Fiche d'identité</b>
+                </th> 
+                       
+            </tr>
+        </thead>
+        <tr>
+            <td class="col-xs-2"><b>Editeur:</b>&nbsp;&nbsp;{{crmDetail.societe.libelle}}</td>
+            <td class="col-xs-2"><b>Date de création:</b>&nbsp;&nbsp;{{crmDetail.dateCreat|date('d/m/Y')}}</td>
+            <td class="col-xs-2"><b>Numéro Client :</b>&nbsp;&nbsp;{{crmDetail.numaboExt}}</td>
+            <td colspan="2" class="col-xs-2"><b>Nom:</b>
+              {%if crmDetail.vol1 is not empty %} &nbsp;&nbsp; {{crmDetail.vol1}}&nbsp;{% endif %}
+              {%if crmDetail.vol2 is not empty %} &nbsp;&nbsp; {{crmDetail.vol2}}&nbsp;{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="col-xs-2"><b>Cplt Adresse:</b>&nbsp;&nbsp;{{crmDetail.vol3}}</td>
+            <td class="col-xs-2"><b>Adresse:</b>&nbsp;&nbsp;{{crmDetail.vol4}}</td>
+            <td class="col-xs-2"><b>Lieu Dit :</b>&nbsp;&nbsp;{%if crmDetail.vol5 %}{{crmDetail.vol5}}{% endif %}</td>
+            <td class="col-xs-2"><b>Ville :</b>&nbsp;&nbsp;{{crmDetail.ville}}</td>
+            <td class="col-xs-2"><b>Code postal :</b>&nbsp;&nbsp;{{crmDetail.cp}}</td>
+        </tr>
+    </table>
+         
+    <form id="reclam-form" method="POST" action="{{path('crm_edit_and_validate',{'crmId':crmDetail.id})}}" role="form"> 
+        <table class="table table-center" >
+            <thead>
+                <tr>
+                   <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>{% if crmDetail.CrmDemande.CrmCategorie.id == 1 %}Réclamation{%else%}Demande Client{%endif%}</b></th>           
+                </tr>
+            </thead>
+            <tr> 
+                {% if crmDetail.CrmDemande.CrmCategorie.id == 1 or crmDetail.CrmDemande.CrmCategorie.id == 3 %}{% set isReadOnly = true %} {%else%}{% set isReadOnly = false%} {% endif %}
+                <td class="col-xs-2"><b>N°Réclamation Mroad / Editeur:</b>&nbsp;&nbsp;{{crmDetail.Id}} / {{crmDetail.crmIdEditeur}} </td>{{ form_widget(form.crmId)}}
+                {# ce champs doit etre editable dans les prochains jours#}
+                <td class="col-xs-2"><b>Tournée :
+                        {# liste des tournées #}
+                          <span id="tourneeCode">  </span><span>{{form_widget(formTournee.tournee)}} </span> 
+                         {# </b>&nbsp;&nbsp;<span id="tourneeCode">{% if crmDetail.tournee is not empty%}{{crmDetail.tournee.code}}{%else%}'N/A'{%endif%}</span>#}
+                
+                </td>
+                <td style="display:none">
+                    {{ form_widget(form.dateMin,{'value': dateMin},{'attr': {'readonly': true}})}}
+                    {{ form_widget(form.dateMax,{'value': dateMax})}}
+                    {{ form_widget(form.societeId,{'value': sId})}}
+                    {{ form_widget(form.depotId,{'value': dpId})}}
+                </td>
+
+                <td class="col-xs-2"><b>Centre :</b>&nbsp;&nbsp; 
+                      {% if crmDetail.depot is not null %}
+                          {{crmDetail.depot.libelle}}
+                      {% else %}
+                           Dépôt non renseigné
+                      {% endif %}
+                </td>  
+                </tr>
+                <tr>  
+                <td class="col-xs-2"><b>Motif :</b> &nbsp;&nbsp;{{ form_widget(form.crmDemande,{'attr': {'disabled': isReadOnly}})}}</td>
+                <td class="col-xs-2"><b>Préj. du</b>&nbsp;&nbsp;{{ form_widget(form.dateDebut,{'attr': {'readonly': isReadOnly}})}}</td>
+                <td class="col-xs-2"><b>Au </b>&nbsp;&nbsp;{{ form_widget(form.dateFin,{'attr': {'readonly': isReadOnly}})}}</td>
+            </tr>
+            <tr>
+                <td colspan="6"><b>{{ form_label(form.cmtDemande) }} :</b>&nbsp;&nbsp;{{ form_widget(form.cmtDemande,{'attr': {'readonly': isReadOnly}})}}</td>
+            </tr>
+        </table>
+
+        <table class="table table-center">
+            <thead>
+                <tr>
+                   <th BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b><span id ="blocResponse">Réponse</span></b></th>            
+                </tr>
+            </thead>
+      
+            <tr>  
+
+                {% if crmDetail.CrmDemande.CrmCategorie.id != 3 %}
+
+                    <td class="col-xs-3"><b>Type réponse :</b>&nbsp;&nbsp;{{ form_widget(form.crmReponse)}}
+                       
+                    </td> 
+                {%endif%}
+        
+                <td class="col-xs-3" id="tdResponseDate"> {% if crmDetail.dateReponse is not empty %}<b>Date réponse :</b>&nbsp;&nbsp;{{crmDetail.dateReponse|date('d/m/Y')}} {%endif%}
+                <td class="col-xs-3" id="tdResponseUser"> {% if crmDetail.utlReponse is not empty and crmDetail.CrmDemande.CrmCategorie.id != 2 %}<b>Répondu par :</b>&nbsp;&nbsp;{{crmDetail.UtlReponse.nom}}&nbsp;&nbsp;{{crmDetail.UtlReponse.prenom}} {%endif%}</td>
+                <input type="hidden" id ="crmId" name="crmId" value="{{crmDetail.Id}}"/>
+            </tr>
+            <tr style="text-align:center">
+                <td colspan="4">{{ form_label(form.cmtReponse) }} :&nbsp;&nbsp;
+                    {{ form_widget(form.cmtReponse)}}
+                  {% if crmDetail.dateExport is empty %}  <button  id="validRecResponse" type="submit" class="btn-md btn-primary" >Valider</button>{%endif%}
+                </td>
+            </tr>
+              
+        </table>
+    </form>
+     {% if hasAccesToImputationPaie is defined and hasAccesToImputationPaie == true  and alowwArbitrage == true  and  crmDetail.CrmDemande.CrmCategorie.id == 1 %}
+        {{include('AmsDistributionBundle:Crm:imputation_paie.html.twig') }}
+    {% endif %}
+    
+    {% if hasAccesToArbitrageBloc is defined and hasAccesToArbitrageBloc == true  and  crmDetail.CrmDemande.CrmCategorie.id == 1 %}
+        {{include('AmsDistributionBundle:Crm:arbitrage.html.twig') }}
+    {%endif%}
+
+   
+
+    <table class="table table-center left">
+        <thead>
+            <tr>
+               <th  BGCOLOR="#E1DDE1" colspan="14" style="font-size: 20px;"><b>Historique</b></th>           
+            </tr>
+            {% if allCrmByClient | length > 1 %}
+            <tr>
+                <th width="10%">N° Demande</th>
+                <th width="10%">Date Réclamation</th>
+                <th width="15%">Categorie</th>
+                <th width="15%">Demande/info</th>                      
+                <th width="10%">Réponse</th>
+                <th width="10%">Date de réponse</th>
+            </tr>
+            {% endif %}
+        </thead>
+    
+        {%if crmReperage is not empty%}
+            {% for crmRep in crmReperage %} 
+            <tr> 
+                    <td>-</td>
+                    <td>{{crmRep.dateExport|date('d/m/Y h:i')}}</td>
+                    <td>Repérage</td>
+                    <td>Nb. exemplaire(s): {{crmRep.qte}}</td>
+                    <td>Topage : {{crmRep.topage}}
+                        {%if crmRep.qualif.libelle is defined and crmRep.qualif.libelle != ""%}</br><strong>{{crmRep.qualif.libelle}}</strong>{%endif%}
+                        {%if crmRep.cmtReponse != "" %}</br><strong>{{crmRep.cmtReponse}}</strong>{%endif%}
+                    </td>
+                    <td>{%if crmRep.dateReponse is not null%}{{crmRep.dateReponse|date('d/m/Y')}}{%endif%}</td>
+            </tr>
+            {% endfor %} 
+        {%endif%}
+            {% for allCrmByClient in allCrmByClient %}
+               {% if allCrmByClient.id != crmDetail.id and crmDetail is not empty %}
+                <tr>{% if allCrmByClient.CrmReponse is not empty %}{% set wRes = 1%} {% else %} {% set wRes = 2 %}{%endif%}
+                    {% set wRes = 2 %}
+                    {% if allCrmByClient.crmDemande.crmCategorie.id == 1 %}
+                    {# c est une reclamation #}
+                    <td><a href="{{path('crm_edit_and_validate',{crmId: allCrmByClient.Id})}}" >{{allCrmByClient.id}}</a></td>
+                    {%else%}
+                     {# c est une remontée dinfo #}
+                       <td><a href="{{path('crm_create_rem',{crmId: allCrmByClient.Id})}}" >{{allCrmByClient.id}}</a></td>
+                    {%endif%}
+                    <td>{{allCrmByClient.dateCreat|date('d/m/Y H:i')}}</td>
+                    <td>{{allCrmByClient.CrmDemande.CrmCategorie.libelle}}</td>
+                    <td>{{allCrmByClient.CrmDemande.libelle}}<br/>
+                        {{allCrmByClient.cmtDemande}}
+                    </td>
+                    <td>{% if allCrmByClient.CrmReponse is not empty %}
+                        {{allCrmByClient.CrmReponse.libelle}}<br/>
+                        {{allCrmByClient.cmtReponse}}{% endif %}
+                    </td>
+                    <td>{% if allCrmByClient.dateReponse is not empty %}{{allCrmByClient.dateReponse|date('d/m/Y')}}{% endif %}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+                {% if allCrmByClient | length < 2 and crmReperage|length==0%}
+                    <tr>
+                      <td ><b>Il n'y a aucun historique disponible</b></td>
+                    </tr>
+                {% endif %}         
+    </table>
+    <table class="table table-center  ">
+        <thead>
+            <tr>
+             <th BGCOLOR="#E1DDE1" colspan="5" style="font-size: 20px;"><b>Historique des services</b></th>          
+            </tr>
+
+        </thead>
+        <tr>
+            <td colspan="5">
+                <b>
+                    {% if datesDistribution is not empty %}
+                        Jours où ce client a potentiellement été servi : 
+                    {% else %}
+                        Aucun service.
+                    {% endif %}
+                </b>
+            </td>
+        <tr>
+        {% set nbLigne = (datesDistribution|length/5)|round(0,'floor') %}
+        {% if datesDistribution%5 != 0 %}
+            {% set nbLigne = nbLigne|round(0,'floor') +1 %}
+        {% endif %}
+        {% for i in 0..nbLigne %}
+            <tr>
+                {% for dateDistrib in datesDistribution|slice(i*5, 5) %}
+                     <td  style="text-align: left;">{{dateDistrib.date_distrib |localizeddate('full','none','fr')}}
+                {% endfor %}
+            </tr>
+        {% endfor %}    
+    </table>
+</div>
+
+<script type="text/javascript">  
+    $(document).ready(function() {
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        $("form input.imp-paie").datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: new Date(),     
+        }).attr("readonly","readonly");
+    }); 
+
+    $('#ams_distributionbundle_crmdetail_imputationPaie').on('change',function(){
+        var dateIputation = $('#ams_distributionbundle_crmdetail_dateImputationPaie');
+        if($(this).val() == 0){
+            dateIputation.prop('disabled',true);
+            $('#imp-date-td').hide();
+        }else{
+            dateIputation.prop('disabled',false);
+            $('#imp-date-td').show();
+        }
+    });
+   
+   $('#saveImputation').on('click', function(event){
+        event.preventDefault();
+        var dateImputation = $('#ams_distributionbundle_crmdetail_dateImputationPaie').val().replace('/','-').replace('/','-'),
+            crmId =   $('#crmId').val(),
+            abonneSocId =   $('#abonneSocId').val(),
+            dateMin = $('#dateMin').val(),
+            dateMax = $('#dateMax').val(),
+            cmtImputationPaie = $('#ams_distributionbundle_crmdetail_cmtImputationPaie').val(),
+            isImputable = $('#ams_distributionbundle_crmdetail_imputationPaie').val();
+            $('#msg_confirm').html('<div align="center"><img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br><span>Veuillez patientez...</span><br></div>');
+            $('#validButton').hide();
+            $('#record_dialog').show();
+        $.ajax({
+            url: "{{path('crm_save_imputation_paie')}}",
+            type: "POST",
+            data: { dateImputation : dateImputation , crmId: crmId, abonneSocId: abonneSocId, cmtImputationPaie:cmtImputationPaie,isImputable:isImputable,  dateMin:  dateMin,  dateMax:  dateMax},
+            success: function(data) {
+               // $( "body" ).scrollTop(50);
+                if(data.error ==  true && data.info == 'noDistrib'){
+                    $('#msg_confirm').html("<div align='center' style='padding:15px;color:red'><img src='{{ asset('images/error-icon.png') }}' alt='OK' title='OK' id='ok'><br>Ce client n'est pas censé d'être livré le jour du : "+dateImputation+ "<br/> merci de choisir une autre date!</div>");
+                    $('#validButton').show();
+
+                    return false;
+                }
+                if(data.error ==  true && data.info == 'noTournee'){
+                    $('#msg_confirm').html("<div align='center' style='padding:15px;color:red'><img src='{{ asset('images/error-icon.png') }}' alt='OK' title='OK' id='ok'><br>Ce client n'est pas affecté à aucune tourneé pour la date du : "+dateImputation+ ", merci de choisir une autre date</div>");
+                    $('#validButton').show();
+
+                    return false;
+                }
+
+                if(data.error == false){
+                     displayConfirmModal('Vos données ont bien été enregistrées!', '{{ asset('images/ok-icon.png') }}');
+                    if(typeof(data.info.code) !='undefined'){
+                        var tourneeCode = data.info.code,
+                        tourneeId= data.info.id;
+            
+                       $("#form_tournee option[value=" +tourneeId+"]").prop("selected","selected");
+                       if( $("#form_tournee").val() != tourneeId){
+                        $("#form_tournee").append(new Option(tourneeCode, tourneeId));
+                        $("#form_tournee option[value=" +tourneeId+"]").prop("selected","selected");
+                       } 
+                      // $("#form_tournee option[value=" + 712772 +"]").attr("selected","selected") ;
+                      // $("#form_tournee").val(tourneeId).change();;return
+                    }
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}',true, xhr.status);
+            }
+        });
+
+   });
+
+    $('#validButton').on('click', function(){
+       $('#record_dialog').hide();
+    });
+    
+    /*Modification de la tournee */
+    
+    $('#form_tournee').on('change',function(){
+ 
+       var tournee_id =  $(this).val();
+       var crmId =   $('#crmId').val();
+       $('#msg_confirm').html('<div align="center"><img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br><span>Veuillez patientez...</span><br></div>');
+       $('#validButton').hide();
+       $('#record_dialog').show();
+
+       $.ajax({
+            url: "{{path('crm_update_tournee')}}",
+            type: "POST",
+            data: {  crmId: crmId, trnJourId: tournee_id},
+            success: function(data) {
+              displayConfirmModal('Vos données ont bien été enregistrées!', '{{ asset('images/ok-icon.png') }}');
+             },
+            error: function(xhr, ajaxOptions, thrownError) {
+                displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}',true, xhr.status);
+                $('#validButton').show();
+            }
+        });
+       
+    });
+
+
+
+    $('#validRecResponse').on('click', function(e){
+        
+        e.preventDefault();
+        var crmReponse = $('#ams_distributionbundle_crmdetail_crmReponse'),
+            crmCmtResponse = $('#ams_distributionbundle_crmdetail_cmtReponse').val(),
+            crmId   = $('#crmId').val();
+           
+        if(($.trim(crmReponse.val()) == '' && crmReponse.is(':visible') ) || $.trim(crmCmtResponse) == '')  {
+           $('#msg_confirm').html("<div align='center' style='padding:15px;color:red'><img src='{{ asset('images/error-icon.png') }}' alt='OK' title='OK' id='ok'><br>Merci de renseigner tous les champs du bloc "+$('#blocResponse').html()+"</br></div>");
+            $('#validButton').show();
+            $('#record_dialog').show();
+            return false;
+        }
+         $('#validRecResponse').hide();
+        $('#msg_confirm').html('<div align="center"><img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br><span>Veuillez patientez...</span><br></div>');
+        $('#validButton').hide();
+        $('#record_dialog').show();
+        $.ajax({
+            url: "{{path('crm_edit_and_validate',{'crmId':crmDetail.id})}}",
+            type: "POST",
+            data: {'crmReponse': crmReponse.val(), 'cmtResponse': crmCmtResponse, 'crmId': crmId},
+            success: function(data){
+             
+                if(data.result == 'succsses'){
+                   
+                    $('#tdResponseDate').html($('<b>Date de réponse: </b><sapn> '+data.dateResponse+'</sapn>'));
+                    $('#tdResponseUser').html($('<b>Répondu par: </b><sapn> '+data.user+'</sapn>'));
+                    displayConfirmModal('Vos données ont bien été enregistrées!', '{{ asset('images/ok-icon.png') }}');
+                }else{
+                    displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}');
+                }
+                 $('#validRecResponse').show();
+
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}',true, xhr.status);
+                $('#validRecResponse').show();
+            },
+        })
+
+
+    });
+
+    $('#validArbitrage').on('click', function(e){
+        e.preventDefault();
+        if($('#ams_distributionbundle_crmdetail_motif').val() == ''){ 
+            var msg = "Merci de selectionner un motif";
+            $('.error_msg').html('<div class="alert alert-warning">'+msg+'</div>');
+            return false;
+        }
+        var motifId =  $('#ams_distributionbundle_crmdetail_motif').val();
+        var crmId   = $('#crmId').val();
+        $('#validArbitrage').hide();
+   
+        $('#msg_confirm').html('<div align="center"><img src="{{ asset('images/loading/LoadingCircle_md.gif') }}" alt="Loading" title="Loading"><br><span>Veuillez patientez...</span><br></div>');
+        $('#validButton').hide();
+        $('#record_dialog').show();
+        $.ajax({
+            url: "{{path('crm_create_arbitrage')}}",
+            type: "POST",
+            data: {'motifId': motifId, 'crmId': crmId},
+            success: function(data){
+             
+                if(data.result == 'succsses'){
+                    displayConfirmModal('Vos données ont bien été enregistrées!', '{{ asset('images/ok-icon.png') }}');
+                    $('#ams_distributionbundle_crmdetail_utlDemandeArbitrage').val(data.utlArbitrage);
+                    $('#arbStatus').append("<label><b>Status</label>&nbsp;&nbsp;<span style='color:#F83403;'>Demande en cours</span></b>");
+                }else{
+                      displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}');
+                      $('#validArbitrage').show();
+                }
+
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                displayConfirmModal('Une erreur est survenue lors l\'enregistrement des données.', '{{ asset('images/error-icon.png') }}',true, xhr.status);
+                $('#validArbitrage').show();
+            },
+        })
+
+    });
+
+    function displayConfirmModal(msg, imagePath,color, xhrError, xhrStatus ){
+        var cError =   (xhrError == true) ? "<br/>code erreur :"+xhrStatus : "",
+        color  = (/ok/i.test(imagePath)) ? 'green' : 'red' ;
+        $('#msg_confirm').html("<div align='center' style='padding:15px;color:"+color+"'><img src="+imagePath+" alt='OK' title='OK' id='ok'><br>"+msg+cError+"</div>");
+        $('#validButton').show();
+    }
+</script>
+{%endblock%}

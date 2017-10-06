@@ -1,0 +1,63 @@
+liste_pai_refactivite:
+    pattern:  /liste-ref-activite
+    defaults: { _controller: "AmsReferentielBundle:RefActivite:liste" }
+  
+gridliste_pai_refactivite:
+    pattern:  /grid-ref-activite
+    defaults: { _controller: "AmsReferentielBundle:RefActivite:grid" }    
+
+liste_pai_refincident:
+    pattern:  /liste-ref-incident
+    defaults: { _controller: "AmsReferentielBundle:RefIncident:liste" }
+  
+gridliste_pai_refincident:
+    pattern:  /grid-ref-incident
+    defaults: { _controller: "AmsReferentielBundle:RefIncident:grid" }    
+
+liste_pai_reftransport:
+    pattern:  /liste-ref-transport
+    defaults: { _controller: "AmsReferentielBundle:RefTransport:liste" }
+  
+gridliste_pai_reftransport:
+    pattern:  /grid-ref-transport
+    defaults: { _controller: "AmsReferentielBundle:RefTransport:grid" }    
+
+liste_pai_refnatureclient:
+    pattern:  /liste-ref-natureclient
+    defaults: { _controller: "AmsReferentielBundle:RefNatureClient:liste" }
+  
+gridliste_pai_refnatureclient:
+    pattern:  /grid-ref-natureclient
+    defaults: { _controller: "AmsReferentielBundle:RefNatureClient:grid" }    
+
+liste_pai_reftypeurssaf:
+    pattern:  /liste-ref-type_urssaf
+    defaults: { _controller: "AmsReferentielBundle:RefTypeUrssaf:liste" }
+  
+gridliste_pai_reftypeurssaf:
+    pattern:  /grid-ref-type_urssaf
+    defaults: { _controller: "AmsReferentielBundle:RefTypeUrssaf:grid" }    
+
+liste_pai_refemploi:
+    pattern:  /liste-ref-emploi
+    defaults: { _controller: "AmsReferentielBundle:RefEmploi:liste" }
+  
+gridliste_pai_refemploi:
+    pattern:  /grid-ref-emploi
+    defaults: { _controller: "AmsReferentielBundle:RefEmploi:grid" }    
+
+liste_pai_refempsociete:
+    pattern:  /liste-ref-empsociete
+    defaults: { _controller: "AmsReferentielBundle:RefEmpSociete:liste" }
+  
+gridliste_pai_refempsociete:
+    pattern:  /grid-ref-empsociete
+    defaults: { _controller: "AmsReferentielBundle:RefEmpSociete:grid" }    
+
+liste_pai_refpopulation:
+    pattern:  /liste-ref-population
+    defaults: { _controller: "AmsReferentielBundle:RefPopulation:liste" }
+  
+gridliste_pai_refpopulation:
+    pattern:  /grid-ref-population
+    defaults: { _controller: "AmsReferentielBundle:RefPopulation:grid" }    

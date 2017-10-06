@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrUtlUtilisateurs" table="TR_UTL_UTILISATEURS">
+    <id name="utlId" type="string" column="UTL_ID" length="20">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="utlMdp" type="string" column="UTL_MDP" length="20" nullable="false"/>
+    <field name="utlNom" type="string" column="UTL_NOM" length="45" nullable="false"/>
+    <field name="utlPrenom" type="string" column="UTL_PRENOM" length="45" nullable="true"/>
+    <field name="utlEmail" type="string" column="UTL_EMAIL" length="45" nullable="true"/>
+  </entity>
+</doctrine-mapping>

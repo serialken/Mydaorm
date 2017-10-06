@@ -1,0 +1,27 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="statut"         type="ro"   width="50"  align="center"  sort="str">Statut</column> 
+        <column id="date_debut"     type="ro"   width="120" align="center"  sort="sortDateTime">Début</column> 
+        <column id="duree"          type="ro"   width="120" align="center"  sort="str">Durée</column> 
+        <column id="utilisateur_id" type="coro" width="200" align="left"    sort="sortCombo">Utilisateur{{comboUtilisateur|raw}}</column> 
+        <column id="typetrt"        type="ro"   width="200" align="left"    sort="str">Traitement</column> 
+        <column id="depot_id"       type="coro" width="200" align="left"    sort="sortCombo">Dépôt{{comboDepot|raw}}</column> 
+        <column id="flux_id"        type="coro" width="70"  align="left"    sort="sortCombo">Flux{{comboFlux|raw}}</column> 
+        <column id="date_distrib"   type="ro"   width="120" align="center"  sort="sortDate">Date</column> 
+        <column id="annéemois"      type="ro"   width="120" align="center"  sort="str">Mois</column> 
+    </head> 
+    {% for row in curseur %}
+    <row id ="{{row.id}}"{{m.locked(false)}}{{m.bgColorInterface(row.level)}}>
+        <cell>{{row.statut}}</cell>
+        <cell>{{row.date_debut}}</cell>
+        <cell>{{row.duree}}</cell>
+        <cell>{{row.utilisateur_id}}</cell>
+        <cell>{{row.typetrt}}</cell>
+        <cell>{{row.depot_id}}</cell>
+        <cell>{{row.flux_id}}</cell>
+        <cell>{{row.date_distrib}}</cell>
+        <cell>{{row.anneemois}}</cell>
+    </row> 
+    {% endfor %}
+</rows>

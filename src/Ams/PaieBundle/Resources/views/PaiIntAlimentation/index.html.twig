@@ -1,0 +1,81 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}{{titre}}{% endblock %}
+{% block body %}
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':null , 'route': route }))}}
+    <div  class='well'>
+        <span style="float:left;text-align:left">
+            <label>Date à alimenter </label><br/>
+            <label>Date modèle </label><br/>
+            <label>Dépôt </label><br/>
+            <label>Flux </label><br/>
+            <br/>
+            <label>Tournées</label><br/>
+            <input type="checkbox" id="alim_tournee" checked="checked"> Alimentation<br/>
+            <input type="checkbox" id="maz_duree_attente" checked="checked"> Suppression des heures d'attente<br/>
+            <input type="checkbox" id="maz_duree_retard" checked="checked"> Suppression des retards<br/>
+            <input type="checkbox" id="maz_nbkm_paye_tournee" checked="checked"> Suppression des kilomètres payés<br/>
+            <br/>
+            <label>Activités presse</label><br/>
+            <input type="checkbox" id="alim_activite_presse" checked="checked"> Alimentation<br/>
+            <input type="checkbox" id="maz_nbkm_paye_activite_presse" checked="checked"> Suppression des kilomètres payés<br/>
+            <br/>
+            <label>Activités hors-presse</label><br/>
+            <input type="checkbox" id="maz_duree_activite_horspresse" checked="checked"> Mise à zéro des durées <br/>
+            <input type="checkbox" id="maz_nbkm_paye_activite_horspresse" checked="checked"> Suppression des kilomètres payés<br/>
+            <br/>
+            <input type="button" id="button_alimenter" value="Alimenter" onclick="confirmAction('Voulez-vous vraiment lancer l\'alimentation de la paie?','ajaxAlimenter()')">
+        </span>
+        <span style="float:left;text-align:left">
+            <input type="text" id="input_date_distrib" value="{{date_distrib}}"></input><br/>
+            <input type="text" id="input_date_org"></input><br/>
+            <select id="combo_depot_id" style="width:150px;">{{comboDepot|raw}}</select><br/>
+            <select id="combo_flux_id" style="width:150px;">{{comboFlux|raw}}</select><br/>
+        </span>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    $(document).ready(function() {
+        $("#input_date_distrib").datepicker({
+                dateFormat: 'dd/mm/yy', 
+                firstDay:1,
+                minDate:'{{min_date_distrib}}'
+            }).attr("readonly","readonly");
+        $("#input_date_org").datepicker({
+                dateFormat: 'dd/mm/yy', 
+                firstDay:1
+            });
+    });
+    
+    function ajaxAlimenter(){
+        ajaxMessage("Alimentation en cours ...");
+        $('#button_alimenter').prop('disabled', true);
+        $.ajax({
+            timeout: 999000,
+            url: "ajax-alimenter-pai-int-alimentation",
+            type: "GET",
+            data: { date_distrib: $('#input_date_distrib').val()
+                ,   date_org: $('#input_date_org').val()
+                ,   depot_id: $('#combo_depot_id').val()
+                ,   flux_id: $('#combo_flux_id').val()
+                ,   alim_tournee: $('#alim_tournee').is(":checked")
+                ,   maz_duree_attente: $('#maz_duree_attente').is(":checked") 
+                ,   maz_duree_retard: $('#maz_duree_retard').is(":checked") 
+                ,   maz_nbkm_paye_tournee: $('#maz_nbkm_paye_tournee').is(":checked") 
+                ,   alim_activite_presse: $('#alim_activite_presse').is(":checked")
+                ,   maz_nbkm_paye_activite_presse: $('#maz_nbkm_paye_activite_presse').is(":checked") 
+                ,   maz_duree_activite_horspresse: $('#maz_duree_activite_horspresse').is(":checked") 
+                ,   maz_nbkm_paye_activite_horspresse: $('#maz_nbkm_paye_activite_horspresse').is(":checked") 
+            },
+            success: function(data) { 
+                ajaxSucces("Alimentation réalisée ...<br/>Merci de consulter la log"); 
+                window.location.href = "liste-pai-int-traitement";
+            },
+            error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        });  
+    }
+
+</script>
+{% endblock %}

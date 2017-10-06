@@ -1,0 +1,69 @@
+crm_vue_generale:
+    pattern: /reclamations-rem-infos/
+    defaults: { _controller: "AmsDistributionBundle:Crm:index"}
+   
+crm_index_donnees:
+    pattern: /reclamations-rem-infos-detail/tout/{dateMin}/{dateMax}
+    defaults: { _controller: "AmsDistributionBundle:Crm:indexCrmDonnees"}
+
+crm_display_detail:
+    pattern: /reclamations-rem-infos-detail/{cId}
+    defaults: {_controller: "AmsDistributionBundle:Crm:displayDetailCrm"}
+
+crm_display_zoom:
+    pattern: /reclamations-rem-infos-societe/{cId}/{dpId}/{fId}/
+    defaults: {_controller: "AmsDistributionBundle:Crm:displayOnlyDetailCrm"}
+
+crm_display_div:
+    pattern: /reclamations-rem-infos-societe-div/{cId}/{dpId}/{fId}/
+    defaults: {_controller: "AmsDistributionBundle:Crm:displayDivDetailCrm"}
+
+crm_edit_and_validate:
+    pattern: /reclamations-rem-infos-detail/{crmId}/
+    defaults: {_controller: "AmsDistributionBundle:Crm:editAndValidateCrm"}
+    
+crm_serach_reclam:
+    pattern: /reclamations-rem-infos-detail/
+    defaults: {_controller: "AmsDistributionBundle:Crm:serachReclam"}
+
+crm_serach_client_to_create_rem_info:
+    pattern: /reclamations-rem-infos-search-client/
+    defaults: {_controller: "AmsDistributionBundle:Crm:searchClientToCreateRem"}
+
+crm_create_rem:
+    pattern: /reclamations-rem-infos-create-rem/
+    defaults: {_controller: "AmsDistributionBundle:Crm:createRemInfo"}
+
+crm_get_tourne_by_depot:
+    pattern: /reclamations-rem-infos/search-tournee/
+    defaults: {_controller: "AmsDistributionBundle:Crm:getTourneeByDepot"}
+    
+crm_create_arbitrage:
+    pattern: /reclamations-rem-infos/create-arbitrage/
+    defaults: {_controller: "AmsDistributionBundle:Crm:createArbitrage"}
+
+crm_save_imputation_paie:
+    pattern: /reclamations-rem-infos/create-arbitrage-imp-paie/
+    defaults: {_controller: "AmsDistributionBundle:Crm:saveImputationPaie"}
+    
+crm_export_pdf_reclam:
+    pattern: /reclamations-rem-infos/export-pdf-reclam/
+    defaults: {_controller: "AmsDistributionBundle:Crm:reclamToPdf"}
+    
+crm_update_tournee:
+    pattern: /crm-update-tournee/
+    defaults: {_controller: "AmsDistributionBundle:Crm:UpdateTournee"}
+crm_get_crm_demane_by_id:
+    pattern: /crm-get-demande-list/
+    defaults: {_controller: "AmsDistributionBundle:Crm:getCrmDemandeList"}
+crm_export_excel:
+    pattern: /crm-exp/
+    defaults: {_controller: "AmsDistributionBundle:Crm:exportVisualisationPageToExcel"}
+crm_exp:
+    pattern: /crm-expoprt/
+    defaults: {_controller: "AmsDistributionBundle:Crm:exp"}
+
+
+crm_get_tourne_by_abonne_depot_date:
+    pattern: /crm-tourne-by-abonne-depot-date
+    defaults: {_controller: "AmsDistributionBundle:Crm:getTourneeByAbonneDepotDate"}

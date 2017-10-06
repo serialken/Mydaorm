@@ -1,0 +1,25 @@
+societe:
+    pattern:  /
+    defaults: { _controller: "AmsProduitBundle:Societe:index" }
+
+societe_creation_ajax:
+    pattern:  /create_ajax
+    defaults: { _controller: "AmsProduitBundle:Societe:create" }
+    
+societe_liste_ajax:
+    pattern:  /liste_ajax
+    defaults: { _controller: "AmsProduitBundle:Societe:ajaxSelectSocietes" }
+
+societe_modification_ajax:
+    pattern:  /update_ajax
+    defaults: { _controller: "AmsProduitBundle:Societe:update" }
+    
+societe_suppression:
+    pattern: /delete/{societeId}
+    defaults: { _controller: "AmsProduitBundle:Societe:deleteSociete" }
+    requirements:
+        societeId: \d+
+
+
+
+  

@@ -1,0 +1,33 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="modele_activite_id" type="ro"   hidden="true"></column> 
+        <column id="jour_id"            type="coro" width="80"  align="left"    sort="int">Jour{{comboJour|raw}}</column> 
+        <column id="level"              type="ro"   width="50"  align="center"  sort="int">Niveau</column> 
+        <column id="rubrique"           type="ro"   width="50"  align="center"  sort="str">Rubrique</column> 
+        <column id="code"               type="ro"   width="40"  align="center"  sort="str">Code</column> 
+        <column id="msg"                type="ro"   width="*"   align="left"    sort="str">Message</column> 
+        <column id="employe_id"         type="coro" width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="tournee_id"         type="coro" width="*"   align="left"    sort="sortCombo">Tournée{{comboTournee|raw}}</column> 
+        <column id="tournee_jour_id"    type="coro" width="*"   align="left"    sort="sortCombo">Tournée Jour{{comboTourneeJour|raw}}</column> 
+        <column id="activite_id"        type="coro" width="*"   align="left"    sort="sortCombo">Activité{{comboActivite|raw}}</column> 
+        <column id="remplacement_id"    type="coro" width="*"   align="left"    sort="sortCombo">Remplacement{{comboRemplacement|raw}}</column> 
+        <column id="commentaire"        type="ro"   width="*"   align="left"    sort="str">Commentaire</column> 
+    </head> 
+    {% for row in curseur %}
+    <row id ="{{row.id}}"{{m.locked(false)}}{{m.bgColor(row.couleur)}}>
+        <cell>{{row.modele_activite_id}}</cell>
+        <cell>{{row.jour_id}}</cell>
+        <cell>{{row.level}}</cell>
+        <cell>{{row.rubrique}}</cell>
+        <cell>{{row.code}}</cell>
+        <cell>{{row.msg}}</cell>
+        <cell>{{row.employe_id}}</cell>
+        <cell>{{row.tournee_id}}</cell>
+        <cell>{{row.tournee_jour_id}}</cell>
+        <cell>{{row.activite_id}}</cell>
+        <cell>{{row.remplacement_id}}</cell>
+        <cell>{{row.commentaire}}</cell>
+    </row> 
+    {% endfor %}
+</rows>

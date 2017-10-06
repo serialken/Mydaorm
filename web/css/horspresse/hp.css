@@ -1,0 +1,156 @@
+/* 
+    Created on : 2 déc. 2015, 12:23:23
+    Author     : marc-antoineadelise
+*/
+
+.toggleStep{
+    display: none;
+}
+
+.toggleStep.active{
+    display: block;
+}
+
+.disabled{
+    display: none;
+}
+
+
+div.formPart label{
+    text-align: left;
+}
+
+.formError{
+    color: #9d080b;
+}
+
+.formSuccess{
+    color: #669900;
+    display: none;
+}
+
+div#add_step8 p.formError .glyphicon,
+div#add_step8 p.formSuccess .glyphicon{
+    margin-right: 10px;
+}
+
+.error{
+    color: #9d080b;
+    border-color: #9d080b;
+}
+
+.required {
+    color: #9d080b;
+    margin-left: 5px;
+}
+.bottomBtnPart{
+    margin-top: 25px;
+}
+
+tr.centralExplain{
+    display: none;
+}
+
+.centralExplain span.glyphicon-info-sign{
+    margin-right: 10px;
+}
+
+#fileStrucBtnModal .consigne{
+    text-align: left;
+}
+
+#fileStrucBtnModal .headers,
+#fileStrucBtnModal .dataSeparator{
+    text-align: left;
+}
+
+#fileStrucBtnModal label{
+    font-weight: normal;
+}
+
+#fileStrucBtnModal .headers input[type=checkbox]{
+    margin-right: 10px;
+}
+
+#fileStrucBtnModal .pSave{
+    text-align: right;
+}
+
+#fileStrucBtnModal .addRow{
+    text-align: left;
+    margin-top: 15px;
+}
+
+#fileStrucBtnModal table#structure{
+    border: 1px solid grey;
+    border-collapse: separate;
+    /*border-spacing: 10px;*/
+}
+
+#fileStrucBtnModal table#structure th{
+    text-align: center;
+    height: 35px;
+}
+
+#fileStrucBtnModal table#structure td{
+    height: 40px;
+}
+
+#fileStrucBtnModal table#structure tr:first-of-type{
+    background-color: silver;
+}
+
+#add_step9 div.panel-footer div{
+    width: 50%;
+    margin: auto;
+    text-align: left;
+}
+
+#add_step9 span.valPlaceHolder,
+#add_step9 div.paramsDistrib span{
+    margin-left: 15px;
+}
+
+#add_step9 div.paramsDistrib p.chargeMaxTourneesDediees span,
+#add_step9 div.paramsDistrib p.chargeMaxTournees span{
+    margin-left: 0px;
+}
+
+#add_step9 div.paramsDistrib span.debordement{
+    display: none;
+}
+
+#add_step9 div.paramsDistrib .notActive{
+    color: #838B8B;
+}
+
+#add_step9 div.infoFichier p.btnHolder{
+    text-align: right;
+}
+
+table.campList tr:nth-child(even) {
+    background-color: #e4e6e9;
+}
+
+.content.horspresse button i.glyphicon{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+#add_step9 div.panel-footer div.sampleFile{
+    width: 90%;
+}
+
+#add_step9 div.panel-footer div.sampleFile table thead{
+    background-color: #838B8B;
+}
+
+#add_step9 div.panel-footer div.sampleFile table tr:nth-child(even) {
+    background-color: #e4e6e9;
+}
+
+#add_step9 div.panel-footer div.sampleFile table td{
+    border-bottom: none;
+    border-top: none;
+}

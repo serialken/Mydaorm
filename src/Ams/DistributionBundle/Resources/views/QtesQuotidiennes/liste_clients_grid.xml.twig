@@ -1,0 +1,32 @@
+<rows>
+    <head>
+        <column type="ro" width="70" align="center" sort="str">N° client</column>
+        <column type="ro" width="200" align="center" sort="str">Société</column>
+        <column type="ro" width="200" align="center" sort="str">Produit</column>
+        <column type="ro" width="70" align="center" sort="str">Quantité</column>
+        <column type="ro" width="200" align="center" sort="str">Vol 1</column>
+        <column type="ro" width="200" align="center" sort="str">Vol 2</column>
+        <column type="ro" width="200" align="center" sort="str">Vol 3</column>
+        <column type="ro" width="200" align="center" sort="str">Vol 4</column>
+        <column type="ro" width="200" align="center" sort="str">Vol 5</column>
+        <column type="ro" width="200" align="center" sort="str">CP</column>
+        <column type="ro" width="200" align="center" sort="str">Ville</column>
+        <column type="ro" width="200" align="center" sort="str">Tournee</column>
+    </head>
+    {% for infoClient in listeClients %}
+        <row id="{{ loop.index }}">
+            <cell>{{ infoClient.numaboExt }}</cell>
+            <cell>{{ infoClient.societe_libelle }}</cell>
+            <cell>{{ infoClient.produit_libelle }}</cell>
+            <cell>{{ infoClient.qte }}</cell>
+            <cell>{{ infoClient.vol1 }}</cell>
+            <cell>{{ infoClient.vol2 }}</cell>
+            <cell>{{ infoClient.vol3 }}</cell>
+            <cell>{{ infoClient.vol4 }}</cell>
+            <cell>{{ infoClient.vol5 }}</cell>
+            <cell>{{ infoClient.cp }}</cell>
+            <cell>{{ infoClient.ville }}</cell>
+            <cell>{{ infoClient.tournee }}</cell>
+        </row>
+     {% endfor %}
+</rows>

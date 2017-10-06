@@ -1,0 +1,57 @@
+td.navigation {background:#f0f0f0; height:16px; color:#000; font-family:calibri,verdana,arial; font-size:12px; padding-left:0px;
+border-bottom: 1px solid #cccccc;}
+td.navigation ul{pa0dding:1; margin:0; list-style:none;}
+t0d.navigation ul li{margin-left:2px; float:left;}
+t0d.navigation ul li a {display:block; float:left; w0idth:100%; background-color:#f0f0f0; color:black; text-decoration:none; text-align:center; font-weight:bold;
+padding:5px; border:1px solid; border-color:#f0f0f0 #cccccc #f0f0f0 #f0f0f0; font-family:calibri,verdana,arial; font-size:18px;}
+t0d.navigation ul li a:hover {background-color:#cccccc;} 
+
+
+/********** < Navigation */
+#nav { bo0rder: 0px none; padding:3px 0 2px 5px; margin:0; font-family:calibri,verdana,arial; font-size:13px; }
+
+/* All Levels */
+#nav li { text-align:left; position:relative; }
+#nav li.over { z-index:999; }
+#nav li.parent {}
+#nav li a { display:block; text-decoration:none; font-family:calibri,verdana,arial;}
+#nav li a:hover { text-decoration:none; }
+#nav li a span { display:block; white-space:nowrap; cursor:pointer; }
+#nav li ul a span { white-space:normal; }
+
+/* 1st Level */
+#nav li { float:left; }
+#nav li a { float:left; padding:5px 5px 5px 5px; font-family:calibri,verdana,arial; font-size:17px; font-weight:bold; color: #000; }
+#nav li a:hover { color: #000; background: #cccccc; }
+#nav li.over a,
+#nav li.active a { color:#000; background: #cccccc; }
+
+/* 2nd Level */
+#nav ul { position:absolute; width:15em; top:26px; left:-10000px; border:1px solid #cccccc; bo0rder-width: 0 1px 2px 1px;
+background:#9d080b; padding: 0px 0px 0px 3px; }
+#nav ul div.col { float:left; width: 15em; }
+#nav ul li { float:left; padding: 0; width: 15em; }
+#nav ul li a { float:none; p0adding:0px 0px; font-weight:normal; font-size:15px; color:#000 !important;
+border-bottom:1px solid #ccc; background:#f0f0f0; }
+#nav ul li a:hover { color:#000 !important; background: #cccccc; }
+#nav ul li.last > a { border-bottom:0; }
+#nav ul li.last.parent > a { border-bottom:0; }
+
+#nav ul li.over > a  { font-weight:normal; color:#000 !important; background: #cccccc; }
+#nav ul.mm-1 { width: 15em; }
+#nav ul.mm-2 { width: 30em; }
+#nav ul.mm-3 { width: 45em; }
+#nav ul.mm-4 { width: 60em; }
+
+/* 3rd+ leven */
+#nav ul ul { top:-6px; background: #9d080b; }
+
+/* Show Menu - uses built-in magento menu hovering */
+#nav li.over > ul { left:0; }
+#nav li.over > ul li.over > ul { left:14em; }
+#nav li.over ul ul { left:-10000px; }
+
+/* Show Menu - uses css only, not fully across all browsers but, for the purpose of the demo is fine by me */
+#nav li:hover > ul { left:0; z-index: 100; }
+#nav li:hover > ul li:hover > ul { left:14em; z-index: 200; }
+#nav li:hover ul ul { left:-10000px; }

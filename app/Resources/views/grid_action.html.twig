@@ -1,0 +1,9 @@
+<data>
+    <action type='{{action}}' sid='{{rowId}}' tid='{{newId}}'>
+        <msg><![CDATA[{{msg|raw}}]]></msg>
+        <valide>{% if valide is defined %}{{valide|raw}}{%endif%}</valide>
+        <level>{% if level is defined %}{{level|raw}}{%endif%}</level>
+        <journal_id>{%if journal_id is defined %}{{journal_id|raw}}{%endif%}</journal_id>
+       {%if rows is defined %}{{rows|raw}}{%endif%}
+    </action>
+</data>

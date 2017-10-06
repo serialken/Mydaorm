@@ -1,0 +1,42 @@
+{% if produits is not empty %}
+<rows>
+    {% if refresh == 0 %}
+    <head>
+        <column type="ro" width="200" align="center"><![CDATA[&nbsp;]]></column>
+        {% for produit in produits %}
+            <column type="ron" width="60" align="center" sort="na"><![CDATA[<div style="text-align: center;" id="{{ produit.id }}">{% if produit.image.webPath is defined and file_exists(produit.image.webPath) %}<img src="{{ asset(produit.image.webPath) }}" alt="{{ produit.libelle }}" style="height: 30px!important;max-width:100px"/><span style='display:none'>{{ produit.libelle }}</span>{% else %}{{ produit.libelle }}{% endif %}</div>]]></column>
+            <column type="ro" align="center" width="60" sort="na">#cspan</column>
+        {% endfor %}
+        <afterInit>
+            <call command="attachHeader"><param><![CDATA[<div style="text-align: center;">Conditionnement</div>{% for produit in produits %}*<input type="text" id="input_vol_pqt_{{ produit.id }}" value="{{ pqtVol[produit.id] }}" style="width: 100px; border:1px solid gray;" onBlur="(arguments[0]||window.event).cancelBubble=true;rechargeTableau('{{ path('qtes_quotidiennes_index_donnees', {'date': date_distrib|date("d-m-Y"), 'passe': passe, 'vol_paquet':'VOLUME' ,'pId': produit.id,'refresh': 1, 'flux': flux }) }}', this.value);" /> *#cspan{% endfor %}]]></param></call>
+            <call command="attachHeader"><param><![CDATA[<div style="text-align: center;">Dépôt</div>{% for produit in produits %}*<div {% if loop.index == 1 %}id='depot_title'{% endif %} style="text-align: center;">Pqt</div>*<div style="text-align: center;">Appt</div>{% endfor %}]]></param></call>
+            <call command="attachFooter"><param><![CDATA[<b>Conditionnement</b>{% for produit in produits %}*<div {% if loop.index == 1 %}id='condit_title'{% endif %} style="text-align: center;"><span id='condit_{{ (2 * loop.index) - 1 }}'>#condit</span></div>*#cspan{% endfor %}]]></param></call>
+            <call command="attachFooter"><param><![CDATA[<b>Nb. d'exemplaires</b>{% for produit in produits %}*<div {% if loop.index == 1 %}id='nb_ex_title'{% endif %} style="text-align: center;"><span id='nb_expl_{{ (2 * loop.index) - 1 }}'>#stat_total</span></div>*#cspan{% endfor %}]]></param></call>
+            <call command="attachFooter"><param><![CDATA[<b>Total paquets standards</b>{% for produit in produits %}*<div {% if loop.index == 1 %}id='tot_paq_std_title'{% endif %} style="text-align: center;"><span id='total_pqt_std_{{ (2 * loop.index) - 1 }}'>#stat_total</span></div>*{% endfor %}]]></param></call>
+            <call command="attachFooter"><param><![CDATA[<b>Total appoints</b>{% for produit in produits %}**<div {% if loop.index == 1 %}id='tot_app_title'{% endif %} style="text-align: center;"><span id='appts_pqt_{{ (2 * loop.index) }}'>0 pqt</span>&nbsp;<span id='appts_expl_{{ (2 * loop.index) }}'>+ 0 expl</span></div>{% endfor %}]]></param></call>
+        </afterInit>
+        
+        <settings> 
+            <colwidth>px</colwidth>
+        </settings>
+    </head>
+    {% endif %}
+    {% for depot_id, depot_libelle in depots %}
+        <row id="{{ depot_id }}">
+            <cell><![CDATA[<a valeur="{{depot_id}}" href="{{ path('qtes_quotidiennes_depot', {'date': date_distrib|date("d-m-Y"), 'dId': depot_id, 'flux': flux }) }}">{{ depot_libelle }}</a>]]></cell>
+            {% for produit in produits %}
+                {% if qtesProduitsParDepot[depot_id][produit.id] is defined %}
+                <cell>{% if qtesProduitsParDepot[depot_id][produit.id]['pqt'] != 0 %}{{ qtesProduitsParDepot[depot_id][produit.id]['pqt'] }}{% else %}-{% endif %}</cell>
+                <cell>{% if qtesProduitsParDepot[depot_id][produit.id]['appt'] != 0 %}{{ qtesProduitsParDepot[depot_id][produit.id]['appt'] }}{% else %}-{% endif %}</cell>
+                {% else %}
+                <cell>-</cell>
+                <cell>-</cell>
+                {% endif %}
+            {% endfor %}
+        </row>
+     {% endfor %}
+</rows>
+{% else %}
+  <rows>
+  </rows>
+{% endif %}

@@ -1,0 +1,16 @@
+<rows>
+  <head>      
+    <column type="ed" width="0" align="left"> Id </column>
+    <column type="ed" width='*' align="left"> Libelle </column>
+    <column type="ed" width='*' align="left">Code</column>
+    <column type="ro" align="center" width="50">Action</column>
+  </head> 
+  {% for row in motifs %}
+  <row>
+    <cell> {{ row.id }}</cell>
+    <cell> {{ row.libelle }}</cell>
+    <cell> {{ row.code }} </cell> 
+    <cell type="ro"><![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]>    </cell>
+  </row>
+  {% endfor %}
+</rows>

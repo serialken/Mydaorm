@@ -1,0 +1,12 @@
+admin_info_portage:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:InfoPortage:index" }
+    
+admin_info_portage_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:InfoPortage:grid" }
+    
+admin_info_portage_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:InfoPortage:MotifCrud" }
+

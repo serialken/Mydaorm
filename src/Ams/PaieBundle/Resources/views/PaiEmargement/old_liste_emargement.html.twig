@@ -1,0 +1,38 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block body %} 
+
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': route }))}}
+
+<div class="row">
+    <div style="width: 50%; margin-left: auto; margin-right: auto;">
+        <h4>Liste des feuilles d'émargement</h4>
+         <table class="table-center table-bordered" style="width: 99%;">
+            <tr>
+                <th>Depôt</th>
+                <th>Flux</th>
+                <th>&nbsp;</th>
+            </tr>
+            {%for fileInfos in liste %}
+                <tr>
+                    <td align="left" >{{ fileInfos["depot"] }}</td>
+                    <td align="center" >{{ fileInfos["flux"] }}</td>
+                    <td align="center">
+                        <a href="{{ path('download_emargement',{'file':fileInfos["file"]}) }}" data-description="Télécharger la feuille d'émargement" data-content="{{fileInfos["file"]}}">
+                            <i class="glyphicon glyphicon-download-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<script>
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("form input.date").datepicker({
+         dateFormat: 'yy-mm-dd', 
+         firstDay:1,
+     }).attr("readonly","readonly");
+  </script>
+
+{% endblock %}

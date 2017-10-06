@@ -1,0 +1,35 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+     <head>      
+        <column id="etalon_id"          type="ro"   hidden="true"></column>
+        <column id="date_distrib"       type="ro"   width="70"  align="center"  sort="sortDate">Date</column>
+        <column id="code"               type="ro"   width="90"  align="center"  sort="str">Code</column> 
+        <column id="duree"              type="ed"   width="70"  align="center"  sort="str">Données modifiables</column> 
+        <column id="nbkm"               type="ed"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="nbkm_paye"          type="ed"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="transport_id"       type="coro" width="80"  align="center"  sort="sortCombo">#cspan{{comboTransport|raw}}</column> 
+        <column id="depart_depot"       type="coro" width="50"  align="center"  sort="sortCombo">#cspan{{comboDepartRetour|raw}}</column> 
+        <column id="retour_depot"       type="coro" width="50"  align="center"  sort="sortCombo">#cspan{{comboDepartRetour|raw}}</column> 
+        <column id="duree_calculee"     type="ro"   width="70"  align="center"  sort="str">Durée tournée calculée</column> 
+        <column id="valrem_calculee"    type="ron"  width="70"  align="center"  sort="int" format="0.00000">Valeur de rémunération</column> 
+        <column id="valrem_moyen"       type="ron"  width="70"  align="center"  sort="int" format="0.00000">#cspan</column> 
+        <column id="ecart"              type="ro"   width="40"  align="right"   sort="int">#cspan</column> 
+        <column id="employe_id"         type="coro" width="*"   align="left"    sort="sortCombo">Données paie{{comboEmploye|raw}}</column> 
+        <column id="valrem_relle"       type="ron"  width="70"  align="center"  sort="int" format="0.00000">#cspan</column> 
+        <column id="heure_debut"        type="ro"   width="50"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_totale"       type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_nuit"         type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_tournee"      type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_supplement"   type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="duree_reperage"     type="ro"   width="70"  align="center"  sort="str">#cspan</column> 
+        <column id="nbcli"              type="ed"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="nbtitre"            type="ro"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="nbspl"              type="ro"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="nbprod"             type="ro"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="nbrep"              type="ro"   width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="msg"                type="ro"   width="*"   align="left"    sort="str">Impact sur les modèles</column> 
+{#        {{m.columnAjout(false)}}#}
+        <column type="ro" width="32" align="center" sort="na"></column>
+    </head> 
+    {% include 'AmsModeleBundle:EtalonTournee:row.xml.twig' %}
+ </rows>

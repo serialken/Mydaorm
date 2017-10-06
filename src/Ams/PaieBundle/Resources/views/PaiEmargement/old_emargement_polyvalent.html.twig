@@ -1,0 +1,62 @@
+{% if meta is defined %} {# nécessaire pour la génération en ligne de commande #}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+{% endif %}
+<style type="text/css" media="screen">
+    .title {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        border: 3px solid black;
+        margin-bottom: 100px;
+    }
+    .grid {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    .grid th {
+        border: 1px solid black;
+        text-align: center;
+        font-size: 10px;
+        height: 30px;
+    }
+    .grey {
+        background-color: darkgray;
+        color: black;
+    }
+    .grid td {
+        border: 1px solid black;
+        font-size: 10px;
+        width: 160px;
+        height: 30px;
+    }
+</style>
+
+<div class="title">FEUILLE D'EMARGEMENT DES POLYVALENTS</div>
+ <table class="grid">
+   <tr>
+      <th> &nbsp;</th>
+      <th colspan="5">{{depot.libelle}}</th> 
+   </tr>
+   <tr>
+      <th> Date:</th>
+      <th colspan="5">{{date_distrib|date('d/m/Y')}} </th> 
+   </tr>
+    <tr>
+      <th> Nom et Prénom</th>
+      <th>Prise de service </th> 
+      <th>Fin de service </th> 
+      <th>Taches effectuées</th> 
+      <th>Kms</th> 
+      <th>Signature</th> 
+   </tr>
+   {% for polyvalent in polyvalents %}
+     <tr class="{{cycle(['', 'grey'], loop.index) }}">
+       <td> {{polyvalent}}</td>
+       <td>&nbsp;</td> 
+       <td>&nbsp;</td> 
+       <td>&nbsp;</td> 
+       <td>&nbsp;</td> 
+       <td>&nbsp;</td> 
+    </tr>
+   {% endfor %}
+ </table>

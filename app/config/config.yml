@@ -1,0 +1,208 @@
+imports:
+    - { resource: security.yml }
+    - { resource: mroad_prod.ini }
+
+framework:
+    #esi:             ~
+    #translator:      { fallback: %locale% }
+    secret:          %secret%
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig','php']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_proxies: ~
+    session:         ~
+    fragments:       ~
+    http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+    globals:
+        app_date_fin: %DATE_FIN%
+        dhtmlx_img: %DHTMLX_IMG%
+        web_files_root_dir: %WEB_FILES_ROOT_DIR%
+        web_geoc_server_ip_port: %GEOC_WEB_SERVER_IP_PORT%
+        param: "@param"
+    form:
+        resources:
+            - '::fields.html.twig'
+
+# Assetic Configuration
+assetic:
+    debug:          %kernel.debug%
+    use_controller: false
+    bundles:        [ AmsSilogBundle, AmsCartoBundle ]
+    #java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: %kernel.root_dir%/Resources/java/compiler.jar
+        #yui_css:
+        #    jar: %kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        default_connection:       mroad
+        connections:
+            mroad:  
+                driver:   %database_driver%
+                host:     %database_host%
+                port:     %database_port%
+                dbname:   %database_name%
+                user:     %database_user%
+                password: %database_password%
+                charset:  UTF8
+                mapping_types:
+                    enum: string
+            pleiadesng:
+                driver:   "%database_driver_ple%"
+                host:     "%database_host_ple%"
+                port:     "%database_port_ple%"
+                dbname:   "%database_name_ple%"
+                service:  %database_service_ple%
+                user:     "%database_user_ple%"
+                password: "%database_password_ple%"
+                charset:  "%database_charset_ple%"
+            octime:
+                driver:   "%database_driver_oc%"
+                host:     "%database_host_oc%"
+                port:     "%database_port_oc%"
+                dbname:   "%database_name_oc%"
+                service:  %database_service_oc%
+                user:     "%database_user_oc%"
+                password: "%database_password_oc%"
+                charset:  "%database_charset_oc%"
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        #auto_mapping: true ######## mise en commentaire apres l'ajout de "entity_managers" 
+        entity_managers:
+            mroad:
+                mappings:
+                    AmsAbonneBundle: ~
+                    AmsAdresseBundle: ~
+                    AmsCartoBundle: ~
+                    AmsDistributionBundle: ~
+                    AmsEmployeBundle: ~
+                    AmsExtensionBundle: ~
+                    AmsFichierBundle: ~
+                    AmsModeleBundle: ~
+                    AmsPaieBundle: ~
+                    AmsProduitBundle: ~
+                    AmsReferentielBundle: ~
+                    AmsSilogBundle: ~
+                    AmsReportingBundle: ~
+                    AmsHorspresseBundle: ~
+                    AmsInvenduBundle: ~
+                    AmsExploitationBundle: ~
+                dql:
+                    string_functions:
+                        MONTH: Ams\ExtensionBundle\Doctrine\Month
+            pleiadesng:
+                connection:       pleiadesng
+            octime:
+                connection:       octime
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: %mailer_transport%
+    host:      %mailer_host%
+    username:  %mailer_user%
+    password:  %mailer_password%
+    spool:     { type: memory }
+
+ams_silog:
+    logfolders:
+        carto: %kernel.logs_dir%/%kernel.environment%/%logs_carto_folder%
+        alim: %kernel.logs_dir%/%kernel.environment%/%logs_alim_folder%
+        docs: %kernel.logs_dir%/%kernel.environment%/%logs_docs_folder%
+        envt: %kernel.logs_dir%/%kernel.environment%/%logs_envt_folder%
+        paie: %kernel.logs_dir%/%kernel.environment%/%logs_paie_folder%
+        crm: %kernel.logs_dir%/%kernel.environment%/%logs_crm_folder%
+
+monolog:
+    channels: ["alim", "envt", "docs", "paie", "carto", "crm" ]
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+        erreurs_carto:
+            type:  stream
+            channels: [carto]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_carto_folder%/%logs_alerts_filename%
+            level: error
+            bubble: false
+        infos_carto:
+            type:  stream
+            channels: [carto]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_carto_folder%/infos.log
+            level: info
+        erreurs_alim:
+            type:  stream
+            channels: [alim]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_alim_folder%/alertes.log
+            level: error
+            bubble: false
+        infos_alim:
+            type:  stream
+            channels: [alim]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_alim_folder%/infos.log
+            level: info
+        erreurs_docs:
+            type:  stream
+            channels: [docs]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_docs_folder%/alertes.log
+            level: error
+            bubble: false
+        infos_docs:
+            type:  stream
+            channels: [docs]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_docs_folder%/infos.log
+            level: info
+        erreurs_paie:
+            type:  stream
+            channels: [paie]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_paie_folder%/alertes.log
+            level: error
+            bubble: false
+        infos_paie:
+            type:  stream
+            channels: [paie]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_paie_folder%/infos.log
+            level: info
+        erreurs_envt:
+            type:  stream
+            channels: [envt]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_envt_folder%/alertes.log
+            level: error
+            bubble: false
+        infos_envt:
+            type:  stream
+            channels: [envt]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_envt_folder%/infos.log
+            level: info
+        erreurs_crm:
+            type:  stream
+            channels: [crm]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_crm_folder%/alertes.log
+            level: error
+            bubble: false
+        infos_crm:
+            type:  stream
+            channels: [crm]
+            path: %kernel.logs_dir%/%kernel.environment%/%logs_crm_folder%/infos.log
+            level: info

@@ -1,0 +1,15 @@
+<style>
+  div.listTourneeEtiquette{float:left;width:150px}
+  .listTourneeEtiquette span{margin-left:4px}
+  .selectAllTournee{text-align: left;margin-bottom:10px}
+</style>
+<div class="selectAllTournee">
+  <input type="checkbox"  name="selectAllTournee"/> &nbsp;
+  <span> Selectionner toutes les tournées</span>
+</div>
+{% for tournee in tournees %} 
+  <div class="listTourneeEtiquette"> 
+    <input type='checkbox' class='tournee' name='{{ tournee.code }}' value='{{ tournee.MTJ }}' /> 
+    <span>{{ tournee.code }} </span>
+  </div>
+{% endfor %}

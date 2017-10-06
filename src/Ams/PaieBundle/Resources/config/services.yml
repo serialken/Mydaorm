@@ -1,0 +1,147 @@
+parameters:
+    ams.repository.paiproduit.class: Ams\PaieBundle\Repository\PaiProduitRepository
+    ams.metadata.paiproduit.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paiabonne.class: Ams\PaieBundle\Repository\PaiAbonneRepository
+    ams.metadata.paiabonne.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paireperage.class: Ams\PaieBundle\Repository\PaiReperageRepository
+    ams.metadata.paireperage.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paidiffuseur.class: Ams\PaieBundle\Repository\PaiDiffuseurRepository
+    ams.metadata.paidiffuseur.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paihorspresse.class: Ams\PaieBundle\Repository\PaiHorsPresseRepository
+    ams.metadata.paihorspresse.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paipresse.class: Ams\PaieBundle\Repository\PaiPresseRepository
+    ams.metadata.paipresse.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paipoidspco.class: Ams\PaieBundle\Repository\PaiPoidsPCORepository
+    ams.metadata.paipoidspco.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paipoidsdepot.class: Ams\PaieBundle\Repository\PaiPoidsDepotRepository
+    ams.metadata.paipoidsdepot.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.pairesumeemploye.class: Ams\PaieBundle\Repository\PaiResumeEmployeRepository
+    ams.metadata.pairesumeemploye.class: Doctrine\ORM\Mapping\ClassMetadata
+
+ 
+
+    ams.repository.pairefurssaf.class: Ams\PaieBundle\Repository\PaiRefUrssafRepository
+    ams.metadata.pairefurssaf.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    
+    ams.pai.emargement.class: Ams\PaieBundle\Services\EmargementService
+    ams.pai.annexe_paie.class: Ams\PaieBundle\Services\AnnexePaieService
+
+
+    ams.repository.paiintjournal.class: Ams\PaieBundle\Repository\PaiIntJournalRepository
+    ams.metadata.paiintjournal.class: Doctrine\ORM\Mapping\ClassMetadata
+
+    ams.repository.paimensuel.class: Ams\PaieBundle\Repository\PaiMensuelRepository
+    ams.metadata.paimensuel.class: Doctrine\ORM\Mapping\ClassMetadata
+
+   
+services:           
+    ams.repository.paiproduit:
+        class:     %ams.repository.paiproduit.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paiproduit]
+    ams.metadata.paiproduit:
+        class:     %ams.metadata.paiproduit.class%
+        arguments: [Ams\PaieBundle\Repository\PaiProduit]
+
+    ams.repository.paiabonne:
+        class:     %ams.repository.paiabonne.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paiabonne]
+    ams.metadata.paiabonne:
+        class:     %ams.metadata.paiabonne.class%
+        arguments: [Ams\PaieBundle\Repository\PaiAbonne]
+
+    ams.repository.paireperage:
+        class:     %ams.repository.paireperage.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paireperage]
+    ams.metadata.paireperage:
+        class:     %ams.metadata.paireperage.class%
+        arguments: [Ams\PaieBundle\Repository\PaiReperage]
+
+    ams.repository.paidiffuseur:
+        class:     %ams.repository.paidiffuseur.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paidiffuseur]
+    ams.metadata.paidiffuseur:
+        class:     %ams.metadata.paidiffuseur.class%
+        arguments: [Ams\PaieBundle\Repository\PaiDiffuseur]
+
+    ams.repository.paihorspresse:
+        class:     %ams.repository.paihorspresse.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paihorspresse]
+    ams.metadata.paihorspresse:
+        class:     %ams.metadata.paihorspresse.class%
+        arguments: [Ams\PaieBundle\Repository\PaiHorsPresse]
+
+    ams.repository.paipresse:
+        class:     %ams.repository.paipresse.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paipresse]
+    ams.metadata.paipresse:
+        class:     %ams.metadata.paipresse.class%
+        arguments: [Ams\PaieBundle\Repository\PaiPresse]
+
+    ams.repository.paipoidspco:
+        class:     %ams.repository.paipoidspco.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paipoidspco]
+    ams.metadata.paipoidspco:
+        class:     %ams.metadata.paipoidspco.class%
+        arguments: [Ams\PaieBundle\Repository\PaiPoidsPCO]
+
+    ams.repository.paipoidsdepot:
+        class:     %ams.repository.paipoidsdepot.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paipoidsdepot]
+    ams.metadata.paipoidsdepot:
+        class:     %ams.metadata.paipoidsdepot.class%
+        arguments: [Ams\PaieBundle\Repository\PaiPoidsDepot]
+
+    ams.repository.pairesumeemploye:
+        class:     %ams.repository.pairesumeemploye.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.pairesumeemploye]
+    ams.metadata.pairesumeemploye:
+        class:     %ams.metadata.pairesumeemploye.class%
+        arguments: [Ams\PaieBundle\Repository\PaiResumeEmploye]
+
+
+    ams.repository.paiintjournal:
+        class:     %ams.repository.paiintjournal.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paiintjournal]
+    ams.metadata.paiintjournal:
+        class:     %ams.metadata.paiintjournal.class%
+        arguments: [Ams\PaieBundle\Repository\PaiIntJournal]
+
+    ams.repository.paimensuel:
+        class:     %ams.repository.paimensuel.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.paimensuel]
+    ams.metadata.paimensuel:
+        class:     %ams.metadata.paimensuel.class%
+        arguments: [Ams\PaieBundle\Repository\PaiMensuel]
+
+
+    ams.repository.pairefurssaf:
+        class:     %ams.repository.pairefurssaf.class%
+        arguments: [@doctrine.orm.entity_manager, @ams.metadata.pairefurssaf]
+    ams.metadata.pairefurssaf:
+        class:     %ams.metadata.pairefurssaf.class%
+        arguments: [Ams\PaieBundle\Repository\PaiRefUrssaf]
+
+
+    ams.pai.emargement:
+        class:     %ams.pai.emargement.class%
+        arguments: [@doctrine.orm.entity_manager, @phpexcel]
+
+    ams.pai.annexe_paie:
+        class:     %ams.pai.annexe_paie.class%
+        arguments: [@doctrine.orm.entity_manager, @templating]
+
+ # extension pour additionner 2 times
+    ams.twig.date_extension:
+        class: Ams\PaieBundle\Twig\PaieExtension
+        tags:
+            - { name: twig.extension }
+        

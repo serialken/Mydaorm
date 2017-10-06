@@ -1,0 +1,35 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"             type="ro"       hidden="true"></column>
+        <column id="lien_journal"           type="ro"       width="30"  align="center"  sort="str"></column> 
+        <column id="depot_id"               type="ro"       hidden="true"></column>
+        <column id="flux_id"                type="ro"       hidden="true"></column>
+        <column id="date_distrib"           type="ro"       hidden="true"></column>
+        <column id="activite_id"            type="coro"     width="*"   align="left"    sort="sortCombo">Activité{{comboActivite|raw}}</column> 
+        <column id="lien_planning"          type="ro"       width="30"  align="center"  sort="na"></column> 
+        <column id="employe_id"             type="coro"     width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="heure_debut"            type="ed"       width="50"  align="center"  sort="str">Heure début</column> 
+        <column id="heure_debut_calculee"   type="ro"       width="70"  align="center"  sort="str">Heure début calculée</column> 
+        <column id="duree"                  type="ed"       width="50"  align="center"  sort="str">Durée</column> 
+        <column id="duree_nuit"             type="ro"       width="70"  align="center"  sort="str">Durée nuit</column> 
+        <column id="duree_garantie"         type="ro"       width="50"  align="center"  sort="str">Durée Garantie</column> 
+        <column id="nbkm_paye"              type="ed"       width="50"  align="right"   sort="int">Kilomètres payés</column> 
+        <column id="transport_id"           type="coro"     width="80"  align="center"  sort="sortCombo">Transport{{comboTransport|raw}}</column>
+        <column id="descriptif"             type="ro"       width="*"   align="left"    sort="str">Descriptif</column>
+        <column id="commentaire"            type="txttxt"   width="*"   align="left"    sort="str">Commentaire</column>
+        <column id="old_employe_id"         type="ro"       hidden="true"></column>
+        <column id="est_pleiades"           type="ro"       hidden="true"></column>
+        {{m.columnAjout(isModif)}}
+
+	<beforeInit> 
+            <call command="attachFooter"><param>,,,,,,,Total,,,,,#stat_total,,,,,,{%if isModif%},{%endif%}</param></call>
+        </beforeInit> 
+    </head>
+    {% include 'AmsPaieBundle:PaiActiviteHP:row.xml.twig' %}
+ </rows>
+
+
+
+
+

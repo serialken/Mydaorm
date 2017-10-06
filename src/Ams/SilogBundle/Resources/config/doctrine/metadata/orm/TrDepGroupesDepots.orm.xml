@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrDepGroupesDepots" table="TR_DEP_GROUPES_DEPOTS">
+    <id name="grdCode" type="string" column="GRD_CODE" length="10">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="grdLibelle" type="string" column="GRD_LIBELLE" length="45" nullable="false"/>
+    <many-to-many field="rgdDepCode" target-entity="TrDepDepots" inversed-by="rgdGrdCode">
+      <join-table name="r_dep_groupes_depots">
+        <join-columns>
+          <join-column name="RGD_GRD_CODE" referenced-column-name="GRD_CODE"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="RGD_DEP_CODE" referenced-column-name="DEP_CODE"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+  </entity>
+</doctrine-mapping>

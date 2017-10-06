@@ -1,0 +1,75 @@
+<div id="listeGeocode" class="well">
+    {% if erreurs|length > 0 and rnvpId > 0 %}
+        {%if listeAbonnes|length == 0 %}
+          <div class="alert-info"> Aucun abonné n'est pour l'instant rattaché à ce point de livraison.  </div>
+        {% else %}
+            <div> 
+                <p class="alert-info">   Ce point de livraison a déjà été créé.</p>
+                <h3> Liste des abonnés rattachés à cette adresse. </h3>
+           </div>
+        {% endif %}
+        {{ render(controller('AmsAdresseBundle:PointLivraison:listeAbonne' , {'listeAbonnes': listeAbonnes, 'pointLivraisonId' : pointLivraisonId, 'tourneeId':idTournee, 'regroup': 0 })) }}
+    {% endif%}
+
+    {% if listeAdrGeocodes|length >  0 %}
+      <div class="alert-info"> Un nouveau point de livraison va être créé. <br /><strong>Veuillez sélectionner la meilleure proposition pour achever la création du point. </strong></div>
+     <h3> Liste des adresses proposées </h3>
+        <table class='table'>
+            <tr>
+                <th>Adressse</th>
+                <th style="text-align: center"> CP </th>
+                <th style="text-align: center"> Ville</th>
+                <th style="text-align: center"> X </th>
+                <th style="text-align: center"> Y </th>
+                <th style="text-align: center"> Score </th>
+                <th style="text-align: center"> Action</th>
+                <th style="text-align: center"> Pertinence </th>
+            </tr>
+            {% for key, adresse in listeAdrGeocodes.GeocodedAddress  %} 
+                {% if loop.index < 4 %}
+                    <tr>
+                        <td>{{adresse.AddressLine}}</td>  
+                        <td style="text-align: center">{{ adresse.PostalCode }}</td> 
+                        <td style="text-align: center">{{adresse.City}}</td>
+                        <td style="text-align: center">
+                            {{adresse.X }}
+                            <input type="hidden" id="X_{{key}}" value="{{adresse.X }}" >
+                        </td>
+                        <td style="text-align: center">
+                            {{adresse.Y }}
+                            <input type="hidden" id="Y_{{key}}" value="{{adresse.Y }}" >
+                        </td> 
+                        <td style="text-align: center">
+                            {{adresse.GeocodeScore}}
+                            <input type="hidden" id="Score_{{key}}" value="{{adresse.GeocodeScore}}" >
+                        </td>
+                        <td style="text-align: center"> 
+                            <input type="submit" value="Sélectionner" class="btn btn-primary"
+                                onclick="updateGeocodagePointLivraison('{{path('point_livraison_geocode', {'idTournee':idTournee })}}' , document.getElementById('X_{{key}}').value, document.getElementById('Y_{{key}}').value, document.getElementById('Score_{{key}}').value, document.getElementById('Type_{{key}}').value, 'listGeocode' );"> 
+                        </td>
+                        <td style="text-align: center">
+                            {% if adresse.GeocodeType >= 3 %}
+                                 <span  onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cet adresse a été géocodée{% if adresse.GeocodeType == 4 %} au numéro exact {% else %} au numéro interpolé {% endif %}par rapport a l'adresse normalisée">
+                                {% if adresse.GeocodeScore == 20 %}
+                                    <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span>
+                                {% elseif adresse.GeocodeScore >= 17 and  adresse.GeocodeScore < 20 %}
+                                    <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-star"></span>
+                                {% endif %}
+                                </span>
+                            {% else %}
+                                <span  onmouseover="affPopoverLien(this);" data-placement="top" data-description="Précision du géocodage" data-content="Cet adresse a été géocodée{% if adresse.GeocodeType == 2 %} à la rue {% else %} à la ville {% endif %}par rapport a l'adresse normalisée">
+                                      <span class="glyphicon glyphicon-warning-sign"></span>
+                                </span>
+                            {% endif %}
+                            <input type="hidden" id="Type_{{key}}" value="{{adresse.GeocodeType}}" >
+                        </td>
+                    </tr>
+                {% endif%}
+            {% endfor %}
+        </table>
+     
+    {% endif %}
+</div>
+

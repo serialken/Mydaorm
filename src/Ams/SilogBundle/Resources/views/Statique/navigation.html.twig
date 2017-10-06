@@ -1,0 +1,12 @@
+<ul id="nav">
+ {%for categorie in listeCategories %} 
+	<li class=""> 
+            {% if categorie.page_defaut != '' %}
+                <a href= "{{path(categorie.page_defaut,{'slug':categorie.slug|lower, 'categorieId': categorie.id })}}"><span>{{categorie.libelle}}</span></a>
+            {% endif %}
+	</li>
+ {% endfor %}
+</ul> 
+
+
+

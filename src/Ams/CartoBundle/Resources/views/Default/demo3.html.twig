@@ -1,0 +1,162 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+{% block title %}Démo carto 3{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ web_files_root_dir }}js/carto/skins/htc.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/carto/carto.css" type="text/css" media="screen" />
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {% javascripts output='js/compresse/core.js'
+                                'js/carto/proj4js-combined.js' 
+                                'js/carto/defs/EPSG27572.js' 
+                                'js/carto/htc-2.4.3.js' 
+                                'js/carto/mroad-map.js' 
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% include 'AmsCartoBundle:Default:htc_script.js.twig' %}
+{% endblock%}
+
+{% block body %}
+    {#    <div id="mapTools"><a id="zboxBtn">Zoom</a></div>#}
+    <div id="mapContainer">
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Erreur</strong> Aucune adresse n'a été trouvée pour ce point. Veuillez en essayer un autre.
+        </div>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Erreur!</strong> Une erreur a été détectée dans le service de cartographie. Veuillez essayer à nouveau dans un instant.
+        </div>
+        <div id="infosMapPoint">
+            <p class="infosCarte"><span class="glyphicon glyphicon-picture"></span><strong>Affichage:</strong> <span id="nbTourneesAff">1</span> tournée<span id="plurielTourneesAff"></span></p>
+            <div id="mapLegende">
+                <table class="legende">
+                    <tr>
+                        <td><img src="{{ web_files_root_dir }}images/carto/circle-16-black.png" alt="icone représentant les arrêts de type abonné"/></td>
+                        <td>Abonné</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/triangle-16-black.png" alt="icone représentant les arrêts de type lieu de vente"/></td>
+                        <td>Lieu de vente</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/target-16-black.png" alt="icone représentant les arrêts de type repérage"/></td>
+                        <td>Repérage</td>
+                        <td><img src="{{ web_files_root_dir }}images/carto/star-16-black.png" alt="icone représentant les arrêts de type démarrage"/></td>
+                        <td>Démarrage</td>
+                    </tr>
+                </table>
+            </div>
+            <p class="infosPoint"><span class="glyphicon glyphicon-screenshot"></span><strong>Infos point:</strong> <em>Longitude:</em><span id="nouvPointX"></span> <em>Latitude:</em> <span id="nouvPointY"></span> <a id="newP2L_lnk" data-maxdistance="10" data-urlcreapoint="{{url('adresse_point_livraison')|raw}}" data-urlgeows="{{path('ams_carto_rgeocodingjson')}}" title="Créer un nouveau point de livraison à cet endroit" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-pushpin"></span>Nouveau point de livraison</a></p>
+        </div>
+        <div id="map"></div>     
+    </div>
+    <div id="mapDatas" style="width:20%;">
+        <button class="btn btn-primary btn-xs" data-toggle="modal" data-target=".bs-example-modal-lg" style="width: 100%;">Afficher d'autres tournées</button>
+        <div id="tourneeInfos_0" class="tourneeInfos">
+            <div class="infosContent">
+                <h4>Tournée <span class="idTourneeDatas"></span> du <span class="dateTourneeDatas"></span></h4>
+                <p>
+                    <strong>Dépot:</strong>&nbsp;<span class="depotTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>ID tournée:</strong>&nbsp;<span class="id2TourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>de</strong>&nbsp;<span class="heureDebutTourneeDatas"></span>&nbsp;
+                    <strong>à</strong>&nbsp;<span class="heureFinTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>Temps de conduite :</strong>&nbsp;<span class="tempsConduiteTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>Temps de visite :</strong>&nbsp;<span class="tempsVisiteTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>Durée totale:</strong>&nbsp;<span class="dureeTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>Nombre d'arrêts:</strong>&nbsp;<span class="nbStopsTourneeDatas"></span>
+                </p>
+                <p>
+                    <strong>Distance:</strong>&nbsp;<span class="distanceTourneeDatas"></span>
+                </p>
+            </div>
+            <div class="toolbar">
+                <!-- Début de changement de l'ordre de la tournée -->
+                <a id="toolTurnChangeOrder" data-placement="left" data-toggle="popover" title="Changer l'ordre de la tournée" data-content="Vous permet de changer l'ordre des stops dans la tournée"><span class="glyphicon glyphicon-sort"></span>&nbsp;</a>
+                <!-- Fin  de changement de l'ordre de la tournée -->
+            </div>
+        </div>
+        <div id="pointInfos">
+            <div class="infosContent">
+                <h4>Informations point de livraison n°<span id="ordreClientTourneeInfos"></span></h4>
+                <p>
+                    <strong>Type:</strong>&nbsp;<span id="typeClientTourneeInfos"></span><br/>
+                    <strong>Client:</strong>&nbsp;<span id="nomClientTourneeInfos"></span>&nbsp;(<span id="idClientTourneeInfos"></span>)
+                    <br/>
+                    <strong>Adresse:</strong>&nbsp;<span id="adresseClientTourneeInfos"></span>
+                    <br/><br/>
+                    <strong>Heure:</strong>&nbsp;<span id="heureArretTourneeInfos"></span><br/>
+                    <strong>Durée arret:</strong>&nbsp;<span id="dureeArretTourneeInfos"></span><br/><br/>
+                    <strong>Trajet:</strong>&nbsp;<span id="trajetArretTourneeInfos"></span>m<br/>
+                    <strong>Trajet cumulé:</strong>&nbsp;<span id="trajetCumulTourneeInfos"></span>km<br/>
+                </p>
+            </div>
+            <div class="toolbar">
+                <!-- Début de l'affichage des clients à cette adresse -->
+                <a id="toolPointListCustomers" data-placement="left" data-toggle="popover" title="Liste des clients" data-content="Voir et ordonner la liste des clients pour cette adresse."><span class="glyphicon glyphicon-list"></span>&nbsp;</a>
+                <!-- Fin de l'affichage des clients à cette adresse -->
+                <!-- Début ajout de client à cette adresse -->
+                <a id="toolPointAddCustomer" data-placement="left" data-toggle="popover" title="Ajouter un client" data-content="Vous permet d'ajouter un client à cette adresse."><span class="glyphicon glyphicon-plus"></span>&nbsp;</a>
+                <!-- Fin ajout de client à cette adresse -->
+                <!-- Début de changement de tournée -->
+                <a id="toolPointChangeTurn" data-placement="left" data-toggle="popover" title="Changer de tournée" data-content="Déplacer ce point de livraison vers une autre tournée."><span class="glyphicon glyphicon-share"></span>&nbsp;</a>
+                <!-- Fin  de changement de tournée -->
+            </div>
+        </div>
+    </div>
+
+    <div id="amsModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Tournées du dépôt de <span class="tDepotNamePHolder"></span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well">
+                        <form>
+                            <label for="selectTourneeType">Type de tournée</label>:
+                            <select id="selectTourneeType" name="selectTourneeType">
+                                <option value="">Choisissez le type de tournée...</option>
+                                <option value="1">Matin</option>
+                                <option value="2">Après midi</option>
+                            </select>
+                            <br/>
+                            <label for="dateTournee">Date</label>:
+                            <input class="date" name="dateTournee" id="dateTournee" value=""/><br/><br/>
+                            <button type="button" class="btn btn-primary btn-xs" id="searchTourBtn" data-fetchurl="{{ path('ams_carto_gettournees')}}">Rechercher les tournées</button>
+                        </form>
+                    </div>
+                    <div id="listeTournees">
+                        <h5>Liste des tournées disponibles</h5>
+                        <div class="liste"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $.datepicker.setDefaults($.datepicker.regional[ "fr" ]);
+        $("form input.date").datepicker({
+            dateFormat: 'dd/mm/yy',
+            firstDay: 1
+        }).attr("readonly", "readonly");
+    </script>
+{% endblock %}
+
+{% block js_load %} init(); {% endblock %}

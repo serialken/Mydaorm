@@ -1,0 +1,27 @@
+ams_horspresse_liste:
+    path:     /horspresse/index
+    defaults: { _controller: AmsHorspresseBundle:Default:index }
+
+ams_horspresse_ajouter:
+    path:     /horspresse/ajouter
+    defaults: { _controller: AmsHorspresseBundle:Default:ajouter }
+
+ams_horspresse_valider:
+    path:     /horspresse/valider
+    defaults: { _controller: AmsHorspresseBundle:Default:check }
+
+ams_horspresse_lister_flux:
+    path:     /horspresse/listerflux
+    defaults: { _controller: AmsHorspresseBundle:Default:getfluxfromproduct }
+
+ams_horspresse_enregistrer_camp:
+    path:     /horspresse/sauvercampagne
+    defaults: { _controller: AmsHorspresseBundle:Default:storecampain }
+
+ams_horspresse_calendrier_index:
+    path:     /horspresse/calendrier
+    defaults: { _controller: AmsHorspresseBundle:Default:calendrier }
+
+ams_horspresse_upload:
+    path:     /horspresse/upload
+    defaults: { _controller: AmsHorspresseBundle:Default:uploadfile }

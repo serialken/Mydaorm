@@ -1,0 +1,65 @@
+<rows> 
+    <head>
+    <column width="200" type="ro" align="left" sort="str" id="hearderCentre"><![CDATA[ <p id="2" class="libelle_option">Centre de distribution</p> </br></br>
+        <div class="content_select_grid hide" style="overflow: visible !important;">
+            <select id="hearderCentre" class="" multiple="">
+            {#<option value="3">Total</option>
+            <option value="2">Centre de distribution</option>
+            <option value="4">Date de distribution prévisionelle</option>#}
+            {%set i=5%} 
+            {%set p=0%} 
+            {% for row in companies %}
+                {% if nbTotal[p] != 0 %}
+                <option value="{{i}}">{{ row.libelle }}</option>
+                    {%set i=i+1%}
+                {% endif %} 
+                {%set p=p+1%}
+            {% endfor %}
+            </select>
+        </div>
+        ]]>
+    </column>
+    <column width="200" type="ro" align="left" sort="str" id="3">Total</column>
+    <column width="200" type="ro" align="left" sort="str" hidden="true" id="1"></column>
+    <column width="200" type="ro" align="left" sort="str" hidden="true"></column>
+    {#<column width="200" type="ro" align="left" sort="str" id="hearderDate" hidden="true"><![CDATA[ <p id="4" class="libelle_option">Date de distribution prévisionelle</p> </br></br>
+        <div class="content_select_grid hide" style="overflow: visible !important;">
+        <select id="hearderDate" class="select_societe" style="height: 25px; width: 170px" multiple="" >#}
+            {#<option value="3">Total</option>
+            <option value="2">Centre de distribution</option>
+            <option value="4">Date de distribution prévisionelle</option>#}
+            {#{%set i=5%}
+             {% for row in companies %}
+            <option value="{{i}}">{{ row.libelle }}</option>
+            {%set i=i+1%}
+            {% endfor %}
+        </select>
+        </div>
+        ]]>
+    </column>#}
+        {%set j=5%}
+        {%set k=0%}
+        {% for row in companies %}
+        {% if nbTotal[k] != 0 %}
+    <column width="110" type="ro" align="left" sort="str" id="hearder{{ row.id }}"><![CDATA[
+        <div style="text-align: center;">
+                                {% if row.image.webPath is defined and file_exists(row.image.webPath) %}
+            <img src="{{ asset(row.image.webPath) }}" alt="{{ row.libelle }}" height="30" width="80" />
+                                {% endif %}
+            <br /><p id="{{j}}" class="libelle_option">{{ row.libelle }}</p>
+                    {%set j=j+1%}
+        </div>
+        ]]>
+    </column>
+        {% endif %}
+        {%set k=k+1%}
+       {% endfor %}	
+   {# <afterInit>
+        <call command='attachHeader'><param>,,#select_filter{% for row in companies %},,{% endfor %}</param> </call>   
+    </afterInit>#}
+</head> 
+
+	{% for row in reperages %}
+			{{ row|raw }}
+	{% endfor %}
+</rows>

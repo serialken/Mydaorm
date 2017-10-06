@@ -1,0 +1,84 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+       Ajouter une info portage
+    {% endblock %}
+
+    {% block modalContenu %}
+            <div class="well">
+        
+                <form id="form_infoPortage" method="post"  action="{{ path('ajout_info_portage', {'abonneId' : abonneId})}}">          
+                    
+                    <table>   
+                        <tr>
+                            <td> {{ form_label(form.typeInfoPortage) }}</td>
+                            <td>{{ form_widget(form.typeInfoPortage) }}</td>
+                        </tr>
+                        <tr>
+                            <th> {{ form_label(form.valeur) }}</th>
+                            <td>{{ form_widget(form.valeur) }}</td>
+                        </tr>
+                        <tr>
+                            <th> {{ form_label(form.abonne) }}</th>
+                            <td>{{ form_widget(form.abonne) }}  {{volets}}</td>
+                        </tr>
+
+                        {% if pointLivraison != '' %}
+                            <tr>
+                                <th> {{ form_label(form.livraison) }}</th>
+                                <td>{{ form_widget(form.livraison) }}  {{pointLivraison}}</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>{{ form_label(form.dateDebut) }}</th>
+                            <td>{{ form_widget(form.dateDebut) }}</td>
+                        </tr>
+                    </table>
+                          
+                    <br/>
+                    <div id="inputForm">
+                        <img class="ajax-loader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                        <input type="submit" value="Valider" class="btn btn-primary" id="submit_form"/>
+                    </div>
+                </form>
+            </div>                
+            <script>
+                $(document).ready(function() {
+                    $('.js-datepicker').datepicker({
+                        format: 'yyyy-mm-dd'
+                    });
+                });
+             </script>
+                                 
+            <script type="text/javascript">
+                     $('#form_infoPortage').submit(function(e) {
+                          e.preventDefault();
+                          $('.ajax-loader').show();
+                          $.ajax({
+                            url: $(this).attr('action'),
+                            type: $(this).attr('method'),
+                            data: $(this).serialize(),
+                            cache: false,
+                            success: function(data) {
+                                var url = "{{path('grid_info_portage_abonne')}}" + "?abonneId=" + {{abonneId}};
+                                $('#modalAlerteAddException').show();
+                                if (!data.errorTraitement) { 
+                                    grid.clearAll();
+                                    grid.loadXML(url);
+                                    showSelecteurFlashAlert('modalAlerteAddException','success', "Communes ajoutée avec succés", 10000);
+                                    $('.ajax-loader').hide();
+                                }
+                                else {
+                                    showSelecteurFlashAlert('modalAlerteAddException','danger', "Une erreur s'est produite!", 10000);
+                                }
+                                $('.ajax-loader').hide();
+                            },
+                            error: function(data) {
+                                 alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                            }
+                          });
+                          return false; //
+                      });
+                  });
+                  
+            </script>  
+    {% endblock %}

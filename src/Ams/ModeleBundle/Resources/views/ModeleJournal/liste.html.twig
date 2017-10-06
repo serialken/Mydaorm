@@ -1,0 +1,42 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['activite_id'      ,null                       ,null               ,null               ,null                   ,null               ,null               ,null],
+['jour_id'          ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['level'            ,'#numeric_filter'          ,null               ,null               ,null                   ,null               ,null              ,null],
+['rubrique'         ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['code'             ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['msg'              ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,null              ,null],
+['employe_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,'goPlanning(rId)' ,null],
+['tournee_id'       ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,'goTournee(rId)'  ,null],
+['tournee_jour_id'  ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,'goTourneeJour(rId)',null],
+['ractivite_id'     ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,'goActivite(rId)'  ,null],
+['remplacement_id'  ,'#select_filter_strict'    ,null               ,null               ,null                   ,null               ,'goRemplacement(rId)',null],
+['commentaire'      ,null                       ,null               ,null               ,null                   ,null               ,null              ,null],
+    ];
+        
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","{{journal_id}}");
+    }
+ 
+    function goPlanning(rId){
+        goLinkGrid("{{path('modele_planning',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&employe_id=",grid.cellById(rId,6).getValue());
+    }
+    function goTournee(rId){
+        goLinkGrid("{{path('liste_modele_tournee',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&modele_tournee_id=",grid.cellById(rId,7).getValue());
+    }
+    function goTourneeJour(rId){
+        goLinkGrid("{{path('liste_modele_tournee_jour',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&modele_tournee_id=",grid.cellById(rId,7).getValue()+"&modele_tournee_jour_id="+grid.cellById(rId,8).getValue());
+    }
+    function goActivite(rId){
+        goLinkGrid("{{path('liste_modele_activite',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&modele_activite_id=",grid.cellById(rId,0).getValue());
+    }
+    function goRemplacement(rId){
+        goLinkGrid("{{path('liste_remplacement',{'depot_id':depot_id,'flux_id':flux_id})|raw}}"+"&remplacement_id=",grid.cellById(rId,10).getValue());
+    }
+      </script>
+{% endblock %}

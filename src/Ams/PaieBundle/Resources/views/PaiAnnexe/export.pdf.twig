@@ -1,0 +1,168 @@
+{% if meta is defined %} {# nécessaire pour la génération en ligne de commande #}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+{% endif %}
+<style type="text/css" media="screen">
+    .title {
+        border: 3px solid black;  
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .grise {
+        background-color: #FAFAFA;
+    }
+    .total {
+        font-size: 12px;
+        font-weight: bold;
+        text-align: left;
+    }
+    .grid {
+        margin-top: 5px;
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding-top: 90px;
+        width: 100%;
+        align:center;
+    }
+    .grid th {
+        padding-left: 5px;
+        padding-right: 5px;
+        border: 1px solid black;
+        text-align: center;
+    }
+    .title2 {
+        font-size:16px;
+    }
+    .entete {
+        font-size:9px;
+        background-color: grey;
+        color: white;
+    }
+    .grid td {
+        padding-left: 5px;
+        padding-right: 5px;
+        border: 1px solid black;
+        font-size:11px;
+    }
+    .nombre {
+        text-align: right;
+    }
+    .duree {
+        text-align: center;
+    }
+    .row {
+        width: 100%;
+        height: 70px;
+    }
+    .push_right {
+        padding-left: 20px;
+    }
+</style>
+
+<page backtop="10mm" backbottom="10mm" backleft="5mm" backright="5mm">
+    <page_header>
+        {% for row in employe %}
+        <div class="title">Annexe paie {{provisoire}} du {{row.date_debut}} au {{row.date_fin}}</div>
+        <div class="row">
+            <div class="col-md-8">
+                <table>
+                    <tr>
+                        <th>Salarié</th><td{% if flux_id==1 %} colspan='3'{% endif %}>: {{row.nom}} {{row.prenom1}} {{row.prenom2}}</td>
+                        <th class='push_right'>Date de calcul</th><td>: {{row.date_calcul}}</td>
+                    </tr>
+                    <tr>
+                        <th>Matricule</th><td>: {{row.matricule}}</td>
+                        <th class='push_right'>Nombre {% if flux_id==1 %}d'abonnés semaine{% else %}de clients{% endif %}</th><td>: {{row.nbabo}}</td>
+                        {% if flux_id==1 %}<th class='push_right'>Nombre de clients DF</th><td>: {{row.nbabo_DF}}</td>{% endif %}
+                    </tr>
+                    <tr>
+                        <th>Centre</th><td>: {{row.depot}}</td>
+                        <th class='push_right'>Taux de qualité{% if flux_id==1 %} semaine{% endif %}</th><td>: {{row.taux_qualite}}</td>
+                        {% if flux_id==1 %}<th class='push_right'>Taux de qualité DF</th><td>: {{row.taux_qualite_DF}}</td>{% endif %}
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </page_header>
+    <page_footer> 
+        <small><table style='width:100%;'><tr>
+                    <td style='width:60%;'>Reproduction et utilisation sont interdites sans l'accord écrit de {% if flux_id==1 %}Proximy{% else %}Médiapresse{% endif %}.</td>
+                    <td style='width:40%;text-align: right;'><span style="float:right;">Edité le {{ "now"|date("d/m/Y") }} à {{"now"|date("H:i")}}</span></td>
+                </tr></table></small>
+    </page_footer> 
+
+    <table class='grid'>
+        <tr>
+            <th class="title2" colspan="{% if flux_id==1 %}14{% else %}12{% endif %}">Détail journalier des tournées et activités</th>
+        </tr>
+        <tr>
+            <th class="entete">Date</th>
+            <th class="entete">Libellé</th> 
+            <th class="entete">Qte</th> 
+            <th class="entete">Taux</th>
+            <th class="entete">Montant</th>
+            <th class="entete">Durée<br/>Tournée</th>  
+            <th class="entete">Durée<br/>Activité</th>  
+            <th class="entete">Durée<br/>Autre</th>  
+            <th class="entete">Durée<br/>Totale</th>  
+            {% if flux_id==1 %}<th class="entete">Durée<br/>Nuit</th>{% endif %}
+            <th class="entete">Nb<br/>km</th> 
+            <th class="entete">Réclamation<br/>Abonné</th> 
+            {% if flux_id==1 %}<th class="entete">Réclamation<br/>Diffuseur</th>{% endif %}
+            <th class="entete">Incident</th> 
+        </tr>
+
+        {% set prev_date_distrib="" %}
+        {% for row in detail %}
+            <tr{% if row.date_distrib=="2999-01-01" %} class='total'{% elseif row.typejour_id!=1 %} class='grise'{% endif %}>  
+                <td class='duree'>{% if prev_date_distrib!=row.date_distrib and row.date_distrib!='2999-01-01' %}{{row.date_distrib|date('d/m')}}{% endif %}</td>
+                <td class='libelle'>{{row.libelle}}</td>
+                <td class='nombre'>{{row.qte}}</td>
+                <td class='nombre'>{{row.taux}}</td>
+                <td class='nombre'>{{row.val}}</td>
+                <td class='duree'>{{row.duree_tournee}}</td>
+                <td class='duree'>{{row.duree_activite}}</td>
+                <td class='duree'>{{row.duree_autre}}</td>
+                <td class='duree'>{{row.duree_totale}}</td>
+                {% if flux_id==1 %}<td class='duree'>{{row.duree_nuit}}</td>{% endif %}
+                <td class='nombre'>{{row.nbkm_paye}}</td>
+                <td class='nombre'>{{row.nbrec_abonne}}</td>
+                {% if flux_id==1 %}<td class='nombre'>{{row.nbrec_diffuseur}}</td>{% endif %}
+                <td class='nombre'>{{row.nb_incident}}</td>   
+            </tr> 
+            {% set prev_date_distrib=row.date_distrib %}
+        {% endfor %}
+    </table>
+  
+    <div style="display:bloc;">
+        <table class='grid'>
+            <tr>
+                <th class="title2" colspan="6">Récapitulatif bulletin de paie</th>
+            </tr>
+            <tr>      
+                <th class="entete">Date</th>
+                <th class="entete">Poste</th>
+                <th class="entete">Libellé</th>
+                <th class="entete">Qte</th>
+                <th class="entete">Taux</th>
+                <th class="entete">Montant</th> 
+            </tr>   
+            {% set prev_datev="" %}
+            {% for row in ev %}
+                <tr>  
+                    <td class='duree'>{% if prev_datev!=row.datev%}{{row.datev|date('d/m')}}{% endif %}</td>
+                    <td class='libelle'>{{row.poste}}</td>
+                    <td class='libelle'>{{row.libelle}}</td>
+                    <td class='nombre'>{{row.qte}}</td>
+                    <td class='nombre'>{{row.taux}}</td>
+                    <td class='nombre'>{{row.val}}</td>
+                </tr> 
+                {% set prev_datev=row.datev %}
+            {% endfor %}
+        </table>
+    </div>
+</page>
+
+
+

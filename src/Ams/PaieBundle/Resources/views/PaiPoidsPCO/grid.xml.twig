@@ -1,0 +1,22 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="date_distrib"   type="ro"   hidden="true">Date Distrib.</column> 
+        <column id="produit_id"     type="coro" width="*"   align="left"    sort="sortCombo">Produit{{comboProduit|raw}}</column> 
+        <column id="poids"          type="ed"   width="80"  align="right"   sort="int">Poids en g</column> 
+        {{m.columnAjout(isModif)}}
+    </head> 
+    {% for row in curseur %}
+        <row id ="{{row.id}}"{{m.locked(isModif)}}>  
+            <cell>{{row.date_distrib}}</cell>
+            <cell>{{row.produit_id}}</cell>
+            <cell>{{row.poids}}</cell>
+            {{m.cellSupprime(isModif)}}
+        </row> 
+     {% endfor %}
+ </rows>
+
+
+
+
+

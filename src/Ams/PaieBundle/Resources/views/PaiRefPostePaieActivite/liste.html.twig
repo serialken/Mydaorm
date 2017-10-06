@@ -1,0 +1,25 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['activite_id'      ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['typejour_id'      ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['poste_hj'         ,'#select_filter_strict'    ,null               ,isMax10OrNull      ,null                   ,null                   ,null              ,null],
+['poste_hn'         ,'#select_filter_strict'    ,null               ,isMax10OrNull      ,null                   ,null                   ,null              ,null],
+['date_modif'       ,null                       ,null               ,null               ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==0 || cInd==1 || cInd==4) return false; // activite_id,typejour_id,date_modif
+        return true;
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,50 @@
+<rows>
+    {% if suivi is empty %}
+        <row id ="0" locked="true">
+            <cell>{{ dateParution|date('d/m/Y') }}</cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> 0% </cell>
+            <cell> - </cell>
+            <cell> - </cell>
+            <cell> 0% </cell>
+        </row>
+    {% else %}
+        {% for data in suivi %}
+            <row id ="{{data.id}}" locked="true">
+                <cell>{{data.date_edi|date('d/m/Y')}}</cell>
+                <cell>{{data.libelle_edi}}</cell>
+                <cell>{{data.code_route}}</cell>
+                <cell>{{data.libelle_route}}</cell>
+                <cell>{{data.libelle_centre}}</cell>
+                <cell>{{data.pqt_prev}}</cell>
+                <cell>{{data.pqt_eject}}</cell>
+                <cell>
+                    {% if data.pqt_prev > 0 %}
+                        {{ (data.pqt_eject * 100) // data.pqt_prev }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </cell>
+                <cell>{{data.ex_prev}}</cell>
+                <cell>{{data.ex_eject}}</cell>
+                <cell>
+                    {% if data.ex_prev > 0 %}
+                        {{ (data.ex_eject * 100) // data.ex_prev }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </cell>
+            </row>
+        {% endfor %}
+    {% endif %}
+</rows>
+
+
+
+
+

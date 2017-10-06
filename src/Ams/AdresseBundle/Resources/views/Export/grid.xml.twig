@@ -1,0 +1,80 @@
+<rows>
+    <head>
+        <column width="100" type="ro" align="center" sort="str">Nom Societe</column>
+        <column width="100" type="ro" align="center" sort="str">ID Produit</column>
+        <column width="100" type="ro" align="center" sort="str">Nom Produit</column>
+        <column width="100" type="ro" align="center" sort="str">Nom Depot</column>
+        <column width="100" type="ro" align="center" sort="str">Code Tournee</column>
+        <column width="75" type="ro" align="center" sort="int">ID Abonne</column>
+        <column width="75" type="ro" align="center" sort="int">Numero Abonne</column>
+        <column width="150" type="ro" align="center" sort="str">Nom</column>
+        <column width="100" type="ro" align="center" sort="str">Raison Social</column>
+        <column width="100" type="ro" align="center" sort="str">Cplt adresse 1</column>
+        <column width="150" type="ro" align="center" sort="str">Adresse</column>
+        <column width="100" type="ro" align="center" sort="str">Lieu dit</column>
+        <column width="70" type="ro" align="center" sort="int">Code Postal</column>
+        <column width="100" type="ro" align="center" sort="str">Ville</column>
+        
+        <column width="50" type="ro" align="center" sort="int">PL ID</column>
+        <column width="100" type="ro" align="center" sort="str">PL complement adresse</column>
+        <column width="100" type="ro" align="center" sort="str">PL adresse</column>
+        <column width="100" type="ro" align="center" sort="str">PL lieu dit</column>
+        <column width="70" type="ro" align="center" sort="int">PL cp</column>
+        <column width="100" type="ro" align="center" sort="str">PL ville</column>
+        <column width="70" type="ro" align="center" sort="str">PL X</column>
+        <column width="70" type="ro" align="center" sort="str">PL Y</column>
+        
+        <column width="100" type="ro" align="center" sort="str">RNVP Cplt Adresse</column>
+        <column width="100" type="ro" align="center" sort="str">RNVP Adresse</column>
+        <column width="100" type="ro" align="center" sort="str">RNVP Lieu dit</column>
+        <column width="70" type="ro" align="center" sort="int">RNVP CP</column>
+        <column width="100" type="ro" align="center" sort="str">RNVP Ville</column>
+        <column width="100" type="ro" align="center" sort="str">RNVP X</column>
+        <column width="100" type="ro" align="center" sort="str">RNVP Y</column>
+        
+        <column width="50" type="ro" align="center" sort="str">Type Service</column>
+        <column width="100" type="ro" align="center" sort="str">TPS</column>
+        <column width="100" type="ro" align="center" sort="int">Flux ID</column>
+        {#<column width="100" type="ro" align="center" sort="int">Jour ID</column>#}
+        <settings>
+            <colwidth>px</colwidth>
+        </settings>
+    </head>
+    {% for row in data %}
+    <row locked="true">
+        <cell>{{row.Nom_Societe}}</cell>
+        <cell>{{row.produit_id}}</cell>
+        <cell>{{row.Nom_Produit}}</cell>
+        <cell>{{row.Nom_Depot}}</cell>
+        <cell>{{row.Code_Tournee}}</cell>
+        <cell>{{row.abonne_soc_id}}</cell>
+        <cell>{{row.Numero_Abonne}}</cell>
+        <cell>{{row.Nom}}</cell>
+        <cell>{{row.Raison_Social}}</cell>
+        <cell>{{row.Cplt_adresse_1}}</cell>
+        <cell>{{row.Adresse}}</cell>
+        <cell>{{row.Lieu_dit}}</cell>
+        <cell>{{row.CP}}</cell>
+        <cell>{{row.Ville}}</cell>
+        <cell>{{row.point_livraison_id}}</cell>
+        <cell>{{row.PL_complement_adresse}}</cell>
+        <cell>{{row.PL_adresse}}</cell>
+        <cell>{{row.PL_lieu_dit}}</cell>
+        <cell>{{row.PL_cp}}</cell>
+        <cell>{{row.PL_ville}}</cell>
+        <cell>{{row.PL_X}}</cell>
+        <cell>{{row.PL_Y}}</cell>
+        <cell>{{row.RNVP_Cplt_Adresse}}</cell>
+        <cell>{{row.RNVP_Adresse}}</cell>
+        <cell>{{row.RNVP_Lieu_dit}}</cell>
+        <cell>{{row.RNVP_CP}}</cell>
+        <cell>{{row.RNVP_Ville}}</cell>
+        <cell>{{row.RNVP_X}}</cell>
+        <cell>{{row.RNVP_Y}}</cell>
+        <cell>{{row.TYP_SERVICE}}</cell>
+        <cell>{{row.TPS}}</cell>
+        <cell>{{row.Flux_id}}</cell>
+        {#<cell>{{row.TRJ_JourId}}</cell>#}
+    </row>
+    {% endfor %}
+</rows>

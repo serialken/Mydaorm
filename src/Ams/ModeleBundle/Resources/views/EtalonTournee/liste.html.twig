@@ -1,0 +1,390 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <div>
+        <span style="float:left;text-align:left">
+            <label>Type </label><br/>
+            <label>Date de requête </label><br/>
+            <label>Date d'application </label><br/>
+            <label>Employé </label><br/>
+            <label>Cycle </label><br/>
+        </span>
+        <span style="float:left;text-align:left">
+            <select id="combo_type_id" style="width:150px;">{{comboType|raw}}</select><br/>
+            <input type="text" id="input_date_requete" value="{{date_requete}}"></input><br/>
+            <input type="text" id="input_date_application" value="{{date_application}}"></input><br/>
+            <select id="combo_employe_id" style="width:150px;">{{comboEmploye|raw}}</select><br/>
+            <label><span id="display_cycle">{{cycle}}</span></label><br/>
+        </span>
+        <span style="float:right;">
+            {% if isModif %}
+                <input type='button' id="button_sauvegarder" value='Sauvegarder' class="btn btn-primary" onclick="ajaxSauvegarder()"/><br/>
+            {% endif %}
+            {% if isSoumettre %}
+                <input type='button' id="button_soumettre" value='Soumettre' class="btn btn-primary" onclick="confirmAction('Voulez-vous vraiment soumettre votre demande d\'étalonnage?','ajaxSoumettre()')"/>
+            {% endif %}
+            {% if isValider %}
+                <input type='button' id="button_valider" value='Valider' class="btn btn-primary" onclick="confirmAction('Voulez-vous vraiment valider l\'étalonnage?','ajaxValider()')"/>
+                <input type='button' id="button_refuser" value='Refuser' class="btn btn-primary" onclick="confirmAction('Voulez-vous vraiment refuser l\'étalonnage?','ajaxRefuser()')"/>
+            {% endif %}
+        </span>
+        <span style="float:center;width:80%;">
+            <label>Commentaire</label><br/>
+            <textarea id="textarea_commentaire" cols="150" rows="3" style="width:50%"/>{{commentaire}}</textarea><br/>
+        </span>
+    </div>
+    <div>
+        <hr/>
+        <span style="float:center;">
+            <label>Recherche</label>
+        </span>
+    </div>
+    <div>
+        <span style="float:left;">
+               {{form_widget(form2)}}
+        </span>
+        <span style="float:right;">
+        {% if isModif %}
+               <input type="button" id="button_ajouter" value="Ajouter" class="btn btn-primary" onclick="ajaxAjouter()"/><br/>
+               <input type="button" id="button_remplacer" value="Remplacer" class="btn btn-primary" onclick="ajaxRemplacer()"/>
+        {% endif %}
+        </span>
+    </div>
+{% endblock%}
+{% block operation %}
+    <span style="float:left;" id="message">
+{#        <br/>{{msg|raw}}
+#}    </span>
+{% endblock%}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//IDX_ENTETE        ,IDX_HEADER1            ,IDX_HEADER2            ,IDX_VERIFICATOR    ,IDX_LNK_BEFOREINSERT   ,IDX_LINK_AFTERINSERT    ,IDX_FUNC_ONSELECT  
+['etalon_id'        ,null                   ,null                   ,null               ,null                   ,null                   ,null              ,null],
+['date_distrib'     ,'#rspan'               ,null                   ,null               ,null                   ,null                   ,null              ,null],
+['code'             ,'#rspan'               ,'#text_filter'         ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['duree'            ,'Durée totale *'       ,'#rspan'               ,isDureeMax10OrNull ,null                   ,null                   ,null              ,null],
+['nbkm'             ,'Transport *'          ,'Km Réels'             ,isKm2OrNull        ,null                   ,null                   ,null              ,null],
+['nbkm_paye'        ,'#cspan'               ,'Km payés'             ,isKm2OrNull        ,null                   ,null                   ,null              ,null],
+['transport_id'     ,'#cspan'               ,'Mode'                 ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['Départ dépôt'     ,'Dépôt *'              ,'Départ'               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['Retour dépôt'     ,'#cspan'               ,'Retour'               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['duree_calculee'   ,'#rspan'               ,'#rspan'               ,isDureeMax10OrNull ,null                   ,null                   ,null              ,null],
+['valrem_calculee'  ,'Calculée'             ,'#numeric_filter'      ,null               ,null                   ,null                   ,null              ,null],
+['valrem_moyen'     ,'Moyenne'              ,'#numeric_filter'      ,null               ,null                   ,null                   ,null              ,null],
+['ecart'            ,'Ecart en %'           ,'#numeric_filter'      ,null               ,null                   ,null                   ,null              ,null],
+['employe_id'       ,'Employé'              ,'#select_filter_strict',null               ,null                   ,null                   ,null              ,null],
+['valrem_reelle'    ,'Valeur de rémunération','#rspan'              ,null               ,'0.00000'             ,null                   ,null              ,null],
+['heure_debut'      ,'Heure de début'       ,'#rspan'               ,null               ,null                   ,null                   ,null              ,null],
+['duree'            ,'Durée'                ,'Totale'               ,isDureeMax10OrNull ,null                   ,null                   ,null              ,null],
+['duree_nuit'       ,'#cspan'               ,'Nuit'                 ,null               ,null                   ,null                   ,null              ,null],
+['duree_tournee'    ,'#cspan'               ,'Tournée'              ,null               ,null                   ,null                   ,null              ,null],
+['duree_supplement' ,'#cspan'               ,'Autre'                ,null               ,null                   ,null                   ,null              ,null],
+['duree_repérage'   ,'#cspan'               ,'Repérage'             ,null               ,null                   ,null                   ,null              ,null],
+['nbcli'            ,'Quantités'            ,'Clients *'            ,isQuantite         ,'0'                    ,null                   ,null              ,null],
+['nbtitre'          ,'#cspan'               ,'Titres'               ,null               ,'0'                    ,null                   ,null              ,null],
+['nbspl'            ,'#cspan'               ,'Suppléments'          ,null               ,'0'                    ,null                   ,null              ,null],
+['nbprod'           ,'#cspan'               ,'Produits'             ,null               ,'0'                    ,null                   ,null              ,null],
+['nbrep'            ,'#cspan'               ,'Repérages'            ,null               ,'0'                    ,null                   ,null              ,null],
+['commentaire'      ,'#rspan'               ,'#rspan'               ,null               ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'             ,'#ismodif'             ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'   ,null]
+];
+
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (rId<0) return false;
+        if (cInd==13) return false; // employe_id
+        if (cInd==21 && grid.cellById(rId,22).getValue()!=0) return false; // nbcli
+        return true;
+    }
+    
+    $(document).ready(function() {
+        initFrenchDateIntervalFiltre();
+        $('#form_filtre_depot_id').on('change', function() { ajaxComboEtalon(); });
+        $('#form_filtre_flux_id').on('change', function() { ajaxComboEtalon(); });
+        $("#input_date_application").datepicker({
+                dateFormat: 'dd/mm/yy', 
+                firstDay:1,
+                minDate:'{{min_date_application}}',
+            }).attr("readonly","readonly");
+        $("#input_date_requete").datepicker({
+                dateFormat: 'dd/mm/yy', 
+                firstDay:1,
+            }).attr("readonly","readonly");
+        $("#combo_type_id").val({{type_id}});
+        $("#combo_employe_id").val({{employe_id}});
+        old_combo_employe_id=$('#combo_employe_id').val();
+        $('#input_date_application').on('change', function() { ajaxComboEmploye(); });
+        $('#combo_employe_id').on('change', function() { ajaxCycle(); });
+        {% if not isSoumettre %}
+            $('#button_soumettre').prop('disabled', true);
+        {% endif %}
+    });
+    
+    function onLoadGrid(){
+        dhtmlx.message.hide("messageBox");
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        {% if not isModif and not isValider %}
+            desactive_entete(true);
+        {% endif %}
+        {% if not isModif %}
+            desactive_filtre(true);
+        {% endif %}
+        afficherMessage();
+    }
+
+    function dhtmlxgridAfterRefreshRows(id, action, tid, tag){
+        afficherMessage();
+    }
+
+    function ajaxComboEtalon()  {
+        ajaxReloadCombo($('#form_filtre_etalon_id'),"ajax-etalon-tournee-combo-etalon",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val()});
+    }
+    function ajaxComboEmploye()  {
+        ajaxReloadCombo($('#combo_employe_id'),"ajax-etalon-tournee-combo-employe",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val(),date_application:$('#input_date_application').val()});
+    }
+    function ajaxCycle()  {
+        if ($('#form_filtre_employe_id').val()=="" && $('#form_filtre_tournee_id').val()=="" || $('#form_filtre_employe_id').val()==old_combo_employe_id) {
+            $('#form_filtre_employe_id').val($('#combo_employe_id').val());
+        }
+        old_combo_employe_id=$('#combo_employe_id').val();
+        if ($('#combo_employe_id').val()=="") {
+            $('#display_cycle').text('LMMJVSD')
+        } else {
+            $('#display_cycle').text('');
+            $.ajax({
+                url: "ajax-etalon-tournee-display-cycle",
+                type: "GET",
+                data: {
+                    employe_id:$('#combo_employe_id').val(),
+                    date_distrib:$('#input_date_application').val(),
+                },
+                success: function(data) {
+                    $('#display_cycle').text(data)
+                },
+                error: function (xhr, ajaxOptions, thrownError) { 
+                    $('#display_cycle').text('*******')
+                    ajaxErreur(xhr, ajaxOptions, thrownError); 
+                }
+            }); 
+        }
+    }
+    
+    function desactive_entete(_actif) {
+        grid.setEditable(!_actif);
+        $('#input_date_requete').prop('disabled', _actif);
+        $('#input_date_application').prop('disabled', _actif);
+        $('#combo_type_id').prop('disabled', _actif);
+        $('#combo_employe_id').prop('disabled', _actif);
+        $('#textarea_commentaire').prop('disabled', _actif);
+    }
+    function desactive_filtre(_actif) {
+        $('#form_filtre_date_debut').prop('disabled', _actif);
+        $('#form_filtre_date_fin').prop('disabled', _actif);
+        $('#form_filtre_employe_id').prop('disabled', _actif);
+        $('#form_filtre_tournee_id').prop('disabled', _actif);
+        $('#button_ajouter').prop('disabled', _actif);
+        $('#button_remplacer').prop('disabled', _actif);
+    }
+    function desactive_all(_actif) {
+        desactive_entete(_actif);
+        desactive_filtre(_actif);
+    }
+
+    function verif_message(msg) {
+        dhtmlx.message({ id:"messageBox", expire:-1, text:msg});
+        return false;
+    }
+    function verif_entete(){
+        if ($('#input_date_requete').val()=="") return verif_message("Vous devez renseigner la date de requête.");
+        if ($('#input_date_application').val()=="") return verif_message("Vous devez renseigner la date d'application.");
+{#        if ($('#combo_employe_id').val()=="") return verif_message("Vous devez choisir un employé.");
+#}        return true;
+    }
+    function verif_rechercher(){
+        if (!verif_entete()) return false;
+        if ($('#form_filtre_employe_id').val()=="" && $('#form_filtre_tournee_id').val()=="") return verif_message("Vous devez choisir au moins un employé ou une tournée.");
+        return true;
+    }
+    function verif_soumettre(){
+        if (!verif_entete()) return false;
+        if (grid.getRowsNum()==0) return verif_message("Votre demande d'étalonnage est vide.");
+        return true;
+    }
+    function verif_valider(){
+        if (!verif_soumettre()) return false;
+        return true;
+    }
+    
+    function ajaxSauvegarder(){
+        if (!verif_entete()) return;
+        $('#button_rechercher').prop('disabled', true);
+        $('#button_soumettre').prop('disabled', true);
+        ajaxMessage("Sauvegarde en cours ...");
+        $.ajax({
+            url: "ajax-etalon-sauvegarder",
+            type: "GET",
+            data: {
+                type_id:$('#combo_type_id').val(),
+                employe_id:$('#combo_employe_id').val(),
+                commentaire:$('#textarea_commentaire').val(),
+                date_application:$('#input_date_application').val(),
+                date_requete:$('#input_date_requete').val(),
+            },
+            success: function(data) {
+                ajaxSucces("Sauvegarde réalisée avec succés.");
+                ajaxComboEtalon();
+                afficherMessage();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+            }
+        });  
+    }
+    
+    function ajaxAjouter(){ ajaxRechercher(true); } 
+    function ajaxRemplacer(){ ajaxRechercher(false); }    
+        
+    function ajaxRechercher(ajout){
+        if (!verif_rechercher()) return;
+        $('#button_soumettre').prop('disabled', true);
+        desactive_all(true);
+        ajaxMessage("Rafaichissement des tournées en cours ...");
+        $.ajax({
+            url: "ajax-etalon-tournee-rechercher",
+            type: "GET",
+            data: {
+                type_id:$('#combo_type_id').val(),
+                employe_id:$('#combo_employe_id').val(),
+                commentaire:$('#textarea_commentaire').val(),
+                date_application:$('#input_date_application').val(),
+                date_requete:$('#input_date_requete').val(),
+                recherche_date_debut:$('#form_filtre_date_debut').val(),
+                recherche_date_fin:$('#form_filtre_date_fin').val(),
+                recherche_employe_id:$('#form_filtre_employe_id').val(),
+                recherche_tournee_id:$('#form_filtre_tournee_id').val(),
+                ajout:ajout
+            },
+            success: function(data) {
+                ajaxSucces("Les tournées ont été actualisées"); 
+                desactive_all(false);
+                $('#button_soumettre').prop('disabled', false);
+                ajaxComboEtalon()
+                onLoadGrid();
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+                desactive_all(false);
+            }
+        });  
+    }
+
+    function ajaxSoumettre(){
+        if (!verif_soumettre()) return;
+        $('#button_rechercher').prop('disabled', true);
+        $('#button_soumettre').prop('disabled', true);
+        desactive_all(true);
+        ajaxMessage("Envoi de la demande en cours ...");
+        $.ajax({
+            url: "ajax-etalon-tournee-soumettre",
+            type: "GET",
+            data: {
+                type_id:$('#combo_type_id').val(),
+                employe_id:$('#combo_employe_id').val(),
+                commentaire:$('#textarea_commentaire').val(),
+                date_application:$('#input_date_application').val(),
+                date_requete:$('#input_date_requete').val(),
+            },
+            success: function(data) {
+                ajaxSucces("Votre demande d'étalonnage a bien été envoyée"); 
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                desactive_all(false);
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+            }
+        });  
+    }
+
+    function ajaxValider(){
+        if (!verif_valider()) return;
+        $('#button_valider').prop('disabled', true);
+        $('#button_refuser').prop('disabled', true);
+        desactive_all(true);
+        ajaxMessage("Validation de l'\étalonnage en cours ...");
+        $.ajax({
+            url: "ajax-etalon-tournee-valider",
+            type: "GET",
+            data: {
+                type_id:$('#combo_type_id').val(),
+                employe_id:$('#combo_employe_id').val(),
+                commentaire:$('#textarea_commentaire').val(),
+                date_application:$('#input_date_application').val(),
+                date_requete:$('#input_date_requete').val(),
+            },
+            success: function(data) {
+                ajaxSucces("L'étalonnage a bien été validé"); 
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                grid.setEditable(true);
+                desactive_entete(false);
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+            }
+        });  
+    }
+
+    function ajaxRefuser(){
+        $('#button_valider').prop('disabled', true);
+        $('#button_refuser').prop('disabled', true);
+        desactive_all(true);
+        ajaxMessage("Refus de l'\étalonnage en cours ...");
+        $.ajax({
+            url: "ajax-etalon-tournee-refuser",
+            type: "GET",
+            data: {
+                type_id:$('#combo_type_id').val(),
+                employe_id:$('#combo_employe_id').val(),
+                commentaire:$('#textarea_commentaire').val(),
+                date_application:$('#input_date_application').val(),
+                date_requete:$('#input_date_requete').val(),
+            },
+            success: function(data) {
+                ajaxSucces("L'étalonnage a été refusé"); 
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                grid.setEditable(true);
+                desactive_entete(false);
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+            }
+        });  
+    }
+    function afficherMessage(msg) {
+        $('#button_soumettre').prop('disabled', true);
+        $('#button_valider').prop('disabled', true);
+        $('#button_refuser').prop('disabled', true);
+        dhtmlx.message.hide("errorBox");
+        $.ajax({
+            url: "ajax-etalon-tournee-msg",
+            type: "GET",
+            data: {},
+            success: function(data) {
+                if (data!="") {
+                    dhtmlx.message({id:"errorBox", type: "error", text: data, expire: -1 });
+                }
+                $("#message").html(data);
+                if (data==""){
+                    $('#button_soumettre').prop('disabled', false);
+                    $('#button_valider').prop('disabled', false);
+                    $('#button_refuser').prop('disabled', false);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) { 
+                ajaxErreur(xhr, ajaxOptions, thrownError); 
+            }
+        });  
+        //            dhtmlx.message({type: "error", text: msg, expire: -1 });
+    }
+</script>
+{% endblock %}

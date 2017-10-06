@@ -1,0 +1,58 @@
+{% extends 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}A propos{% endblock %}
+{% block pagetitle %}> <a href="{{ path('_ams_accueil_defaut') }}" class="level0 active">Accueil</a>{% endblock %}
+
+{% block body %}
+
+    <img src="{{web_files_root_dir}}images/grand_logo_mroad.png" alt="Logo MRoad" style="margin-bottom: 25px;"/>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="text-align: center;" class="{%if aDevDatas.actif %}active{% endif %}">Développement</th>
+                <th style="text-align: center;" class="{%if aRecetteDatas.actif %}active{% endif %}">Recette</th>
+                <th style="text-align: center;" class="{%if aPreprodDatas.actif %}active{% endif %}">Pré-production</th>
+                <th style="text-align: center;" class="{%if aProdDatas.actif %}active{% endif %}">Production</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Révision SVN</td>
+                <td>{{aDevDatas.rev}}</td>
+                <td class="{%if aRecetteDatas.actif %}active{% endif %} {%if aRecetteDatas.uptodate == false %}danger{% else %}success{% endif %}">{{aRecetteDatas.rev}}</td>
+                <td class="{%if aPreprodDatas.actif %}active{% endif %} {%if aPreprodDatas.uptodate == false %}danger{% else %}success{% endif %}">{{aPreprodDatas.rev}}</td>
+                <td class="{%if aProdDatas.actif %}active{% endif %} {%if aProdDatas.uptodate == false %}danger{% else %}success{% endif %}">{{aProdDatas.rev}}</td>
+            </tr>
+            <tr>
+                <td>Date de déploiement</td>
+                <td class="{%if aDevDatas.actif %}active{% endif %}">{{aDevDatas.date|date("d/m/Y à H:i")}}</td>
+                <td class="{%if aRecetteDatas.actif %}active{% endif %}">{{aRecetteDatas.date|date("d/m/Y à H:i")}}</td>
+                <td class="{%if aPreprodDatas.actif %}active{% endif %}">{{aPreprodDatas.date|date("d/m/Y à H:i")}}</td>
+                <td class="{%if aProdDatas.actif %}active{% endif %}">{{aProdDatas.date|date("d/m/Y à H:i")}}</td>
+            </tr>
+            <tr>
+                <td>Version de Geoweb Easy</td>
+                <td class="{%if aDevDatas.actif %}active{% endif %}">{{aDevDatas.geoweb}}</td>
+                <td class="{%if aRecetteDatas.actif %}active{% endif %}">{{aRecetteDatas.geoweb}}</td>
+                <td class="{%if aPreprodDatas.actif %}active{% endif %}">{{aPreprodDatas.geoweb}}</td>
+                <td class="{%if aProdDatas.actif %}active{% endif %}">{{aProdDatas.geoweb}}</td>
+            </tr>
+            <tr>
+                <td>Version d'HTC</td>
+                <td class="{%if aDevDatas.actif %}active{% endif %}">{{aDevDatas.htc}}</td>
+                <td class="{%if aRecetteDatas.actif %}active{% endif %}">{{aRecetteDatas.htc}}</td>
+                <td class="{%if aPreprodDatas.actif %}active{% endif %}">{{aPreprodDatas.htc}}</td>
+                <td class="{%if aProdDatas.actif %}active{% endif %}">{{aProdDatas.htc}}</td>
+            </tr>
+            <tr>
+                <td>Version d'OpenLayers</td>
+                <td class="{%if aDevDatas.actif %}active{% endif %}">{{aDevDatas.openlayers}}</td>
+                <td class="{%if aRecetteDatas.actif %}active{% endif %}">{{aRecetteDatas.openlayers}}</td>
+                <td class="{%if aPreprodDatas.actif %}active{% endif %}">{{aPreprodDatas.openlayers}}</td>
+                <td class="{%if aProdDatas.actif %}active{% endif %}">{{aProdDatas.openlayers}}</td>
+            </tr>
+        <tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        {% if is_new %} Ajout de commune {% else %} Modification de lien dépôt/commune {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerteAddCommune">
+                     {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+                 </div>
+                <form method="post" class="form DepotCommune" id="formDepotCommune" action="{{ is_new ? path('depot_ajout_commune_ajax',{'param1': depot.id }) : path('depot_ajout_commune_ajax',{'param1': depot.id })}}">          
+                  {{ form_widget(form) }}
+                  <br/>
+                  <div id="inputForm">
+                      <img class="ajax-loader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_form"/>
+                  </div>
+                </form>
+            </div> 
+            <script type="text/javascript">
+                $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                $("form input.date").datepicker({
+                     dateFormat: 'dd/mm/yy', 
+                     firstDay:1
+                 }).attr("readonly","readonly");
+
+                 $(document).ready(function() {
+                     $('#modalAlerteAddCommune').hide();
+                     $('#formDepotCommune').submit(function(e) {
+                          e.preventDefault();
+                          $('.ajax-loader').show();
+                          $.ajax({
+                            url: $(this).attr('action'),
+                            type: $(this).attr('method'),
+                            data: $(this).serialize(),
+                            cache: false,
+                            success: function(data) {
+                                var url = "{{path('depot_grid_commune')}}" + "?id=" + {{depot.id}};
+                                $('#modalAlerteAddCommune').show();
+                                //si errorTraitement = true donc on a une erreur
+                                //si on a pas d'erreur on met a jour la grid 
+                                if (!data.errorTraitement) {
+                                    gridCommune.clearAll();
+                                    gridCommune.loadXML(url);
+                                    showSelecteurFlashAlert('modalAlerteAddCommune','success', data.alert, 10000);
+                                }
+                                else {
+                                    showSelecteurFlashAlert('modalAlerteAddCommune','danger', data.alert, 10000);
+                                }
+                                $('.ajax-loader').hide();
+                            },
+                            error: function(data) {
+                                 alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                            }
+                          });
+                          return false; //
+                      });
+                  });
+            </script>  
+    {% endblock %}

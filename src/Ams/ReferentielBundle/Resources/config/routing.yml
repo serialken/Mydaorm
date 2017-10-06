@@ -1,0 +1,3 @@
+AmsReferentielBundle_referentiel:
+    resource: "@AmsReferentielBundle/Resources/config/routing/tournee.yml"
+    prefix:   /referentiel

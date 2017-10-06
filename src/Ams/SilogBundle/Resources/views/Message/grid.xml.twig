@@ -1,0 +1,18 @@
+<rows>
+  <head>      
+    <column type="ro" width="0" align="left"> Id </column>
+    <column type="ro" align="center" width="60"> Icones </column>
+    <column type="ed" align="left" width="200"> Titre </column>
+    <column type="ed" align="left">Description</column>
+{#    <column type="ro" align="center" width="50">Action</column>#}
+  </head> 
+  {% for row in messages %}
+  <row>
+    <cell> {{ row.id }}</cell>
+    <cell><![CDATA[<span class="glyphicon {{ row.glyphicon }}"></span>]]>     </cell> 
+    <cell> {{ row.title}}</cell>
+    <cell> {{ row.description }}</cell>
+{#    <cell type="ro"><![CDATA[<img src="{{ asset('images/action_delete.png') }}"  alt="supression" title="supression" class="delete" width="20" />]]>    </cell>#}
+  </row>
+  {% endfor %}
+</rows>

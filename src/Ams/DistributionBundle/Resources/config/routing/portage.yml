@@ -1,0 +1,30 @@
+portage_details:
+    pattern:  /details/{id}
+    defaults: { _controller: "AmsDistributionBundle:Portage:details" }
+    requirements:
+        id: \d+
+
+ajout_info_portage:
+    pattern: ajout-info-portage
+    defaults: { _controller: AmsDistributionBundle:Portage:ajout }
+    requirements:
+        abonne_id: \d+
+
+suppression_info_portage:
+    pattern: sup-info-portage
+    defaults: { _controller: AmsDistributionBundle:Portage:supp }
+    requirements:
+        id: \d+
+        
+feuille_portage_export:
+    pattern: feuille-portage-export
+    defaults: { _controller: AmsDistributionBundle:FeuillePortage:dispatchExcel }      
+    
+    
+grid_info_portage_abonne:
+    pattern:  /grid_info_portage_abo
+    defaults: { _controller: AmsDistributionBundle:Portage:gridInfoPortageAbonne}
+    
+info_portage_save: 
+    pattern:  /info_portage_save
+    defaults: { _controller: "AmsDistributionBundle:Portage:infoPortageSave"}

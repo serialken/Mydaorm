@@ -1,0 +1,39 @@
+parameters:
+    ##### GEOCODAGE #####
+    geocodage.class: Ams\WebserviceBundle\Services\Geocodage
+    # Les parametres ont ete deplaces dans : "mroad_*.ini" et "parameters_*.yml"
+    #..adresseGeocodageWsdl: "http://10.150.10.10:8080/geoweb-easy/ws/GeocodeService/geocode.wsdl"
+    #adresseGeocodageWsdl: "http://geoweb.geoconcept.com/geoweb2/ws/GeocodeService/geocode.wsdl"
+    #adresseGeocodageWsdl: "http://10.150.5.157:8080/geoweb-easy/ws/GeocodeService/geocode.wsdl"
+    
+    # http://demo1.geoconcept.com/geoweb2/ws/GeocodeService/geocode.wsdl
+    # http://geoweb.geoconcept.com/geoweb2/ws/GeocodeService/geocode.wsdl
+    #..loginGeocodageWsdl: ""
+    #..mdpGeocodageWsdl: ""
+    #..critereGeocodageOK: 
+    #..    - { GeocodeType: 4, GeocodeScoreMin: 14 }
+    #..    - { GeocodeType: 3, GeocodeScoreMin: 14 }
+    # Comme projection, on peut utiliser "MAP" [Lambert II etendu] (expl : X=607439 , Y:2403317 ) 
+    # ou "EPSG:27572" (expl : X=607439.257 , Y:2403317.08)
+    # ou "WGS84" [Système geodesique standard mondial, notamment utilise par le systeme GPS] ( X=2.437402 , Y=48.628449)
+    # projectionGeocodage: "EPSG:27572" 
+    #..projectionGeocodage: "WGS84" 
+    #..optionSoapClientGeocodage: { connection_timeout: 5000, cache_wsdl: 3, encoding: "UTF-8" }
+    #optionSoapClientGeocodage: { connection_timeout: 5000, cache_wsdl: 3, proxy_host: "10.196.20.193", proxy_port: "80", encoding: "UTF-8" }
+    # 'cache_wsdl' => WSDL_CACHE_BOTH ..... WSDL_CACHE_BOTH correspond a 3
+
+
+    ##### RNVP #####
+    rnvp.class: Ams\WebserviceBundle\Services\Rnvp
+
+
+services:
+    ##### GEOCODAGE #####
+    geocodage:
+        class:     %geocodage.class%
+        arguments: [%GEOC_WS_GEOCODE_SOAP_URL%, %GEOC_WS_GEOCODE_SOAP_LOGIN%, %GEOC_WS_GEOCODE_SOAP_PWD%, %GEOC_WS_GEOCODE_SOAP_OPTION%, %GEOC_WS_GEOCODE_SOAP_CRITERIA_OK%, %GEOC_WS_GEOCODE_SOAP_PROJECTION%]
+    
+    ##### RNVP #####
+    rnvp:
+        class:     %rnvp.class%
+        arguments: [%ELFYWEB_WS_RNVP_SOAP_URL%, %ELFYWEB_WS_RNVP_SOAP_LOGIN%, %ELFYWEB_WS_RNVP_SOAP_PWD%]    

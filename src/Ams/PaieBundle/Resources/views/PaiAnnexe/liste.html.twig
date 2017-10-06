@@ -1,0 +1,56 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block exportExcel %}{% endblock %} 
+{% block cmd %} 
+    <span  style="float:left;">{{nbabo}} </span>
+    <span  style="float:left;">{{taux_qualite}} </span>
+    <span  style="float:left;">{{taux_qualite_DF}} </span>
+    <a id="export" href="{{path('export_annexe')}}"><img src="{{ asset('images/dhtmlx_pdf.png') }}" alt="Export pdf" >Annexe {{provisoire}} {{periode}}</a>
+    <span  style="float:right;">{{date_calcul}}</span>
+{% endblock %}
+{% block body %} 
+    {{ parent() }}
+    <div id="gridbox2" style="width:750px;height:200px; margin-top:50px"></div> 
+{% endblock %}
+   
+{% block js %}
+    {{ parent() }}
+    <script>   
+    dhtmlxInit=[ ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path(grid_route)}}");
+        initDateDistrib();
+        grid2 = new dhtmlXGridObject('gridbox2');
+        grid2.load( "{{path('grid_resume_annexe')}}");
+    }
+
+    function hideElement() {
+        $('#gridbox').hide();
+        $('#gridbox2').hide();
+        $('#export').hide();
+    }
+ 
+   //chargement de la liste des employés lorsqu'on change de dépot   
+    $(document).ready(function() {
+        $('#form_filtre_depot_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_flux_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_anneemois_id').on('change', function() { ajaxComboEmploye(); });
+        ajaxComboEmployeSucces();
+    });
+    function ajaxComboEmploye()  {
+        hideElement();
+        ajaxReloadCombo($('#form_filtre_employe_depot_hst_id')
+        ,"ajax-combo-employe-annexe",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val(),anneemois_id:$('#form_filtre_anneemois_id').val()});
+         // ajaxComboEmployeSucces();
+   }
+    function ajaxComboEmployeSucces()  {
+        if ($('#form_filtre_employe_depot_hst_id > option').length == 0) {
+            $('#export').hide();
+        } else {
+            $('#export').show();
+        }
+            ;
+    }
+</script>
+{% endblock %}

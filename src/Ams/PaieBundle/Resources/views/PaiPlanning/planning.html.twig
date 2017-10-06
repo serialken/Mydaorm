@@ -1,0 +1,100 @@
+{% extends '::base_planning.html.twig' %}	
+{% block title %}{{titre}}{% endblock %}
+{% block body %} 
+    <style>
+        body {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+        }
+        #calendar {
+            width: 90%;
+            margin: 0 auto;
+        }
+        .fc-event-inner {
+            margin: 5px;
+        }
+        @media screen and (max-width: 1300px) {
+            span.fc-event-title {
+              display:block;
+            }
+        }
+    </style>
+    {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': 'pai_planning' }))}}
+    <br/>
+    <div id='calendar'></div>
+                <div id="cover" style='text-align:center; font-family:Tahoma;position:absolute;top:400px;left:500px;height:150px;width:500px;'>
+                    <img src="{{ asset('images/ajaxLoader.gif') }}"> 
+                </div>
+    <script>
+    $(document).ready(function() {
+        var date = new Date();
+        
+        var nav = navigator.userAgent;
+        var ischrome = nav.indexOf("Chrome") > 0 ? true : false;
+        var  timezoneVal = 'Europe/Paris';
+        if(navigator.userAgent.indexOf("Chrome") > 0 ) 
+           var timezoneVal = 'UTC';
+
+        var options = {
+            firstDay:1,     // Lundi
+            defaultView:'month',
+            defaultDate:'{{defaultDate}}',
+            aspectRatio: 2, // Ratio d'affichage (ex : 2 => la largeur vaut 2 fois la hauteur)
+            agenda: 'H:mm', // 5:00
+            droppable: false,
+            eventStartEditable: false,
+            allDayDefault: false,
+            editable: false,
+            displayEventEnd:true,
+            timeFormat: 'HH:mm',
+            timezone: timezoneVal,
+            header: {
+                left: 'prev,next',
+                center: 'title',
+                right:'today'
+            },
+            eventSources:[
+                "{{path('ajax_pai_planning_ferie')}}",
+                "{{path('ajax_pai_planning_cycle')}}",
+                "{{path('ajax_pai_planning_absence')}}",
+                "{{path('ajax_pai_planning_tournee')}}",
+                "{{path('ajax_pai_planning_activite')}}"
+            ],
+            loading : function (isLoading, view) {
+                        if (isLoading) {
+                            document.getElementById('cover').style.display = 'block';
+                        } else {
+                            document.getElementById('cover').style.display = 'none';
+                        }            
+                    },   
+        };
+        
+        $('#calendar').fullCalendar(options);
+    });
+    
+   //chargement de la liste des employés lorsqu'on change de dépot   
+    $(document).ready(function() {
+        $('#form_filtre_depot_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_flux_id').on('change', function() { ajaxComboEmploye(); });
+        $('#form_filtre_anneemois_id').on('change', function() { ajaxComboEmploye(); });
+    });
+    function ajaxComboEmploye()  {
+        ajaxReloadCombo($('#form_filtre_employe_id')
+        ,"ajax-combo-employe-pai-planning",{depot_id:$('#form_filtre_depot_id').val(),flux_id:$('#form_filtre_flux_id').val(),anneemois_id:$('#form_filtre_anneemois_id').val()});
+   }
+
+    
+    $('body').on('click','button.fc-prev-button', function(){
+        var d = $('#calendar').fullCalendar('getDate');
+        var anneemois_id = d.format("YYYYMM");
+        $('#form_filtre_anneemois_id').val(anneemois_id);
+    });
+    $('body').on('click','button.fc-next-button', function(){
+        var d = $('#calendar').fullCalendar('getDate');
+        var anneemois_id = d.format("YYYYMM");
+        $('#form_filtre_anneemois_id').val(anneemois_id);
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+ouverture:
+    pattern:  /
+    defaults: { _controller: "AmsDistributionBundle:OuvertureCd:index" }
+
+ouverture_liste_xml:
+    pattern:  /ouverture-liste-xml/{date}
+    defaults: { _controller: AmsDistributionBundle:OuvertureCd:grid }

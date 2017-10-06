@@ -1,0 +1,19 @@
+{% if listeAbonnes|length %}
+<div class="row">
+    <table class="table">
+        <tr>
+            <th>N° abonné</th>
+            <th>Nom Prénom</th>
+            <th>Rais. Sociale</th>
+            <th>Depôt</th>
+            <th>Société</th>
+            <th>Adresse de l'abonné</th>
+            <th>Adresse du point de livraison</th>
+            <th>Début</th>
+        </tr>
+       {% for abonne in listeAbonnes %}            
+            {% include 'AmsAbonneBundle:AbonneSoc:ligne_abonne.html.twig' %}
+       {% endfor %}
+    </table>
+</div>
+{% endif %}

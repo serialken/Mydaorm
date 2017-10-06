@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrAdrAdressesExt" table="TR_ADR_ADRESSES_EXT">
+    <id name="adeDateDebut" type="date" column="ADE_DATE_DEBUT"/>
+    <field name="adeVol1" type="string" column="ADE_VOL1" length="38" nullable="false"/>
+    <field name="adeVol2" type="string" column="ADE_VOL2" length="38" nullable="false"/>
+    <field name="adeVol3" type="string" column="ADE_VOL3" length="38" nullable="false"/>
+    <field name="adeVol4" type="string" column="ADE_VOL4" length="38" nullable="false"/>
+    <field name="adeVol5" type="string" column="ADE_VOL5" length="38" nullable="false"/>
+    <field name="adeCp" type="string" column="ADE_CP" length="5" nullable="false"/>
+    <field name="adeVille" type="string" column="ADE_VILLE" length="45" nullable="false"/>
+    <field name="adeDateFin" type="date" column="ADE_DATE_FIN" nullable="true"/>
+    <one-to-one field="adeAboNumaboSoc" target-entity="TrAboAbonnes">
+      <join-columns>
+        <join-column name="ADE_ABO_NUMABO_SOC" referenced-column-name="ABO_NUMABO_SOC"/>
+      </join-columns>
+    </one-to-one>
+    <many-to-one field="adeRnv" target-entity="TrAdrAdressesRnvp">
+      <join-columns>
+        <join-column name="ADE_RNV_ID" referenced-column-name="RNV_ID"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

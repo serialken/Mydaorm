@@ -1,0 +1,43 @@
+<rows>
+  <head>      
+      <column type="ro" width="0" align="left" sort="str"> id </column>
+      <column type="ro" width="60" align="center" sort="str">Topage</column>
+      <column type="coro" width="180" align="left" sort="str">Reponse {{ reponse|raw }}</column>
+      <column type="coro" width="180" align="left" sort="str">Tournée {{ tournees|raw }}</column>
+      <column type="ed" width="120" align="left" sort="str">Commentaires</column>
+      <column width="140" type="ro" align="center" sort="str">Date création</column> 
+      <column width="140" type="ro" align="center" sort="str">Date previsionelle</column>
+      <column type="ro" width="180" align="left" sort="str">Nom</column>
+      <column type="ro" width="180" align="left" sort="str">Adresse</column>
+      <column width="60" type="ro" align="center" sort="str">CP</column> 
+      <column width="120" type="ro" align="center" sort="str">Ville</column> 
+      <column width="120" type="ro" align="center" sort="str">Complèment d'adresse</column> 
+      <column width="120" type="ro" align="center" sort="str">info portage </column> 
+      <column width="80" type="ro" align="center" sort="str">Societe</column> 
+      <column width="140" type="ro" align="center" sort="str">N°Abonne</column> 
+      <column width="140" type="ro" align="center" sort="str">Date export</column> 
+      <afterInit>
+        <call command='attachHeader'> <param>,#select_filter,#select_filter,#select_filter,#text_filter,#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter</param> </call>   
+      </afterInit>  
+    </head>   
+  {% for row in reperages %}
+    <row>
+      <cell>{{ row.id }}</cell>
+      <cell>{{ row.topage }}</cell>
+      <cell>{% if row.qualif %}{{ row.qualif.libelle }}{% endif %}</cell>
+      <cell>{% if row.tournee %} {{ row.tournee.code|trim}} - {{ row.tournee.libelle|trim}}{% endif %}</cell>
+      <cell>{{ row.cmtReponse }}</cell>
+      <cell>{{ row.dateCreation is empty ? '' : row.dateCreation|date("d/m/Y") }}</cell>
+      <cell>{{ row.dateDemar is empty ? '' : row.dateDemar|date("d/m/Y") }}</cell>
+      <cell>{{ row.vol1 }} {{ row.vol2 }}</cell>
+      <cell>{{ row.vol4 }}</cell>
+      <cell>{{ row.cp }}</cell>
+      <cell>{{ row.ville }}</cell>
+      <cell>{{ row.vol3~' '~ row.vol5}}</cell>
+      <cell>{{ row.infocomp1 ~ ' '~  row.infocomp2 ~ ' ' ~ row.divers1 ~ ' '~row.divers2}}</cell>
+      <cell>{{ row.societe.libelle }}</cell>
+      <cell>{{ row.numaboExt }}</cell>
+      <cell>{{ row.dateExport is empty ? '' : row.dateExport|date("d/m/Y") }}</cell>
+    </row>
+  {% endfor %}
+</rows>

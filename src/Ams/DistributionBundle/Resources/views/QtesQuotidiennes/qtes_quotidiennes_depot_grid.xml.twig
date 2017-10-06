@@ -1,0 +1,36 @@
+<rows>
+  <head>
+        <column type="ro" width="200" align="center" sort="str">Tournée</column>
+        {% for produit in produits %}
+              <column type="ron" width="100" align="center" sort="str">
+              {% if produit.image is defined and file_exists(produit.image) %}<![CDATA[<img src="{{ asset(produit.image) }}" alt="{{ produit.libelle }}" /><span style='display:none'>{{ produit.libelle }}</span>]]>{% else %}{{ produit.libelle }}{% endif %}     
+              </column>
+        {% endfor %}
+        <settings>
+            <splitat>1</splitat>	
+        </settings>
+             <!-- Le Footer ne fonctionne pas bien si on utilise "splitat" 
+        <afterInit>
+            <call command="attachFooter"><param>Total{% for produit in produits %},#stat_total{% endfor %}</param></call>
+        </afterInit>
+             -->
+    </head>
+    
+     {% for tournee_id, tournee_libelle in tournees %}
+        <row id="{{ tournee_id }}" {% if tournee_id == 0 %}style="background:#FAD9DD"{% endif %}>
+            {% if tournee_id != '' %}
+                <cell>{{ tournee_libelle}}</cell>
+            {% else %}
+                <cell><![CDATA[<a href="{{path('qtes_quotidiennes_classify',{'depot':depot_id, 'date':date_distrib, 'flux':flux_id})}}">Non classé</a>]]></cell>
+            {% endif %}
+            {% for produit in produits %}
+                {% if qtesProduitsParTournee[tournee_id][produit.id] is defined %}
+                <cell>{{ qtesProduitsParTournee[tournee_id][produit.id] }}</cell>
+                {% else %}
+                <cell>0</cell>
+                {% endif %}
+            {% endfor %}
+        </row>
+     {% endfor %}
+    
+</rows>

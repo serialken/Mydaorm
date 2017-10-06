@@ -1,0 +1,9 @@
+<rows>
+    {% for row in liste %}
+        <row id="{{row.id}}" locked="true">
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.date|date('d/m/Y')}}</cell>
+            <cell Tooltips="false"><![CDATA[<a href=""  onclick="changeStatut('{{ path('feries_change_statut', {'id':row.id}) }}');"  class="editlink" data-description="{% if row.actif == 1 %}Désactiver {% else %}Activer {% endif %}le {{row.date|date('d/m/Y')}}" data-placement="left" data-content="Ce lien permet {% if row.actif == 1 %}de désactiver {% else %}d'activer {% endif %}le jour férié." onmouseover="affPopoverLien(this);" >{% if row.actif == 1 %}<span class="glyphicon glyphicon-remove-circle"></span>{% else %}<span class="glyphicon glyphicon-ok-circle"></span>{% endif %} </a>]]></cell>
+        </row>
+    {% endfor %}
+</rows>

@@ -1,0 +1,499 @@
+{# src/Ams/HorspresseBundle/Resources/views/Default/ajouter.html.twig #}
+{% extends '::base.html.twig' %}
+{% block title %}Hors Presse - Nouvelle campagne{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ web_files_root_dir }}css/horspresse/hp.css" type="text/css" media="screen" />
+    <style>
+        .ui-datepicker { z-index: 9999 !important; }
+    </style>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {% javascripts output='js/compresse/core.js'
+                                'js/horspresse/hp.js' 
+                                'js/horspresse/ajouter.js' 
+                                'js/multiselect.min.js' 
+                                'js/SimpleAjaxUploader.min.js' 
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {#    {% include 'AmsCartoBundle:Default:htc_script_aff_tournees.js.twig' %}#}
+{% endblock%}
+
+{% block body %}
+
+    <div class="bloc">
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <td rowspan="{% if app.session.flashbag.has('notice')==true %}3{% else %}2{% endif %}" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+                <td class="title">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td class="full title">Nouvelle campagne Hors Presse</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="content">
+                    <div>
+                        <table width="100%">
+                            <tr>
+                                <td class="content formHeader">
+                                    <h4 class="titreSection"></h4>
+                                    <p class="consigne_ppale"></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <form name="" action="">
+                        <div id="add_step1" class="toggleStep active">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr align="left">
+                                        <td>
+                                            <label for="titre">Titre de la campagne</label>
+                                            <p class="formHelp">Le nom sous lequel la campagne sera référencée</p>
+                                            <p class="formError"></p>
+                                        </td>
+                                        <td align="left">
+                                            <input type="text" name="titre" value="" id="titre"/>
+                                        </td>
+                                    </tr>
+                                    {% if aListSte | length > 0 %}
+                                        <tr align="left">
+                                            <td>
+                                                <label for="societe">Société</label>
+                                                <p class="formHelp">Choisissez la société concernée</p>
+                                                <p class="formError"></p>
+                                            </td>
+                                            <td align="left">
+                                                <select name="societe" id="societe">
+                                                    <option value="">Choisissez la société...</option>
+                                                    {% for ste in aListSte %}
+                                                        <option value="{{ ste.id }}">{{ ste.libelle }}</option>    
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr align="left" class="disabled tr_produits">
+                                            <td>
+                                                <label for="produit">Produit</label>
+                                                <p class="formHelp">Le produit à distribuer</p>
+                                                <p class="formError"></p>
+                                            </td>
+                                            <td>
+                                                <select name="produit" id="produit">
+                                                    <option value="">Choisissez le produit...</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+
+                                    <tr align="left">
+                                        <td>
+                                            <label for="date_debut">Date de début:</label>
+                                            <p class="formHelp">La date à laquelle commence la distribution</p>
+                                            <p class="formError"></p>
+                                        </td>
+                                        <td align="left">
+                                            <input type="text" name="date_debut" value="" id="date_debut" class="date"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr align="left">
+                                        <td>
+                                            <label for="date_fin">Date de fin:</label>
+                                            <p class="formHelp">La date à laquelle se termine la distribution</p>
+                                            <p class="formError"></p>
+                                        </td>
+                                        <td align="left">
+                                            <input type="text" name="date_fin" value="" id="date_fin" class="date"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr align="left">
+                                        <td>
+                                            <label for="produit_reference">Produit de référence</label>
+                                            <p class="formHelp">Le produit dont la distribution servira de base à la campagne <em>hors presse</em></p>
+                                        </td>
+                                        <td>
+                                            <select name="produit_reference" id="produit_reference">
+                                                <option value="">Choisissez le produit...</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                                <br/> ou <a href="#" class="cancelLink">Annuler</a>
+                            </div>
+                        </div>
+                        <div id="add_step2" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Fichier client</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Le client a t-il fourni un fichier pour la distribution ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right"><input type="radio" name="fichier_fourni"  value="1"> Oui</td>
+                                        <td align="left"><input type="radio" name="fichier_fourni" value="0"> Non</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn prevBtn"><i class="glyphicon glyphicon-chevron-left"></i> Etape précédente</button>
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="add_step3" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Fichier client</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Le fichier contient les noms des destinataires ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" width="50%"><input type="radio" name="fichier_nominatif"  value="1"> Oui</td>
+                                        <td align="left" width="50%"><input type="radio" name="fichier_nominatif" value="0"> Non</td>
+                                    </tr>
+                                    <tr id="periode_historique" class="disabled">
+                                        <td width="50%" align="left">
+                                            <label for="periode_hist">Période d'historique de comparaison</label>
+                                            <p class="formHelp">Période de référence pour la récupération des adresses communes</p>
+                                            <p class="formError"></p>
+                                        </td>
+                                        <td width="50%" align="left">
+                                            <select name="periode_hist" id="periode_hist">
+                                                <option value="1">1 mois</option>
+                                                <option value="2" selected>2 mois</option>
+                                                <option value="3">3 mois</option>
+                                                <option value="4">4 mois</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn prevBtn"><i class="glyphicon glyphicon-chevron-left"></i> Etape précédente</button>
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="add_step4" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Fichier client fourni<br/>Distribution Toutes Boites (DTB)</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Le nombre de BAL ou de produits à livrer par adresse est indiqué ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" width="50%"><input type="radio" name="nombre_bal"  value="1"> Oui</td>
+                                        <td align="left" width="50%"><input type="radio" name="nombre_bal" value="0"> Non</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="add_step5" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Répartition sur les tournées existantes</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Voulez-vous vous appuyer sur les tournées existantes pour la distribution de ce produit hors-presse ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" width="50%"><input type="radio" name="charge_tournees"  value="1"> Oui</td>
+                                        <td align="left" width="50%"><input type="radio" name="charge_tournees" value="0"> Non</td>
+                                    </tr>
+                                    <tr class="centralExplain">
+                                        <td colspan="2" align="center"></td>
+                                    </tr>
+                                    <tr id="charge_max_tournees" class="disabled" valign="top">
+                                        <td width="50%" align="right">
+                                            <label for="charge_max"></label>
+                                            <p class="formHelp"></p>
+                                        </td>
+                                        <td width="50%" align="left">
+                                            <input type="text" name="charge_max" id="charge_max" size="5" maxlength="5" value="" /> exemplaires
+                                            <p class="formError"></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn prevBtn"><i class="glyphicon glyphicon-chevron-left"></i> Etape précédente</button>
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="add_step6" class="toggleStep">
+                            Définition du périmètre et des paramètres de distribution
+                            <p><span class="label label-warning">En cours de développement</span></p>
+
+                            {#<div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Fichier client fourni<br/>Distribution Toutes Boites (DTB)</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Le nombre de BAL ou de produits à livrer par adresse est indiqué ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" width="50%"><input type="radio" name="nombre_bal"  value="1"> Oui</td>
+                                        <td align="left" width="50%"><input type="radio" name="nombre_bal" value="0"> Non</td>
+                                    </tr>
+                                </table>
+                            </div>#}
+                        </div>
+                        <div id="add_step7" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    <tr>
+                                        <td colspan="2" align="center"><strong>Répartition sur les tournées existantes</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Souhaitez-vous faire appel à des tournées dédiées en cas de débordement ?</td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right" width="50%"><input type="radio" name="choix_debordement"  value="1"> Oui</td>
+                                        <td align="left" width="50%"><input type="radio" name="choix_debordement" value="0"> Non</td>
+                                    </tr>
+                                    <tr class="centralExplain">
+                                        <td colspan="2" align="center"></td>
+                                    </tr>
+                                    <tr id="charge_max_debordement" class="disabled" valign="top">
+                                        <td width="50%" align="right">
+                                            <label for="debordement_charge_max"></label>
+                                            <p class="formHelp"></p>
+                                        </td>
+                                        <td width="50%" align="left">
+                                            <input type="text" name="debordement_charge_max" id="debordement_charge_max" size="5" maxlength="5" value="" /> exemplaires
+                                            <p class="formError"></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn prevBtn"><i class="glyphicon glyphicon-chevron-left"></i> Etape précédente</button>
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="add_step8" class="toggleStep">
+                            <div class="formPart">
+                                <table width="50%" align="center">
+                                    {#<tr>
+                                        <td colspan="2" align="center"><strong>Répartition sur les tournées existantes</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">Souhaitez-vous faire appel à des tournées dédiées en cas de débordement ?</td>
+                                    </tr>#}
+                                    <tr id="temps_sup_tournees">
+                                        <td width="50%" align="right" valign="top">
+                                            <label for="temps_sup">Temps supplémentaire:</label>
+                                        </td>
+                                        <td width="50%" align="left">
+                                            <input type="text" name="temps_sup" id="temps_sup" size="5" maxlength="5" value="" /> secondes
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">
+                                            <p class="formHelp">Entrez ici le temps additionnel à prendre en compte pour 1 exemplaire</p>
+                                            <p class="formError"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top" align="right">
+                                            <label for="flux">Flux:</label>
+                                        </td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-xs-5">
+                                                    <select name="from[]" id="multiselect" class="form-control" size="8" multiple="multiple">
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-xs-2">
+                                                    <button type="button" id="multiselect_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+                                                    <button type="button" id="multiselect_rightSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                                                    <button type="button" id="multiselect_leftSelected" class="btn btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                                                    <button type="button" id="multiselect_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+                                                </div>
+
+                                                <div class="col-xs-5">
+                                                    <select name="to[]" id="multiselect_to" class="form-control" size="8" multiple="multiple"></select>
+                                                </div>
+                                            </div>
+                                            <p class="formError"></p>
+                                        </td>
+                                    </tr>
+                                    <tr id="fichier_upload_tournees" valign="top">
+                                        <td width="50%" align="right">
+                                            <label for="fichier_upload">Fichier à envoyer:</label>
+                                            <p class="formHelp"></p>
+                                        </td>
+                                        <td width="50%" align="left">
+                                            {#                                            <input type="file" name="fichier_upload" id="fichier_upload" title="Sélectionnez le fichier à envoyer"/>#}
+                                            <button id="uploadBtn" class="btn btn-large btn-default">Sélectionnez le fichier à envoyer</button>
+                                            <span class="infoFile"></span>
+                                            <p class="formError"></p>
+                                            <p class="formSuccess"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">
+                                            <button id="fileStrucBtn" type="button" class="btn btn-warning btn-xs" title="Cliquer ici pour définir la structure du fichier client"><i class="glyphicon glyphicon-list-alt"></i> Définir la structure du fichier</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn prevBtn"><i class="glyphicon glyphicon-chevron-left"></i> Etape précédente</button>
+                                <button type="button" class="btn btn-primary">Etape suivante <i class="glyphicon glyphicon-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div id="add_step9" class="toggleStep">
+                            <div class="formPart">
+                                <!-- Infos générales START -->
+                                <div class="panel panel-info infoGenerales">
+                                    <div class="panel-body">
+                                        Informations générales
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div>
+                                            <p class="titreCampagne"><strong>Titre de la campagne:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="produitCampagne"><strong>Produit / Société:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="dateDebut"><strong>Date de début:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="dateFin"><strong>Date de fin:</strong><span class="valPlaceHolder"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Infos générales END -->
+
+                                <!-- Params Distrib START -->
+                                <div class="panel panel-info paramsDistrib">
+                                    <div class="panel-body">
+                                        Paramètres de distribution
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div>
+                                            <p class="fichierFourni"><input type="checkbox"  onclick="return false"><span>Fichier client fourni</span></p>
+                                            <p class="adressageNomin"><input type="checkbox"  onclick="return false"><span>Adressage nominatif</span></p>
+                                            <p class="dtb"><input type="checkbox"  onclick="return false"><span>Distribution Toutes Boites</span></p>
+                                            <p class="periode"><strong>Période d'historique:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="prodRef"><strong>Produit de référence:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="chargeTournees"><input type="checkbox"  onclick="return false"><span></span></p>
+                                            <p class="chargeMaxTournees"><span></span> exemplaires par tournée existante maximum.</p>
+                                            <p class="tourneesDediees"><input type="checkbox"  onclick="return false"><span>Tournées dédiées</span> <span class="debordement">(débordement)</span></p>
+                                            <p class="chargeMaxTourneesDediees"><span></span> exemplaires par tournée dédiée.</p>
+                                            <p class="tempsSup"><strong>Temps supplémentaire:</strong><span class="valPlaceHolder"></span></p>
+                                            <p class="flux"><strong>Flux sélectionné(s):</strong><span class="valPlaceHolder"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Params Distrib  END -->
+
+                                <!-- Infos fichier START -->
+                                <div class="panel panel-info infoFichier">
+                                    <div class="panel-body">
+                                        Informations fichier client
+                                    </div>
+                                    <div class="panel-footer">
+                                        <div>
+                                            <p class="nomFichier"><strong>Nom du fichier:</strong><span class="valPlaceHolder">N/A</span></p>
+                                            <p class="prodQte"><strong>Nombre de produits à livrer:</strong><span class="valPlaceHolder">N/A</span></p>
+                                            <p class="nbP2L"><strong>Points de livraison:</strong><span class="valPlaceHolder">N/A</span></p>
+                                            <hr/>
+                                            <p><strong>Extrait des données récoltées depuis le fichier:</strong></p>
+                                        </div>
+                                        <div class="sampleFile">
+                                                <table border="1" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <p class="btnHolder">
+                                                    <button id="fileStrucRecapBtn" type="button" class="btn btn-warning btn-xs" title="Cliquer ici pour modifier la structure du fichier client"><i class="glyphicon glyphicon-list-alt"></i> Modifier la structure du fichier</button>
+                                                </p>
+                                            </div>
+                                    </div>
+                                </div>
+                                <!-- Infos fichier END -->
+                            </div>
+                            <div class="bottomBtnPart">
+                                <button type="button" class="btn btn-primary">Enregistrer la campagne</button><br/>ou<br/><a id="editParams">Modifier les paramètres de la campagne</a>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="fileStrucBtnModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="amsModalLabel" aria-hidden="true">
+        <div class="ams-modal modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="amsModalLabel">Définition de la structure du fichier client</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>Structure du fichier client à envoyer</h4>
+                    <p class="consigne">A l'aide du formulaire ci-dessous, vous pouvez décrire la structure du fichier client, afin d'intégrer ses informations dans la base de données.<br/>Notez que l'analyse se fonde sur les informations qui proviennent du fichier.<br/>
+                        Veillez donc à <strong>bien définir la structure</strong> du fichier avant d'enregistrer la campagne.
+                    </p>
+                    <p><em>un extrait des données récupérées vous sera montré à la prochaine étape.</em></p>
+                    <div class="well">
+                        <p class="headers"><input type="checkbox" id="firstLineHeaders" value="1"/><label for="firstLineHeaders">La première ligne du fichier contient des en-têtes.</label></p>
+                        <p class="dataSeparator">
+                            <label for="dataSep"><strong>Séparateur de colonnes:</strong></label>
+                            <select id="dataSep">
+                                <option value="">Choisissez le séparateur</option>
+                                <option value="comma">Virgule (,)</option>
+                                <option value="semi">Point-virgule (;)</option>
+                                <option value="pipe">Pipe (|)</option>
+                            </select>
+                        </p>
+                        <p class="pSave">
+                            <button type="button" class="btn btn-primary btn-xs" disabled><i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer</button>
+                        </p>
+                        <table id="structure" width="100%" cellpadding="5">
+                            <tr>
+                                <th>Colonne du fichier</th>
+                                <th>Champ de données</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <td>#1</td>
+                                <td>
+                                    <select class="dataField original"></select>
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <p class="addRow">
+                            <button type="button" class="btn btn-default btn-xs add" title="Cliquer pour ajouter une nouvelle colonne"><i class="glyphicon glyphicon-plus"></i> Ajouter une colonne</button>
+                            <button type="button" class="btn btn-warning btn-xs reset" title="Cliquer pour annuler la structure en cours de définition"><i class="glyphicon glyphicon-refresh"></i> Réinitialiser le formulaire</button>
+                        </p>
+                    </div>
+                    <button class="btn btn-default btn-xs" id="closeBadMapPointsBtn" data-dismiss="modal" >Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

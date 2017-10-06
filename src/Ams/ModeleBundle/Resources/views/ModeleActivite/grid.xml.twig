@@ -1,0 +1,23 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"     type="ro"   hidden="true"></column>
+        <column id="lien_journal"   type="ro"   width="30"  align="center"  sort="str"></column> 
+        <column id="depot_id"       type="ro"   hidden="true"></column>
+        <column id="flux_id"        type="ro"   hidden="true"></column>
+        <column id="jour_id"        type="coro" width="80"  align="left"    sort="int">Jour{{m.combo(comboJour)}}</column> 
+        <column id="activite_id"    type="coro" width="*"   align="left"    sort="sortCombo">Activité{{m.combo(comboActivite)}}</column> 
+        <column id="date_debut"     type="dhxCalendar" width="70" align="center" sort="date">Début</column> 
+        <column id="date_fin"       type="dhxCalendar" width="70" align="center" sort="date">Fin</column> 
+        <column id="lien_planning"  type="ro"   width="30"  align="center"  sort="na"></column> 
+        <column id="employe_id"     type="coro" width="*"   align="left"    sort="sortCombo">Employé{{m.combo(comboEmploye,true)}}</column> 
+        <column id="heure_debut"    type="ed"   width="50"  align="center"  sort="str">Heure début</column> 
+        <column id="duree"          type="ed"   width="50"  align="center"  sort="str">Durée</column> 
+        <column id="nbkm_paye"      type="ed"   width="50"  align="right"   sort="int">Kilomètres payés</column> 
+        <column id="transport_id"   type="coro" width="80"  align="center"  sort="str">Transport{{m.combo(comboTransport,true)}}</column>
+        <column id="commentaire"    type="txt"  width="*"   align="left"    sort="str">Commentaire</column>
+        <column id="old_employe_id" type="ro"   hidden="true"></column>
+        {{m.columnAjout(isModif)}}
+    </head> 
+   {% include 'AmsModeleBundle:ModeleActivite:row.xml.twig' %}
+</rows>

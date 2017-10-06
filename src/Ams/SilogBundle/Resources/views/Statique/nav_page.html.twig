@@ -1,0 +1,22 @@
+{% if form!='' %}
+{% form_theme form '::fields_inline.html.twig' %}
+
+{# Affichage filtre et sous menu sous forme de tabulation #}     
+<div style='position:relative; width:100%;'>
+    <div class="well" id="formFiltreDepotFlux" style="text-align: left;">
+        <form method="post"  action ="{{path(route)}}">
+           {{form_widget(form)}}
+           <input type="submit" value="Filtrer" class="btn btn-primary"/>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<ul class="nav nav-tabs">
+    {%for page in pages %} 
+        {% if page.menu==1 %}
+            <li{% if page.id_route==route %} class="active"{% endif %}><a href="{{path(page.id_route)}}">{{page.desc_court}}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+

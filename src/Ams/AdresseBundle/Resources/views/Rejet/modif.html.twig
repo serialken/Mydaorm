@@ -1,0 +1,266 @@
+{% extends '::modal.html.twig' %}
+{% block modalTitre %}
+    <h4> Correction d'une adresse rejetée</h4>
+{% endblock %}
+{% block modalContenu %}  
+    <div id='rejetAdresse' >   
+        {% if listeAbonnes|length %}    
+        <div class="panel panel-default">
+             <div class="panel-heading">
+                <h4 class="panel-title"> 
+                        {% if listeAbonnes|length > 1 %}
+                            Liste des abonnés rattachés à l'adresse rejetée ({{listeAbonnes|length}})
+                        {% else %}
+                           Abonné rattaché à l'adresse rejetée 
+                        {% endif %}     
+                    <span data-toggle="collapse" data-target="#panel-abonne" class="plus-minus"> -/+ </span>
+                </h4>
+                 
+             </div>
+                
+            <div class="panel-body collapse out" id="panel-abonne"> 
+                <table class="full adresse">
+                    <tr>
+                        <th>Numero</th> 
+                        <th>Nom Prénom</th>
+                        <th>Rais. Sociale</th>
+                        <th>Société</th> 
+                    </tr>
+                    {% for listeAbonne in listeAbonnes %}
+                        <tr>
+                           <td>{{listeAbonne.abonneSoc.numaboExt}}</td> 
+                           <td>{{listeAbonne.vol1}}</td>
+                           <td>{{listeAbonne.vol2}}</td>
+                           <td>{{listeAbonne.abonneSoc.socCodeExt}}</td> 
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+                
+        </div>
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"> Adresse éditeur 
+                <span data-toggle="collapse" data-target="#panel-adresse" class="plus-minus"> -/+ </span></h4>
+            </div>
+            <div class="panel-body collapse out" id="panel-adresse">
+                     <table class="full adresse">
+                        <tr>
+                            <th><label> Adressse </label></th>
+                            <th><label>Compl. Adressse </label></th>
+                            <th><label> Lieu dit </label></th>
+                            <th><label> CP </label></th>
+                            <th><label> Ville </label></th>
+                        </tr>
+                        <tr>  
+                            <td> {{adresseInitiale.vol4}}</td>
+                            <td>{{adresseInitiale.vol3}}</td>
+                            <td> {{adresseInitiale.vol5}}</td>
+                            <td> {{adresseInitiale.cp}}</td>
+                            <td>{{adresseInitiale.ville}}</td>
+                        </tr>
+                    </table>
+             </div>
+        </div>            
+         
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4 class="panel-title">Normalisation de l'adresse</h4></div>
+              <div class="panel-body row">
+                <div class="col-md-6">
+                    <h5><b> Adresse à normaliser </b></h5> 
+                    <form method="post"   id="formRejet" action="{{path('adresse_modif_rejet')}}" >
+
+                       {{ form_widget(form._token) }}
+                        <table  class="adresse">
+                            <tr>
+                                <th> Adresse </th>
+                                 <td> {{form_widget(form.vol4)}}</td>
+                            </tr>
+                            <tr>
+                                <th> Compl. Adresse </th>
+                                 <td>{{form_widget(form.vol3)}}</td>
+                              </tr>
+                            <tr>
+                                <th> Lieu dit </th>
+                                <td> {{form_widget(form.vol5)}}</td>
+                              </tr>
+                            <tr>
+                                <th> CP </th>
+                                <td> {{form_widget(form.cp)}}</td>
+                              </tr>
+                            <tr>
+                                <th> Ville </th>
+                                 <td>{{form_widget(form.ville)}}</td>
+                            </tr>
+                            <tr>
+                                    <td colspan="2" style="text-align:center">
+                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search icon-white"></i> Normaliser cette adresse </button> 
+                                    </td>
+                                </tr>
+                        </table>
+                    </form>
+                </div>
+                                    
+                <div class="col-md-6">
+                 
+                    {% if ResRNVP is not null and ResRNVP.etatRetourRnvp is defined %}  
+                      {%if ResRNVP.etatRetourRnvp == "RNVP_OK" %}
+                          <h5 style="color:green"><b> Normalisation réussie</b> </h5> 
+                     {% else %}
+                         <h5 style="color:red"><b> Normalisation avec risques</b> </h5> 
+                     {% endif %}
+                        
+                    <div class="row" id="formRejetLoader">
+
+                    <form method="post"  id="formRnvp" action="{{path('adresse_rejet_geocode')}}" >
+                        <table class="adresse">
+                            <tr>
+                                <th>Adresse</th> 
+                                <td>{{ResRNVP.pio_adresse}}</td>
+                            </tr>
+                            <tr>
+                                <th>Compl. Adresse</th>
+                                 <td>{{ResRNVP.pio_cadrs}}</td>
+                            </tr>
+                            <tr>
+                                <th> Lieu dit </th>
+                                <td> {{ResRNVP.pio_lieudit}} </td>
+                            </tr>
+                            <tr>
+                                <th> CP </th>
+                                <td> {{ResRNVP.po_cp}} </td>
+                            </tr>
+                            <tr>
+                                <th> Ville</th>
+                                <td> {{ResRNVP.po_ville}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center">  
+                                    <button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-ok icon-white"></i> Valider cette adresse et géocoder</button>
+                                </td>
+                            </tr>
+                        </table>
+                     </form>
+                     <div id="formRnvpLoader"> </div>    
+                    </div>
+        {% endif %}
+    </div>
+  </div>
+ </div>
+ 
+</div>  
+
+<div class="row"> 
+    <div id="geocodageLoader"> </div>
+</div>
+
+<script type="text/javascript">    
+    $(document).ready(function() {
+        var page_login="{{path('_ams_authentification')}}";
+         $('#formRejet').submit(function(e) {
+             e.preventDefault();
+             $('#formRejetLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+             $.ajax({
+               url: $(this).attr('action'),
+               type: $(this).attr('method'),
+               data: $(this).serialize(),
+               cache: false,
+               success: function(data) {
+                     $('#amsModal').html(data);
+                     $('#amsModal').animate({ scrollTop: 175 }, 'slow');
+               },
+               error: function(data) {
+                    alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists");
+               }
+             });
+             return false; //
+         });
+
+         $('#formRnvp').submit(function(e) {
+             e.preventDefault();
+             $('#formRnvpLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+             $.ajax({
+               url: $(this).attr('action'),
+               type: $(this).attr('method'),
+               data: $(this).serialize(),
+               cache: false,
+               success: function(data) {
+                   if(data=="00"){
+                     $.toaster({ priority : 'danger', title : 'Alerte', message : 'Session perdue'});
+                     document.location.href=page_login;
+                   }else{
+                     $('.adress_proposed').remove();
+                     $('#rejetAdresse').append('<div class="adress_proposed">'+data+'</div>');
+                     $('#formRnvpLoader').hide();
+                     $('#amsModal').animate({ scrollTop: 350 }, 'slow');
+                 }
+               },
+               error: function(data) {
+                    alert("An unexpected error occured. Please reload the page or contact the administrator if this error persists");
+                   }
+             });
+             return false; //
+         });
+         
+     });
+   
+    /**
+    * Fonction qui affecte des coordonnées a un adresse normaliséé a la creation d'un point de livraison
+    * @param string path correspond a la route pour geocoder avec la tournéé incluse dans le chemin
+    * @param string x correspond aux coordonnées de l'adresse recupéré en type hidden
+    * @param string y correspond aux coordonnées de l'adresse recupéré en type hidden
+    * @param string score correspond au GeocodeScore de l'adresse recupéré en type hidden
+    * @param string geoType correspond au GeocodeType de l'adresse recupéré en type hidden
+    * @param string zone correspond a la div ou on va charger les adresse liés a ce point de livraison une fois créé
+    */
+    function updateGeocodage (path,x,y, score, geoType,cp,ville) {
+        $('#geocodageLoader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+        $.ajax({
+            url: path,
+            data: '&geox='+ x + '&geoy='+ y + '&geoscore='+ score + '&geotype='+ geoType+ '&ville=' +ville+ '&cp='+ cp,
+            type: 'POST',
+            dataType: 'text',   
+            success : function(data){
+               $('#amsModal').html(data);
+               $('#amsModal').on('hide.bs.modal', function () {
+                    // On vide ams modal de son contenu                   
+                    $('#amsModal').html('');
+                    {# on verifie si la grid existe donc modal appelé par gestion des rejets #}
+                    if (  typeof grid !== 'undefined') {
+                        // on raffraichit le nbr de lignes
+                        // grid.deleteSelectedRows();
+                        
+                        //$('#infoResRejet').html(res);
+                        showFlashAlert('#listeGeoNotifications .alert-success', 3000);
+                        
+                        //grid.setRowHidden("{{adresseInitiale.id}}", true)
+                        
+                        grid.deleteRow("{{adresseInitiale.id}}");
+                        
+                        var res = "Résultat de la recherche: <strong>" + grid.getRowsNum() + " </strong> ligne(s)";
+                        $('#infoResRejet').html(res);
+                        
+                        
+                        
+                        
+                        //var res = "Résultat de la recherche <strong>" + grid.getRowsNum() + " </strong> ligne(s)";
+                        // on rafraîchit la grid
+                       // grid.clearAll();
+                       // grid.loadXML("{{path('adresse_liste_rejet_xml')}}");
+                    }
+                  });
+                 $('#geocodageLoader2').hide();
+                 $('#geocodageLoader').hide();
+                 $('#formGecodage2').hide();
+                $('#amsModal').modal('hide');
+            },
+             error : function(text){
+                  $('#erreur').text("Attention une erreur est survenue."); 
+                  $("erreur").addClass("alert alert-danger");
+             }
+     });
+ }
+</script>  
+{% endblock %}

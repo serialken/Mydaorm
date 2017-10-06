@@ -1,0 +1,40 @@
+{% import 'AmsModeleBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="journal_id"         type="ro"           hidden="true"></column>
+        <column id="lien_journal"       type="ro"           width="30"  align="center"  sort="str"></column> 
+        <column id="groupe_id"          type="coro"         width="50"  align="center"  sort="sortCombo">Groupe{{comboGroupe|raw}}</column>
+        <column id="jour_id"            type="coro"         width="80"  align="left"    sort="int">Jour{{comboJour|raw}}</column> 
+        <column id="tournee_id"         type="coro"         width="80"  align="center"  sort="str">Tournee{{comboTournee|raw}}</column> 
+        <column id="lien_tournee"       type="ro"           width="30"  align="center"  sort="na"></column> 
+        <column id="date_debut"         type={% if isSuperModif %} "dhxCalendar" {% else %} "ro" {% endif %}  width="70"  align="center"  sort="sortDate">Début</column> 
+        <column id="date_fin"           type="ro"           width="70"  align="center"  sort="sortDate">Fin</column> 
+        <column id="lien_planning"      type="ro"           width="30"  align="center"  sort="na">Porteur</column> 
+        <column id="employe_id"         type="coro"         width="*"   align="left"    sort="sortCombo">#cspan{{comboEmploye|raw}}</column> 
+        <column id="lien_planning"      type="ro"           width="30"  align="center"  sort="na">#cspan</column> 
+        <column id="remplacant_id"      type="coro"         width="200" align="left"    sort="sortCombo">#cspan{{comboEmploye|raw}}</column> 
+        <column id="heure_debut"        type="ro"           width="50"  align="center"  sort="str">Heure Début Groupe</column> 
+        <column id="duree"              type={% if isSuperModif %} "ed" {% else %} "ro" {% endif %} width="70"  align="center"  sort="str">Durée{% if isSuperModif %} *{% endif %}</column> 
+        <column id="nbcli"              type={% if isSuperModif %} "ed" {% else %} "ro" {% endif %} width="50"  align="right"   sort="int">Nombre de clients{% if isSuperModif %} *{% endif %}</column> 
+        <column id="nbkm"               type="ed"           width="50"  align="right"   sort="int">Transport *</column> 
+        <column id="nbkm_paye"          type="ed"           width="50"  align="right"   sort="int">#cspan</column> 
+        <column id="transport_id"       type="coro"         width="80"  align="center"  sort="sortCombo">#cspan{{comboTransport|raw}}</column> 
+        <column id="depart_depot"       type="coro"         width="50"  align="center"  sort="sortCombo">Dépôt *{{comboDepartRetour|raw}}</column> 
+        <column id="retour_depot"       type="coro"         width="50"  align="center"  sort="sortCombo">#cspan{{comboDepartRetour|raw}}</column> 
+        <column id="valrem"             type={% if isSuperModif %} "edn" {%else%} "ron" {% endif %} width="70"  align="center"  sort="int" format="0.00000">Valeur de rémunération</column> 
+        {% if flux_id==1 %}
+            <column id="valrem_moyen"   type="ron"          width="70"  align="center"  sort="int" format="0.00000">#cspan</column>
+        {% else %}
+            <column id="valrem_moyen"   type="ron"          hidden="true"></column>
+        {% endif %}
+        <column id="old_employe_id"     type="ro"           hidden="true"></column>
+        <column id="old_valrem"         type="ro"           hidden="true"></column>
+        <column id="old_date_debut"     type="ro"           hidden="true"></column>
+        <column id="tauxhoraire"        type="ro"           hidden="true"></column>
+        <column id="super_modif"        type="ro"           hidden="true"></column>
+        {% if isSuperModif %} {{m.columnAjout(isModif)}} {% endif %}
+    </head> 
+    {% include 'AmsModeleBundle:ModeleTourneeJour:row.xml.twig' %}
+</rows>
+
+

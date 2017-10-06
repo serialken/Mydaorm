@@ -1,0 +1,28 @@
+From: {{ mailDatas.sSenderAdress }} 
+To: {{ mailDatas.sMailDest }} 
+cc: {% for cc in mailDatas.cc %},{{cc}}{% endfor %} 
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+Subject: Validation d'étalonnage pour le dépôt {{mailDatas.etalon.depot}} - {{mailDatas.etalon.flux}} - {{mailDatas.etalon.employe}} - {{mailDatas.etalon.tournee}}
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit 
+
+
+<html>
+<strong>Validation d'étalonnage</strong><br/><br/>
+L'étalonnage a été validé par {{mailDatas.etalon.valideur}} le {{mailDatas.etalon.date_validation}}.<br/><br/>
+Les critères de recherche sont :<br/>
+<table>
+    <tr><td>Dépot</td><td> : {{mailDatas.etalon.depot}}</td></tr>
+    <tr><td>Flux</td><td> : {{mailDatas.etalon.flux}}</td></tr>
+    <tr><td>Type</td><td> : {{mailDatas.etalon.type}}</td></tr>
+    <tr><td>Requete</td><td> : {{mailDatas.etalon.date_requete}}</td></tr>
+    <tr><td>Application</td><td> : {{mailDatas.etalon.date_application}}</td></tr>
+    <tr><td>Employé</td><td>  {{mailDatas.etalon.employe}}</td></tr>
+    <tr><td>Cycle</td><td>  {{mailDatas.etalon.cycle}}</td></tr>
+    <tr><td>Tournée(s)</td><td>  {{mailDatas.etalon.tournee}}</td></tr>
+    <tr><td>Commentaire</td><td> : {{mailDatas.etalon.commentaire}}</td></tr>
+    <tr><td>Demandeur</td><td> : {{mailDatas.etalon.demandeur}}</td></tr>
+    <tr><td>Demande</td><td> : {{mailDatas.etalon.date_demande}}</td></tr>
+</table>
+<br/>
+<a href='{{mailDatas.urlBase|raw}}app.php/{{mailDatas.etalon.url|raw}}'>Merci de consulter les détails</a>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrFicFichiersEtat" table="TR_FIC_FICHIERS_ETAT">
+    <id name="etaCode" type="integer" column="ETA_CODE">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="etaLibelle" type="string" column="ETA_LIBELLE" length="100" nullable="false"/>
+    <field name="etaPoidsErreurs" type="integer" column="ETA_POIDS_ERREURS" nullable="false"/>
+  </entity>
+</doctrine-mapping>

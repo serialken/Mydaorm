@@ -1,0 +1,8 @@
+From: {{ mailDatas.sSenderAdress }}
+To: {{ mailDatas.sMailDest }}
+Subject: {{ mailDatas.sSubject }}
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit
+
+
+{{ mailDatas.sContentHTML|raw }}

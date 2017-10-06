@@ -1,0 +1,133 @@
+{% extends '::modal.html.twig' %}
+{% block modalCss %}
+<style>
+        .modal-dialog {
+        width: 1000px; 
+        height: 100px;
+        margin: 100px auto;
+    }
+
+</style>
+{% endblock %}
+{% block modalTitre %}
+    <h4> Gestion des profils </h4>
+{% endblock %}
+    
+ {% block modalContenu %}
+    <div class="well">
+	{% for flashMessage in app.session.flashbag.get('notice') %}
+
+	    <div class="flash-notice">
+	        {{ flashMessage }}
+	    </div>
+	{% endfor %}
+                
+	<div>Choisir un menu afin de gérer les droits de son contenu</div>
+		{% if form2 is defined %}
+        
+                       <form method="post"  id="form2" action="{{path('admin_modif_profil')}}" >
+                                Menu : {{ form_widget(form2.prf_menu) }}    
+                         <div id="inputForm">
+                                
+                         </div>   
+                       </form>
+                       
+			<div style="text-align: left; height: 500px" id="mroad_tree"> </div>
+			<input type="hidden" id="noeuds_tree_selectionnes" name="form[tree]" value="" />
+		{% endif %}    
+           
+    </div>		
+
+
+    <script type="text/javascript">
+        /* Ajax Filtre */
+        $(document).ready(function() {
+            var $prf_menu = $('#form_prf_menu');
+            reponses_json = [];				    
+            $("#mroad_tree").dynatree({
+                    checkbox: true,
+                    selectMode: 3,
+                    children: reponses_json,
+                    onSelect: function(select, node) {
+                            // Get a list of all selected nodes, and convert to a key array:
+                      var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
+                         if(node.data.key.match(/^\d+/)){
+                                   return node.data.key;
+                         }      
+                      });
+
+                      $('#noeuds_tree_selectionnes').val(selKeys.join('|'));
+                      $.ajax({
+                              url: '{{ path('admin_modif_profil') }}',
+                              data: '&prf_menu=' + $('#form_prf_menu').val() + '&noeuds_tree_selectionnes='+ $('#noeuds_tree_selectionnes').val(),
+                              type: 'POST',
+                              dataType: 'json',
+                              success: function(reponses_json) {
+                                              $('#notice_tree').show();
+                                              $('#notice_tree').text('Droit mis à jour'); 
+                              },
+                              error: function(reponses_json) {
+                                              $('#notice_tree').show();
+                                              $('#notice_tree').text('Erreur lors de la mise à jour');                
+                              },
+                              beforeSend: function() {
+                                              $('#notice_tree').hide();
+                                              afficheImgAttente();
+                             },
+                              complete: function() {
+                                  masqueImgAttente();
+                                   }
+                        });									
+                    },
+                    onDblClick: function(node, event) {
+                            node.toggleSelect();
+                    },
+                    onKeydown: function(node, event) {
+                            if( event.which == 32 ) {
+                                    node.toggleSelect();
+                                    return false;
+                            }
+                    },
+
+                    // The following options are only required, if we have more than one tree on one page:
+        //			initId: "treeData",
+                    cookieId: "dynatree-Cb3",
+                    idPrefix: "dynatree-Cb3-"
+            });
+
+            // Si on modifie le selecteur de categorie de menu
+            $prf_menu.on('change', function() {
+                var val = $(this).val();
+                if(val != '') {
+                        $("#form_prf_menu option[value='']").remove();
+                        $("#noeuds_tree_selectionnes").val('');
+                }
+                if($prf_menu.val()!=''){
+                      $.ajax({
+                                url: '{{ path('admin_arborescence_page') }}',
+                                data: 'prf_menu='+ $prf_menu.val(), // on envoie $_POST['form[prf_code]']
+                                type: 'POST',
+                                dataType: 'json',
+                                success: function(reponses_json) {
+                                                $("#mroad_tree").dynatree({
+                                                     children: reponses_json
+                                                });												
+                                                $("#mroad_tree").dynatree("getTree").reload(); // recharge l'arborescence 					                
+                                },
+                                error: function(reponses_json) {
+                                           $('#notice_tree').show();alert('prf_menu='+ $prf_menu.val());
+                                           $('#notice_tree').text("Erreur lors de l'affichage de l'arborescence");                
+                                 },
+                                 beforeSend: function() {
+                                            $('#notice_tree').hide();
+                                            afficheImgAttente();
+                                 },
+                                 complete: function() {
+                                            masqueImgAttente();
+                                 }
+                   });					            
+             }
+            });
+        });				
+    </script>	
+{% endblock %}   

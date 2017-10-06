@@ -1,0 +1,6 @@
+<form method="post" class="form reportFichier" id="form" action="{{ path('calendrier_gestion_reports',{'id':produit.id})}}" {{ form_enctype(form) }} >          
+    {{ form_widget(form) }}
+    <span id="inputFormCreate">
+        <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+    </span>
+</form>

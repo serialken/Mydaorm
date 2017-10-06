@@ -1,0 +1,290 @@
+{% extends '::base.html.twig' %}
+{% block title %}Invendus{% endblock %}
+{% block body %}
+<style>
+    table th{
+        text-align: center;
+    }
+
+    #formInvendu td, .entete td {
+        padding: 3px;
+    }
+    #formInvendu td, .entete td{position:relative;}
+    #formInvendu label, .entete label{text-align:right;float:left;width:100%}
+    #formInvendu input[type=text],#formInvendu select{width:90%;float:left}
+    {##content_form{background: #fff;}#}
+    #s2id_depot,#s2id_lv{
+        border-width:0px!important;
+        background-color: transparent;
+        box-shadow:none;
+    }
+
+</style>
+<div class="well" id="content_form">
+    <div class="error_msg"></div>
+    <h4 align="left" style="margin-top: 0px;">Type de saisie:</h4>
+    <form method="post" id="formInvendu" action="{{path('saisie_invendu_index',{saisie: saisie})}}" autocomplete="off">
+        <table>
+            <tr>
+                <td>
+                    <h5><label><input type="radio" id="douchette" name="saisieInvendu" value="1" {%if typeSaisie==null or typeSaisie==1%} checked {%endif%} /> Douchette </label></h5>
+                </td>
+                <td>
+                    <h5><label style="padding-left: 45px;"><input type="radio" id="manuelle" name="saisieInvendu" value="2" {%if typeSaisie==2%} checked {%endif%} /> Saisie manuelle </label></h5>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>
+                    <table class="douchette{% if typeSaisie == 2%} hide{% endif %}">
+                        <tr>
+                            <td>
+                                LV/date parution
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" name="lVdateParution" id="lVdateParution" required value='{{lVdateParution}}'/>
+                            </td>
+                            <td>
+                                <img class="ajaxLoader" style="display:none;" src='{{ asset('images/ajaxLoader2.gif')}}'  width="100" height="70" />
+                                {#<button type="submit" class="btn btn-primary" id="validerDouchette">Valider</button>#}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <span class='erreur hide' style="color:red;">Veuillez sasir le bon format comme par ex:20160727 0017131</span>
+                            </td>
+                        </tr>
+                          {% if app.session.flashbag.has('lieuVente_depot')==true %}
+                        <tr>
+                            <td colspan="3" class="lv center success" style="color:red;">
+                                        {% for flashMessage in app.session.flashbag.get('lieuVente_depot') %}
+                                            {{ flashMessage }}
+                                        {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if app.session.flashbag.has('recherche_invendu_douchette')==true %}
+                        <tr>
+                            <td colspan='2' class="aucunResultatDouchette center success" style="color:red;">
+                                        {% for flashMessage in app.session.flashbag.get('recherche_invendu_douchette') %}
+                                            {{ flashMessage }}
+                                        {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+
+
+                    <table class="manuelle{% if typeSaisie==null or typeSaisie == 1%} hide{% endif %}">
+                        <tr>
+                            <td>
+                                Date parution
+                            </td>
+                            <td>
+                                <input type="text" id="dateParution" name="dateParution" class="datepicker form-control" placeholder="Choisissez une date" required value=''/>
+                            </td>
+                            <td>
+                                Depôt 
+                            </td>
+                            <td>
+                                <select name="depot" id="depot" class="form-control" required>
+                                    <option value="" selected>Choisissez un élément</option>
+                                    {% for depot in depots %}
+                                    <option value="{{ depot.id }}" {%if depot.id==depotId%} selected {%endif%}>{{ depot.libelle }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                Lieu de vente
+                            </td>
+                            <td>
+                                <select name="lv" id="lv" class="form-control" required>
+                                    <option value="" selected>Choisissez un élément</option>
+                                    {% for num,libelle in lieuV %}
+                                    <option value="{{ num }}" {%if num==lvNum%} selected {%endif%}>{{ libelle }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <img class="ajaxLoader" style="display:none;" width="100" height="70" src='{{ asset('images/ajaxLoader2.gif')}}'/>
+                                <button type="submit" class="btn btn-primary" id="validerManuelleSaisie">Valider</button>
+                            </td>
+                        </tr>
+                        {% if app.session.flashbag.has('recherche_invendu_manuelle')==true %}
+                        <tr>
+                            <td colspan='7' class="aucunResultatManuelle center success" style="color:red;">
+                                        {% for flashMessage in app.session.flashbag.get('recherche_invendu_manuelle') %}
+                                            {{ flashMessage }}
+                                        {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+{#{% if invendus %}
+<div class="well liste_invendu">
+            {% include 'AmsInvenduBundle:Invendu:liste_invendu.html.twig' %}
+</div>
+{% endif %}#}
+<script src="{{asset('js/tinysort.js') }}" type="text/javascript" /> </script>
+<script type="text/javascript">
+      $('select').select2({allowClear: true});
+    $('#manuelle').click(function() {
+        $('input#dateParution').val("");
+        $('select#depot').val("");
+        $('select#lv').val("");
+        $('.lv').addClass('hide');
+        $('.erreur').addClass('hide');
+        $('.liste_invendu').addClass('hide');
+        $('.aucunResultatManuelle').addClass('hide');
+        if ($(this).is(':checked')) {
+            $('.manuelle').removeClass('hide');
+            $('.douchette').addClass('hide');
+        } else {
+            $('.manuelle').addClass('hide');
+            $('.douchette').removeClass('hide');
+        }
+        $("form input#dateParution").datepicker('setDate' , '{{'now'|date('Y-m-d')}}');
+        $('#dateParution').trigger('focus');
+        if($('select#depot option[value!=""]').length == 1){
+            $('select#depot').val($('select#depot option[value!=""]').attr('value'));
+            $('select#depot').trigger("change");
+        }
+    });
+    $('#douchette').click(function() {
+        $('input#lVdateParution').val("");
+        $('.lv').addClass('hide');
+        $('.erreur').addClass('hide');
+        $('.liste_invendu').addClass('hide');
+        $('.aucunResultatDouchette').addClass('hide');
+        if ($(this).is(':checked')) {
+            $('.manuelle').addClass('hide');
+            $('.douchette').removeClass('hide');
+        } else {
+            $('.manuelle').removeClass('hide');
+            $('.douchette').addClass('hide');
+        }
+         $('#lVdateParution').trigger('focus');
+    });
+
+    $("form input#dateParution").datepicker({
+        dateFormat: 'yy-mm-dd',
+        language: "fr"
+    });
+
+    $('#validerManuelleSaisie').click(function(e) {
+        e.preventDefault();
+        $('button:submit').hide();
+        $('.aucunResultatManuelle').addClass('hide');
+        $('.ajaxLoader').show();
+        var dateParution = $('#dateParution').val();
+        var selectDepot = $('#depot').val();
+        var selectLv = $('#lv').val();
+        var msg = false;
+        if (dateParution == '' || selectDepot == '' || selectLv == '') {
+            msg = "Tous les filtres doivent être selectionnés!";
+            $('#dateParution,#depot,#lv').css('border', 'red solid 1px');
+            $('.error_msg').html('<div class="alert alert-warning">' + msg + '</div>');
+            $('button:submit').show();
+            $('.ajaxLoader').hide();
+        } else {
+            //$('#formInvendu').submit();
+            getListInvenduDochette("manuelle");
+        }
+    });
+
+    function validateDouchette(douchette) {
+        var douchetteReg = /(19|20)[0-9]{2}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])\s([0-9]{7}$)/;
+        return douchetteReg.test(douchette);
+    }
+
+    {#$('#validerDouchette').click(function(e) {#}
+    $('#lVdateParution').on("input propertychange", function(e) {
+        $('.lv').addClass('hide');
+        $('div.liste_invendu').remove();
+        $('.erreur').addClass('hide');
+        $('.saisieReussi').addClass('hide');
+        $('.aucunResultatDouchette').addClass('hide');
+        var lv_date = $("#lVdateParution").val();
+        if (!validateDouchette(lv_date)) {
+            console.log('erreur');
+            $('.erreur').removeClass('hide');
+            //return false;
+        } else {
+            $('.erreur').addClass('hide');
+            $('button:submit').hide();
+            $('.ajaxLoader').show();
+            //$('#formInvendu').submit();
+            getListInvenduDochette("dochette");
+        }
+    });
+
+    var urlChangeLv = '{{ path('saisie_change_lieuVente') }}';
+    var jsObjet = null;
+    function changeLv(objDepot) {
+        jsObjet = null;
+        var depotId = objDepot.val();
+        $('#lv').addClass('hide');
+        $('.ajaxLoader').show();
+        $.ajax({
+            url: urlChangeLv,
+            data: 'depotId=' + depotId,
+            type: 'POST',
+            success: function(resulat) {
+                jsObjet = resulat;
+                $('#lv option').remove();
+                $.each(jsObjet, function(key, value) {
+                    $('#lv').append('<option value="' + key + '">' + value + '</option>');
+                });
+                tinysort($('#lv option'));
+                $('#lv').prepend('<option value="" selected>Choisissez un élément</option>');
+                $('.ajaxLoader').hide();
+                $('#lv').removeClass('hide');
+            }
+        });
+    }
+
+    $('#depot').change(function() {
+        changeLv($(this));
+    });
+    $(document).ready(function() {
+        $('#lVdateParution').trigger('focus');
+        $('#lVdateParution').focus(function() {
+            $(this).val("");
+        });
+    });
+    function getListInvenduDochette(type) {
+        $('div.liste_invendu').remove();
+        var url = "{{path('saisie_invendu_index')}}";
+        var dataForm = $('form#formInvendu').serialize();
+        $('#lVdateParution').attr('disabled',true);
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: dataForm+'&type='+type,
+            success: function(data) {
+                $('.erreur').addClass('hide');
+                $('div.liste_invendu').remove();
+                $('#content_form').append(data);
+                $('.ajaxLoader').hide();
+                $('button:submit').show();
+                $('#lVdateParution').attr('disabled',false);
+            },
+            error: function() {
+                alert("Error");
+                $('button:submit').show();
+                $('.ajaxLoader').hide();
+                $('#lVdateParution').attr('disabled',false);
+            }
+        });
+    }
+    
+</script>
+{% endblock %}
+

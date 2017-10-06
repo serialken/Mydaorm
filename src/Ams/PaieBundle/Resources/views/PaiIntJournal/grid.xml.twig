@@ -1,0 +1,37 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="depot_id"       type="coro" width="150" align="left"    sort="sortCombo">Dépot{{comboDepot|raw}}</column>
+        <column id="flux_id"        type="coro" width="70"  align="left"    sort="sortCombo">Flux{{comboFlux|raw}}</column> 
+        <column id="date_distrib"   type="ro"   width="70"  align="center"  sort="sortDate">Date</column> 
+        <column id="niveau"         type="ro"   width="50"  align="center"  sort="int">Niveau</column> 
+        <column id="rubrique"       type="ro"   width="50"  align="center"  sort="str">Rubrique</column> 
+        <column id="code"           type="ro"   width="40"  align="center"  sort="str">Code</column> 
+        <column id="message"        type="ro"   width="*"   align="left"    sort="str">Message</column> 
+        <column id="employe_id"     type="coro" width="*"   align="left"    sort="sortCombo">Employé{{comboEmploye|raw}}</column> 
+        <column id="tournee_id"     type="coro" width="100" align="left"    sort="sortCombo">Tournée{{comboTournee|raw}}</column> 
+        <column id="produit_id"     type="ro"   hidden="true">produit_id</column> 
+        <column id="r_produit_id"   type="coro" width="100" align="left"    sort="sortCombo">Produit{{comboProduit|raw}}</column> 
+        <column id="activite_id"    type="ro"   hidden="true">activite_id</column> 
+        <column id="r_activite_id"  type="coro" width="100" align="left"    sort="sortCombo">Activité{{comboActivite|raw}}</column> 
+        <column id="commentaire"    type="ro"   width="*"   align="left"    sort="str">Commentaire</column> 
+    </head> 
+    {% for row in curseur %}
+    <row id ="{{row.id}}"{{m.locked(false)}}{{m.bgColor(row.couleur)}}>
+        <cell>{{row.depot_id}}</cell>
+        <cell>{{row.flux_id}}</cell>
+        <cell>{{row.date_distrib}}</cell>
+        <cell>{{row.level}}</cell>
+        <cell>{{row.rubrique}}</cell>
+        <cell>{{row.code}}</cell>
+        <cell>{{row.msg}}</cell>
+        <cell>{{row.employe_id}}</cell>
+        <cell>{{row.tournee_id}}</cell>
+        <cell>{{row.produit_id}}</cell>
+        <cell>{{row.ref_produit_id}}</cell>
+        <cell>{{row.activite_id}}</cell>
+        <cell>{{row.ref_activite_id}}</cell>
+        <cell>{{row.commentaire}}</cell>
+    </row> 
+    {% endfor %}
+</rows>

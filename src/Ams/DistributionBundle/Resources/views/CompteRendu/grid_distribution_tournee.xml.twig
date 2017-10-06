@@ -1,0 +1,54 @@
+<rows>
+    <head>  
+        <column id="depot_id" type="ro" width="120" hidden="true">Centre</column>
+        <column id="tournee_id" type="ro"  width="120" hidden="true">tourneeId</column>
+        <column id="tournee_select" type="ch" width="50"></column> 
+        <column id="tournee" type="ro" width="120">Tournée </column> 
+        <column id="retard_non_livraison" width="110" type="coro" >Retard/Non Liv. {{options|raw}}</column>
+        <column id="type_incident" width="170" type="coro" >Type incident {{incidentsOptions|raw}}</column>
+        <column id="nb_ex_abo" width="130" type="ro">Nb Abonné Non Livré</column>
+        <column id="nb_ex_diff" width="130" type="ro">Nb Diffuseur Non Livré</column> 
+        <column id="heure_fin_tournee" width="130" type="{% if disabled is empty%}ed{%else%}ro{%endif%}"   align="center">Heure fin de tournée</column> 
+        <column id="incident_abo" type="{% if disabled is empty%}ed{%else%}ro{%endif%}"  width="220" >Commentaire incident Abonné</column> 
+        <column id="incident_diff" type="{% if disabled is empty%}ed{%else%}ro{%endif%}"  width="220">Commentaire incident Diffuseur</column> 
+        <column id="villes" width="400" type="rotxt">Villes</column> 
+        <column id="id_villes" width="10" type="ro" hidden="true"></column> 
+    </head>  
+
+    {% for row in liste %}
+   
+        <row>
+            <cell>{{row.depot_id}}</cell>
+            <cell>{{row.tournee_id}}</cell>
+            <cell>0</cell>
+            <cell>{% if row.code is not empty %}{{row.code}}{%else%}NON RENSEIGNE{%endif%}</cell>
+            <cell style="text-align: center;">{{row.anomalie_id}}</cell>
+            <cell style="text-align: center;">{{row.incident_id}}</cell>
+     
+            {%if disabled is  empty %}
+                {% if row.nb_abonne_non_livre != 0 %}
+                    <cell style="text-align: center;"><![CDATA[<a href="#" data-toggle="modal" data-target="#amsModal" class="cptr-editlink" onclick="modifDistribRow('{{affichage_date}}', '{{id_depot}}', '{{row.tournee_id}}', '{{loop.index}}')">{{row.nb_abonne_non_livre}}</a>]]></cell>
+                {% else %}
+                    <cell style="text-align: center;"><![CDATA[<a href="#" data-toggle="modal" data-target="#amsModal"  class="cptr-editlink" onclick="modifDistribRow('{{affichage_date}}', '{{id_depot}}', '{{row.tournee_id}}', '{{loop.index}}')">0</a>]]></cell>
+                {% endif %}
+                
+                {% if row.nb_diff_non_livre != 0 %}
+                    <cell style="text-align: center;"><![CDATA[<a href="#" data-toggle="modal" data-target="#amsModal" class="cptr-editlink" onclick="modifDistribRow('{{affichage_date}}', '{{id_depot}}', '{{row.tournee_id}}', '{{loop.index}}')">{{row.nb_diff_non_livre}}</a>]]></cell>
+                {% else %}
+                    <cell style="text-align: center;"><![CDATA[<a href="#" data-toggle="modal" data-target="#amsModal" class="cptr-editlink" onclick="modifDistribRow('{{affichage_date}}', '{{id_depot}}', '{{row.tournee_id}}', '{{loop.index}}')">0</a>]]></cell>
+                {% endif %}
+            {%else%}
+                <cell style="text-align: center;">{% if row.nb_abonne_non_livre !=0 %}{{row.nb_abonne_non_livre}}{%else%}0{%endif%}</cell>
+                <cell style="text-align: center;">{% if row.nb_diff_non_livre !=0 %}{{row.nb_diff_non_livre}}{%else%}0{%endif%}</cell>
+            {%endif%}
+            <cell style="text-align: center;">{{row.heure_fin_tournee}}</cell>
+            <cell style="text-align: center;">{{row.incident_ab}}</cell>
+            <cell style="text-align: center;">{{row.incident_diff}}</cell>
+            <cell style="text-align: left;">{{row.villes|raw}}</cell>
+            <cell style="text-align: left;">{{row.id_villes}}</cell>
+        </row>
+
+       
+    {% endfor %}
+    
+</rows>

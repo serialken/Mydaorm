@@ -1,0 +1,45 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        Enregistrement d'un jour férié
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="well">
+                <div id="modalAlerte">
+                </div>
+                <form method="post" class="form jourFerie" id="ajoutFerie" action="{{ path('feries_ajout') }}" {{ form_enctype(form) }} >          
+                  {{ form_widget(form) }}
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                  </div>
+                </form>
+            </div> 
+            <script type="text/javascript">
+                $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                $("form input.date").datepicker({
+                     dateFormat: 'dd/mm/yy', 
+                     firstDay:1
+                 }).attr("readonly","readonly");
+               $(document).ready(function() {
+                    $('#formSociete').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                          url: $(this).attr('action'),
+                          type: $(this).attr('method'),
+                          data: $(this).serialize(),
+                          cache: false,
+                          success: function(data) {
+                                $('#liste_societes').prepend(data.background);
+                                $('#amsModal').html(data.modal);
+                                $('#modalAlerte').html(data.alert);
+                          },
+                          error: function(data) {
+                               alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                          },
+                        });
+                        return false; //
+                    });
+                });
+            </script>  
+    {% endblock %}

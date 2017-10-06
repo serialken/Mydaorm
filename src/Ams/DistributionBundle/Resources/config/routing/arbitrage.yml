@@ -1,0 +1,18 @@
+arbitrage_vue_generale_xml: 
+    pattern:    /arbitrage-xml
+    defaults:    { _controller: "AmsDistributionBundle:Arbitrage:grid" }
+       
+arbitrage_vue_generale: 
+    pattern:  /
+    defaults: { _controller: "AmsDistributionBundle:Arbitrage:liste" }
+    
+arbitrage_dhtmlx: 
+    pattern:  /arbitrage-dhtmlx
+    defaults: { _controller: "AmsDistributionBundle:Arbitrage:dataProcessor"}
+
+arbitrage_xls: 
+    pattern:  /arbitrage-xls
+    defaults: { _controller: "AmsDistributionBundle:Arbitrage:excelExport"}
+
+
+

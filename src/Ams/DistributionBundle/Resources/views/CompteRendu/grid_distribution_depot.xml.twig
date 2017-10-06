@@ -1,0 +1,33 @@
+{% set indice = '0' %}
+{% set label_depot = '' %}
+<rows> 
+    {% if liste|length >  0 %} 
+        {% for row in liste %}
+           
+                        <row style='text-align: center;'>
+                            <cell>{% if row.code is defined %}{{row.code}}{%else%}NON RENSEIGNE{%endif%}</cell>
+                            <cell Tooltips="true"><![CDATA[<a href="{{path('compte_rendu_modif_tournee', { 'id': row.depot_id, 'date': affichage_date,'flux' : flux })}}" class="editlink" data-toggle="modal" data-target="#amsModal"><span class="glyphicon glyphicon-edit"></span>{{row.libelle_depot|trim}}</a>]]></cell>
+                            
+                            <cell>{% if row.reclam is not empty%}{{row.reclam}}{%else%}0{%endif%}</cell>
+                            
+                            <cell>{% if row.anomalie_libelle is not empty %} {{ row.anomalie_libelle}}{%else%}NON RENSEIGNE{%endif%}</cell>
+                            <cell>{% if row.incident_libelle is not empty %}{{row.incident_libelle}}{%else%}{%endif%}</cell>
+                            <cell>{% if row.nb_abonne_non_livre is not empty %}{{row.nb_abonne_non_livre}}{%else%}{%endif%}</cell>
+                            <cell>{% if row.nb_diff_non_livre is not empty %}{{row.nb_diff_non_livre}}{%else%}{%endif%}</cell>
+                            <cell>{% if row.heure_fin_tournee is not empty %}{{row.heure_fin_tournee}}{%else%}{%endif%}</cell>
+                            <cell>{% if row.incident_ab is not empty %}{{row.incident_ab}}{%else%}{%endif%}</cell>
+                            <cell>{% if row.incident_diff is not empty %}{{row.incident_diff}}{%else%}{%endif%}</cell>
+                            <cell class="test" style="white-space: pre!important;text-align: left;">{% if row.villes is not empty %}{{row.villes}}{%else%}NON RENSEIGNE{%endif%}</cell>
+                        </row>
+           
+        {% endfor %}
+    {%else%}
+       <row style='text-align: center;'>
+      
+        <cell colspan='11' style="text-align:center ;font-size: 20px;">Aucun compte n'a été saisi pour cette date</cell>
+
+        </row>
+    {%endif%}
+
+
+</rows>

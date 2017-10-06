@@ -1,0 +1,201 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% import 'AmsAdresseBundle:DhtmlxGrid:macros.html.twig' as m %}
+    
+{% block body %}
+   <style>
+		#amsModalBody label{display:inline-block !important; width:80px !important}
+		#amsModalBody select,#amsModalBody textarea{width:100%}
+		#amsModalBody form{width:350px;margin:0 auto}
+	</style>
+
+		<div class="numberRow"> 
+			<section class="logo">
+        {% if ObjSociety.image.webPath is defined and file_exists(ObjSociety.image.webPath) %}
+        	<img src="{{ asset(ObjSociety.image.webPath) }}" alt="{{ ObjSociety.libelle }}" />
+        {% endif %} 
+        {% if ObjSociety.libelle is defined %}
+            {{ ObjSociety.libelle }}
+        {% else %}
+                Tous
+        {% endif %}
+               
+        
+        <form method="post" name="filtreReperage" action="{{path('reperage_detail',{'depot':depot,'society':society})}}" style="margin-top: 5px;">
+            <table>
+                <tr>
+                    <td>
+                        &nbsp;&nbsp;{{ form_label(form.Topage) }} : &nbsp;&nbsp;{{ form_widget(form.Topage)}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;{{ form_label(form.DatePrevMin) }} : &nbsp;&nbsp;{{ form_widget(form.DatePrevMin, {'attr': {'value': datePrevMin}, 'id': 'DatePrevMin', 'name': 'DatePrevMin'})}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;{{ form_label(form.DatePrevMax) }} : &nbsp;&nbsp;{{ form_widget(form.DatePrevMax , {'attr': {'value': datePrevMax}, 'id': 'DatePrevMax', 'name': 'DatePrevMax'})}}
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;
+                        <button type="submit" class="btn-small btn-primary" >
+                            <i class="glyphicon glyphicon-search white"></i>	Rechercher
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    
+      </section>
+      <section class="result">
+				<span id="res"> 0 </span> Résultat(s) 
+    	</section>
+    	<section class="depot">
+                        <span id="label"> A rendre avant le : </span>
+                        <input id="datePdf" type="text" value="" name="datePdf">
+
+                        <img id="imgPdfRep"style="cursor:pointer;height:20px;" src="{{ asset('images/pdf.png') }}" alt="exporter" 
+                                 onmouseover="affPopoverLien(this);" data-description="Export Pdf du détail des repérages {% if ObjSociety.libelle is defined %}du titre {{ObjSociety.libelle}}{% else %}de tous les titres{% endif%}." 
+                                 data-content="Ce lien permet d'exporter les données présentent dans le tableau au format pdf pour  
+                                 {% if ObjDepot.libelle is defined %} <strong>{{ ObjDepot.libelle }}</stong> {% else %} <strong> tous les dépots </strong> {% endif %}.">
+                        <br />
+  			               <img style="cursor:pointer;height:20px;" src="{{ asset('images/excel.png') }}" 
+                             alt="Imprimer"  onclick="grid.toExcel({{m.urlExcel()}},'color',true);" onmouseover="affPopoverLien(this);" 
+                             data-description="Export excel du détail des repérages {% if ObjSociety.libelle is defined %}du titre {{ObjSociety.libelle}}{% else %}de tous les titres{% endif%} ." data-content="Ce lien permet d'exporter les données présentent dans le tableau au format xls pour
+                             {% if ObjDepot.libelle is defined %} <strong>{{ ObjDepot.libelle }}</stong> {% else %} <strong> tous les dépots </strong> {% endif %}." /> 
+  			
+      </section>
+		</div>
+    <div  style='position:relative; height:700px; width:100%;'>
+        <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+                     <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                             Chargement ...
+                      </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="recinfoArea"></div>
+                </td>
+            </tr>
+        </table>  
+    </div>
+
+<script>
+    var update = false;
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{dhtmlx_img }}");
+    var aReperageId = '';
+
+    /** DEFINITION HEADER TABLE**/
+    grid.setHeader(" Repérages entre le {{date1}} et le {{date2}},#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan,#cspan",null, ["text-align:center"]);
+    grid.init();
+    
+    grid.attachEvent("onXLS", function() {
+        document.getElementById('cover').style.display = 'block';
+    });
+    
+    grid.attachEvent("onXLE", function() {
+        document.getElementById('cover').style.display = 'none';
+        var num = grid.getRowsNum();
+        $('.numberRow span#res').html(num);
+    });
+
+    grid.attachEvent("onFilterEnd", function(elements){
+        var num = grid.getRowsNum();
+        $('.numberRow span#res').html(num);
+        aReperageId = '';
+        for(var i=0 ;i<num ;i++){
+          if(i == 0) aReperageId = grid.cellByIndex(i,0).getValue();
+          else aReperageId += ','+grid.cellByIndex(i,0).getValue();
+        }
+    });
+    
+    grid.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
+      if(stage == 0 && grid.cellById(rId,15).getValue() != ''){
+        return false;
+      }
+      
+      if(stage== 2 && nValue != oValue){
+        var qualif_id = nValue;
+        $.ajax({
+          url: "{{path('topage_selected')}}",
+          data: 'id='+ qualif_id,
+          dataType: 'json', 
+          success: function(json) { 
+            grid.cells(rId,1).setValue(json);
+          }
+        });
+      }
+      return true;
+    });
+     
+    grid.setSkin("dhx_skyblue");
+    grid.enableSmartRendering(true);
+    
+    /** Pagination **/
+    grid.enablePaging(true, 20, 3, "recinfoArea");
+    grid.setPagingSkin("toolbar", "dhx_skyblue");
+    
+    /** INSERT VIEW XML FORMAT **/
+    grid.loadXML("{{path('reperage_vue_detail_xml', {'depot':depot ,'society':society,'filter':filter})|raw}}");
+    
+    myDataProcessor = new dataProcessor("{{path('reperage_crud')}}");
+    myDataProcessor.init(grid);
+    
+    function end_Range() {
+        var chosenDate = $("#DateParutionMin").datepicker("getDate");
+        if (chosenDate == null) {
+            $("#DateParutionMin").focus();
+        } else {
+            $("#DateParutionMax").datepicker("option", "minDate", new Date(chosenDate));
+        }
+        ;
+    }
+    ;
+
+    $(document).ready(function() {
+      $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+      $("input#datePdf").datepicker({
+          dateFormat: 'dd/mm/yy', 
+      }).attr("readonly","readonly");
+      
+      $("form input#DatePrevMin").datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: end_Range,
+        }).attr("readonly", "readonly");
+
+        $("form input#DatePrevMax").datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: end_Range,
+            firstDay: 1
+        }).attr("readonly", "readonly");
+      
+      var d = new Date();
+      $.cookie.defaults.path = '/';
+      $("input#datePdf").datepicker('setDate', new Date());
+      $.cookie("toMakeDate", d.getDate()+"/"+(d.getMonth() + 1) +"/"+d.getFullYear());
+
+      $("#imgPdfRep").click(function(){
+        $.ajax({
+          url:"{{path('reperage_vue_detail_pdf',{ 'depot' : depot, 'society' : society})}}?filter={{filter}}",
+          data:{
+            aReperageId: aReperageId
+          },
+          method : 'POST', 
+          success: function(path) { 
+            var url = "{{ asset('path/reperage_sdvp.pdf')}}";
+            url = url.replace('path',path);
+            window.location = url;
+          }
+        });
+      });
+      
+      $("input#datePdf").change(function(){
+          $.cookie("toMakeDate", $(this).val());
+      });
+    });
+
+    
+</script>
+
+{% endblock %}

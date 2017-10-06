@@ -1,0 +1,16 @@
+caract_list:
+    pattern:  /list
+    defaults: { _controller: "AmsProduitBundle:PrdCaract:list" }
+caract_update_ajax:
+    pattern:  /update-ajax
+    defaults: { _controller: "AmsProduitBundle:PrdCaract:updateAjax" }
+grid_caracts_xml:
+    pattern:  /grid-caracts
+    defaults: { _controller: "AmsProduitBundle:PrdCaract:grid" }
+caract_inactiv_ajax:
+    pattern:  /inactiv-ajax
+    defaults: { _controller: "AmsProduitBundle:PrdCaract:inactivAjax" }
+    
+carat_delete:
+    pattern:  /delete/    
+    defaults: { _controller: "AmsProduitBundle:PrdCaract:suppressionCaract"}

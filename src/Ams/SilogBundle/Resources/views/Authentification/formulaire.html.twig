@@ -1,0 +1,55 @@
+{% extends 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block navigation %} {% endblock %}
+
+{% block pagetitle %}>
+    <a href="{{ path('_ams_authentification') }}" class="level0 active">Identification</a>
+{% endblock %}
+
+{% block body %}
+    <div class="bloc identification">
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <td rowspan="2" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+                <td class="title">Identification</td>
+            </tr><tr>	
+                <td class="content">
+                        {{ form_start(form) }}
+                        <table cellspacing="0" cellpadding="0" border="0" class="center full">
+                            <tr>
+                                <td colspan="2" class="center error">&nbsp; 
+
+                                    {# {% for flashMessage in app.session.flashbag.get('notice') %}
+                                             {{ flashMessage }}
+                                     {% endfor %}
+                                         
+                                        #}
+
+
+                                    {{ form_errors(form) }}
+                                    {% if error is defined %}
+                                        {{ error }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ form_label(form.utilisateur, 'Nom d\'utilisateur') }} : </td>
+                                <td>{{ form_widget(form.utilisateur, {'attr': {'class': 'text'}}) }}</td>
+                            </tr>
+                            <tr>
+				<td>{{ form_label(form.mdp, 'Mot de passe') }} : </td>
+                            <td>{{ form_widget(form.mdp, {'attr': {'class': 'text'}}) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="center"><input value="Connexion" type="submit" class="button"/></td>
+                            </tr>
+                        </table>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+			</td>
+		</tr>
+	</table>
+</div>
+{% endblock %}

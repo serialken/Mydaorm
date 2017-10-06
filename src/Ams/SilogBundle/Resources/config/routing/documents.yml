@@ -1,0 +1,12 @@
+admin_document:
+    pattern:  /gestion
+    defaults: { _controller: "AmsSilogBundle:Documents:index" }
+    
+admin_document_grid:
+    pattern:  /gestion/grid
+    defaults: { _controller: "AmsSilogBundle:Documents:grid" }
+    
+admin_document_crud:
+    pattern:  /gestion/crud
+    defaults: { _controller: "AmsSilogBundle:Documents:DocumentCrud" }
+

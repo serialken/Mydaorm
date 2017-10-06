@@ -1,0 +1,17 @@
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(false)}}{{m.bgColorBloque(row.isModif)}}>  
+    <cell>{{row.type_id}}</cell>    
+    <cell>{{row.employe_id}}</cell>    
+    <cell>{% if row.date_validation is not null %}<![CDATA[{{m.lienAnnexeEtalon()}}]]>{% endif %}</cell>
+    <cell>{{row.tournee}}</cell>
+    <cell>{{row.date_requete}}</cell>
+    <cell>{{row.date_application}}</cell>
+    <cell>{{row.demandeur_id}}</cell>
+    <cell>{{row.date_demande}}</cell>
+    <cell>{{row.valideur_id}}</cell>
+    <cell>{{row.date_validation}}</cell>
+    <cell>{{row.date_refus}}</cell>
+    <cell>{{row.commentaire}}</cell>    
+    {{m.cellSupprime(isModif and row.date_demande is null or isValid and row.date_validation is null and row.date_refus is null)}}
+</row> 
+{% endfor %}

@@ -1,0 +1,23 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="date_distrib"   type="ro"   width="70"  align="center"  sort="sortDate">Date</column>
+        <column id="poste"          type="ro"   width="70"  align="center"  sort="str">Poste</column> 
+        <column id="libelle"        type="ro"   width="*"   align="center"  sort="str">Libellé</column> 
+        <column id="qte"            type="ron"  width="80"  align="right"   sort="int"  format="0.00">Nombre</column> 
+        <column id="taux"           type="ron"  width="80"  align="right"   sort="int"  format="0.000">Taux</column>
+        <column id="val"            type="ron"  width="80"  align="right"   sort="int"  format="0.00">Montant</column> 
+      </head>      
+    {% set prev_date_distrib="" %}
+    {% for row in curseur %}
+        <row locked="true">  
+            <cell>{% if prev_date_distrib!=row.datev %}{{row.datev|date('d/m')}}{% endif %}</cell>
+            <cell>{{row.poste}}</cell>
+            <cell>{{row.libelle}}</cell>
+            <cell>{{row.qte}}</cell>
+            <cell>{{row.taux}}</cell>
+            <cell>{{row.val}}</cell>
+        </row>  
+        {% set prev_date_distrib=row.datev %}
+     {% endfor %}
+ </rows>

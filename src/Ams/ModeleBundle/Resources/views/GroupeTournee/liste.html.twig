@@ -1,0 +1,24 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['Dépôt'            ,null                       ,null               ,null               ,'{{depot_id}}'         ,null                   ,null              ,null],
+['Flux'             ,null                       ,null               ,null               ,'{{flux_id}}'          ,null                   ,null              ,null],
+['Code'             ,'#text_filter'             ,null               ,isLength2          ,null                   ,null                   ,null              ,null],
+['Libelle'          ,'#text_filter'             ,null               ,isLibelle          ,null                   ,null                   ,null              ,null],
+['Heure Début'      ,null                       ,null               ,isTime             ,null                   ,null                   ,null              ,null],
+['Heure Fin'        ,null                       ,null               ,isTimeOrNull       ,null                   ,null                   ,null              ,null],
+['Suppression'      ,'#ismodif'                 ,'#ismodif'         ,null               ,null               ,'{{m.lienSupprime()}}'     ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+//        grid.filterBy(2,"BA");
+    }
+    </script>
+{% endblock %}

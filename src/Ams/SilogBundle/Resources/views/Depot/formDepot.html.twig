@@ -1,0 +1,67 @@
+{% extends '::modal.html.twig' %}
+    {% block modalTitre %}
+        {% if is_new %} Création de dépôt {% else %} Modification du dépôt {% endif %}
+    {% endblock %}
+    {% block modalContenu %}
+            <div class="well">
+                 <div id="modalAlerteAddDepot">
+                     {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+                 </div>
+                <form method="post" class="form depot" id="formDepot" action="{{ is_new ? path('depot_creation_ajax') : path('depot_modification_ajax',{'param1': depot.id })}}">       
+                  {{ form_widget(depotForm) }}
+                  <br/>
+                  <div id="inputForm">
+                      <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                  </div>
+                </form>
+            </div> 
+            <script type="text/javascript">   
+                
+                $('#ams_silogbundle_depot_depotCommunes').multiselect2side({
+                        selectedPosition: 'right',
+                        moveOptions: false,
+                        labelsx: '',
+                       labeldx: '',
+                       autoSort: true,
+                       autoSortAvailable: true
+                 });
+               $(document).ready(function() {
+                   $('#modalAlerteAddDepot div.alert-defaultLoad').hide();
+                    $('#formDepot').submit(function(e) {
+                        e.preventDefault();
+                        $('#inputForm').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                        $.ajax({
+                          url: $(this).attr('action'),
+                          type: $(this).attr('method'),
+                          data: $(this).serialize(),
+                          cache: false,
+                          success: function(data) {
+                              console.log(data);
+                              {% if is_new %}   
+{#                                $('#modalAlerteAddDepot').hide();#}
+                                $('.depot.tab-pane').removeClass('active in');
+                                $('#liste_depots').prepend(data.background);                                
+                                $('#ulMenuDepot').prepend(data.ul);                                
+                              {% else %}                               
+                                $('#depot_'+data.depotId).replaceWith(data.background);
+                              {% endif %}
+                                  
+                              if (data.depotId) {
+{#                                     $('#liste_depots').prepend(data.background);#}
+                                     initGridCommune(data.depotId);
+                              }
+                              $('#modalAlerteAddDepot .alert').replaceWith(data.alert);
+                              $('#modalAlerteAddDepot').show();
+                              $('#modalAlerteAddDepot div.alert').show();
+                              $('#inputForm').html('<button class="btn btn-default" type="button" data-dismiss="modal">Fermer</button>');
+                              //$('#amsModal').html(data.modal);
+                          },
+                          error: function(data) {
+                               alert("Une erreur a été détectée. Veuillez contacter le support MRoad si ce phénomène persiste. "+data);
+                          }
+                        });
+                        return false; //
+                    });
+                });
+            </script>  
+    {% endblock %}

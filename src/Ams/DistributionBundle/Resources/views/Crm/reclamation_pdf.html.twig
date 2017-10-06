@@ -1,0 +1,156 @@
+
+{#    {% set k = 0%}#}
+    {% for row in list %}
+    <page>
+        <table class="reclamation" align="center">
+            <tr>
+                    <td class="title" colspan="2" width="100%">{{title}}</td>
+                   <td class="imgSociety">
+                    {% if row.soc_image is defined %}
+                    {%if file_exists (chemin~row.soc_image) %}
+                    <img src="{{chemin}}{{ row.soc_image}}" alt="{{ row.societe_libelle }}" />
+                    {%endif%}
+                    {% else %}
+                    {{ row.societe_libelle}}{% endif %} 
+                </td>
+            </tr>
+            
+            <tr>
+                <td colspan="2"> Réponse &agrave; rendre le {{dateArendre}} </td>
+                <td class="codeTournee">Tournée: {% if row.tournee_code %} <strong>{{row.tournee_code}}</strong> {% endif %} </td>
+            </tr>
+            
+            
+            
+            <tr>
+                <td class="data_client" width="10%">
+                    <div style="width: 180px;">
+                      {% if row.numabo_ext %}<strong>{{ row.numabo_ext }}</strong><br />{% endif %}
+                      {% if row.vol1 %} {{ row.vol1 }} {% endif %} {% if row.vol2 %} {{ row.vol2 }} {% endif %} <br />
+                      {% if row.vol3 %}{{ row.vol3 }} {% endif %}
+                      {% if row.vol4 %}{{ row.vol4 }} {% endif %}
+                      {% if row.vol5 %}{{ row.vol5 }} {% endif %}  <br />
+                      {{ row.cp ~' '~ row.ville }}
+                    </div>
+                </td>
+                <td> 
+                    <div  {% if allCrmResponse %}style="width: 50px;"{%else%}style="width: 200px;"{%endif%} ></div>
+                </td>
+                <td class="detailsDemand">
+                    <div style="width: 200px;"><strong>{{row.demande_libelle}} [{{row.demande_code}}]</strong><br />    
+                        Préj. du {{row.date_debut|date('d/m/Y')}} au {{row.date_fin|date('d/m/Y')}} <br /> {{row.cmt_demande}}</div>
+                </td>
+            </tr>
+            {% if allCrmResponse %}
+              <tr>
+                  <td class="codeReponse"> Codes réponses </td> 
+              </tr>
+              {% set i = 5 %}  
+              {% set j = 0 %}
+              {% set count = 0 %}
+              {% set sizeData = allCrmResponse|length %}
+              <tr>
+                {% for row in allCrmResponse %}
+                   {% set count = count + 1 %}
+                   {% if i > 3%}
+                       <tr>
+                   {%endif%}
+                   {% if j < 3 %}
+                     <td class="col-xs-3" style="text-align: left;">[ ] {{row.libelle}}</td>
+                     {% set j = j+1 %}{% set i = 0 %} 
+                     {%if sizeData == count %}</tr>{% endif %}
+                   {%else%}
+                       </tr>
+                       {% set i = 5 %}
+                       {% set j = 0 %}  
+                   {%endif%}  
+               {% endfor %}
+             </tr>  
+          {%else%}
+            <tr style="width: 300px;"></tr>
+          {%endif%}  
+    
+            <tr>
+                <td class="response col-xs-12"> Réponse: </td>
+              
+            </tr>
+        </table>
+    <BR><BR>
+{#       {% set k = k+1 %}#}
+{#        {% if k%2 == 0 %}
+           <page pageset="old"> </page>
+         {% endif %}  #}
+        </page>
+        {% endfor %}
+
+
+<style>
+
+table.reclamation{
+    padding:1px;
+    border-style: solid;
+    border-width: 1px;
+}
+.title{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.codeTtournee {
+    font-size:12px;
+    text-align: left;
+    padding-top: 15px;
+}
+.titreLibelle{
+    font-weight:bold;
+}
+.detailsDemand{
+    font-size:12px;
+    text-align: left;
+}
+.codeSociety{
+    font-size:30px;
+    text-align:center;
+}
+
+.imgSociety{
+    font-size:30px;
+    text-align:center;
+    vertical-align: middle;
+}
+.matricule{
+    font-size:20px;
+    font-weight:bold;
+}
+.data_client{
+     padding-top: 15px;
+    font-size:12px;
+    text-align: left;
+}
+.codeReponse{
+    padding-top: 15px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.element{
+    font-size:12px;
+}
+.element.right{
+    text-align:right;
+}
+
+.ligne{
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+.response{
+    padding-top: 10px;
+    font-size:20px;
+    font-weight:bold;
+    height:400px;
+    vertical-align: top;
+}
+
+</style>

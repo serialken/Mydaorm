@@ -1,0 +1,12 @@
+
+{% for row in curseur %}
+<row id ="{{row.id}}"{{m.locked(isModif and row.isModif)}}{{m.bgColorBloque(row.isModif)}}>  
+    <cell>{{row.date_distrib}}</cell>
+    <cell>{{row.employe_id}}</cell>
+    <cell>{{row.incident_id}}</cell>
+    <cell>{{row.commentaire}}</cell>
+    <cell>{{row.incidence}}</cell>
+    {{m.cellSupprime(isModif and row.isModif)}}
+</row> 
+{% endfor %}
+

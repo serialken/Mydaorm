@@ -1,0 +1,65 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Compte Rendu de Reception des Dépôts{% endblock %}
+
+{% block body %}
+<style>
+    select{padding: 3px;}
+    #form_date{display:inline}
+</style>
+<div class='well'>
+    <form method="post" name="formFiltre" id="formFiltre" action="">
+        <table style="width: 36%">
+            <tr>
+                {#<td>{{ form_label(form.depots) }}&nbsp;&nbsp;{{ form_widget(form.depots) }}</td>#}
+                <td>{{ form_label(form.date) }}&nbsp;&nbsp;{{ form_widget(form.date,{'attr': {'value':datepicker }} ) }}</td>
+                <td>{{ form_label(form.flux) }}&nbsp;&nbsp;{{ form_widget(form.flux,{'value':flux } ) }}</td>
+
+                <td style="float:left">
+                    &nbsp;&nbsp;<button type="submit" class="btn btn-primary btn-sm" id="serachQte"> <i class="glyphicon glyphicon-search white"></i><b> Rechercher </b></button>  
+                </td>
+            </tr>
+       </table>
+    </form>
+</div>
+
+<div  style='position:relative; height:700px; width:100%;'>
+	<table width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+				<div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+				<div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+					Chargement ...
+				</div>
+			</td>
+		</tr>
+		<tr> <td><div id="recinfoArea"></div></td></tr>
+	</table>  
+</div>
+
+<script>
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("#form_date").datepicker({
+        dateFormat: 'dd/mm/yy'
+    });
+
+    grid = new dhtmlXGridObject('gridbox');
+    grid.setImagePath("{{dhtmlx_img }}");
+	grid.init();
+
+	grid.attachEvent("onXLS", function() {
+		document.getElementById('cover').style.display = 'block';
+	});
+	
+	grid.attachEvent("onXLE", function() {
+		document.getElementById('cover').style.display = 'none';
+	});
+
+    grid.loadXML("{{path('compte_rendu_reception_camion_grid',{'flux': flux,'date' : date})|raw }}");
+    
+    myDataProcessor = new dataProcessor("{{path('compte_rendu_reception_camion_crud')}}");
+    myDataProcessor.init(grid);
+    
+</script>
+
+{% endblock %}

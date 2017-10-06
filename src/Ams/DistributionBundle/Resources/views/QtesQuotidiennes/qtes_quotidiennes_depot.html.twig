@@ -1,0 +1,110 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+
+{% block title %}Quantités de produits à distribuer par un dépôt{% endblock %}
+
+{% block body %}
+    
+
+<div class="well">
+    <form method="post" name="formQtesQuotidiennesDepot" id="formQtesQuotidiennesDepot" action="{{path('qtes_quotidiennes_depot')}}" >
+        <table>
+            <tr>
+                <td>
+                    {{ form_label(form.depot_id) }} :
+                    &nbsp;&nbsp;{{ form_widget(form.depot_id, {'value': depot_id, 'id': 'depot_id'}) }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {{form_label(form.flux)}} : {{ form_widget(form.flux, {'value': flux, 'id': 'flux'}) }}
+                    {{ form_label(form.dateDistrib) }} : 
+                    {{ form_errors(form.dateDistrib) }}
+                    &nbsp;&nbsp;{{ form_widget(form.dateDistrib, {'attr': {'value': form.dateDistrib.value|default(date_distrib|date("d/m/Y"))}, 'id': 'dateDistrib'}) }}
+                </td>
+                <td >&nbsp;&nbsp;<button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-search white"></i> Rechercher </button>  </td>
+                </tr>
+       </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("form input.date").datepicker({
+         dateFormat: 'dd/mm/yy', 
+         firstDay:1
+     }).attr("readonly","readonly");
+
+    $(document).ready(function() {
+         /*$('#formQtesQuotidiennesDepot').submit(function(e) {
+             e.preventDefault();
+             this.action = this.action+'/'+$('#depot_id').val()+'/'+$('#dateDistrib').val().replace(/\//gi, '-');
+             $(location).attr('href', this.action);
+         });*/
+     });    
+</script>
+<div style='height:28px'>
+    <img style="float:right; margin:3px; cursor:pointer" src="{{ asset('images/excel.png') }}" alt="Imprimer"  onclick="leTableau.toExcel('{{ asset('codebase/grid-excel-php/generate.php')}}','color',true);" > 
+</div>
+
+<table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+            <div id="gridbox"  style="width:100%; height:500px; background-color:white;"></div>
+            <!--<div id="grid_chargement" style='padding: 100px; top:80px; font-size:20px; text-align:center; font-family:Tahoma; position:absolute; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                Chargement ...
+            </div>-->
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+
+        var leTableau;
+	leTableau = new dhtmlXGridObject('gridbox');
+        
+        leTableau.setSkin("dhx_skyblue");
+        leTableau.setImagePath("{{ dhtmlx_img }}");
+        /*leTableau.enableHeaderImages(true); // Si on met des images comme header*/        
+        
+        
+        
+        //leTableau.enableAutoWidth(true); // A ne pas utiliser si on applique splitAt()
+        leTableau.init();
+        
+        leTableau.setSkin("dhx_skyblue");
+        /*leTableau.enableHeaderMenu();*/
+        //leTableau.enableAlterCss("even", "uneven");
+        
+        leTableau.attachFooter("Total{% for produit in produits %},<span id='total_{{ loop.index }}'>-</span>{% endfor %}", ["text-align:left;"{% for produit in produits %},"text-align:center;"{% endfor %}]);
+        //leTableau.splitAt(1); // fixation de la premiere colonne
+        
+        
+        leTableau.loadXML("{{ path('qtes_quotidiennes_depot_donnees', {'date': date_distrib|date("d-m-Y"), 'dId': depot_id, 'flux': flux}) }}", function() {
+                                lien_total();
+                                leTableau.setSizes();
+                                leTableau.enableHeaderMenu();
+                            });
+        
+        function lien_total()
+        {
+            var lien = '';
+            var total = 0;
+        {% for produit in produits %}
+            total = sumColumn(leTableau, {{ loop.index }});
+            document.getElementById("total_{{ loop.index }}").innerHTML = '<a href="{{path('liste_clients_cd_produit', {'date': date_distrib|date("d-m-Y"), 'dId': depot_id, 'pId': produit.id, 'flux': flux})}}">'+total+'</a>';
+        {% endfor %}        
+        }
+        
+        
+   
+</script>
+
+
+
+
+
+
+{% endblock %}
+
+    
+ 
+ 
+ 
+ 

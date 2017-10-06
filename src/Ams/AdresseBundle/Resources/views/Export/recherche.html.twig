@@ -1,0 +1,228 @@
+{% extends '::base.html.twig' %}
+{% block title %}Optimisation{% endblock %}
+{% block body %}
+
+<style>
+    form fieldset {
+        border: 1px solid #DDDDDD;
+        border-radius: 4px;
+        box-shadow: none;
+        padding: 10px;
+        margin: 10px;
+    }
+    select{width:160px}
+    
+    form#FormExport table th{
+{#        border: 1px solid #AEAEAE;#}
+        padding: 5px;
+        text-align: center;
+    }
+    
+    form#FormExport table td{
+{#        border: 1px solid #DDDDDD;#}
+        padding: 5px;
+        text-align: center;
+    }
+    
+    form#FormExport table {
+{#        border: 1px solid #AEAEAE;#}
+    }
+</style>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#nouveau" data-toggle="tab">Créer une requête</a></li>
+  <li><a href="#listeReq" data-toggle="tab">Mes requêtes</a></li>
+</ul>
+<div class="tab-content">
+    
+    <div class=" tab-pane active"  id="nouveau">
+        
+        {# Selection des depots #}
+        <h2 style="text-align: left; margin-left: 50px;">1ère Etape</h2>
+        
+        <form method="post" id="FormDepot"  action="{{path('adresse_export_recherche')}}" >
+            <fieldset>
+                <div style="margin-left: auto; margin-right: auto; margin-top: 10px; width: 610px;">
+                    {{ form_widget(formDepot) }} 
+                    <br>
+                    <button type="submit" class="btn btn-primary" >
+                        <i class="glyphicon glyphicon-ok icon-white"></i> Valider 
+                    </button>
+                </div>
+            </fieldset>
+        </form>
+                
+        {# formulaire requete #}
+        {%if app.request.method =='POST' %} 
+            <h2 style="text-align: left; margin-left: 50px;">2ème Etape</h2>
+            <div class="alert alert-warning" role="alert"><strong>IMPORTANT!</strong> L'usage de certains filtres comme celui des <em>jours-types</em> peut exclure de vos résultats des livraisons de mensuels, trimestriels ou autres produits avec une périodicité plus longue.</div>
+            <form method="post" id="FormExport"  action="{{path('adresse_export_query')}}" >
+                <fieldset>
+                    <div style="width: 800px; margin-left: auto; margin-right: auto; margin-top: 10px;">
+                        <img src='{{ asset('images/ajaxLoader.gif')}}' class="ajax-loader" style="display:none;"/>
+                        <table>
+                            <tr>
+                                <th>Libelle</th>
+                                <th> Opérateur </th>
+                                <th> Valeur </th>
+                            </tr>
+                            <tr>
+                                <td>{{ form_label(form.tournee) }}</td>
+                                <td>{{ form_widget(form.operateur_tournee) }}</td>
+                                <td>{{ form_widget(form.tournee) }}</td>
+                            </tr>
+{#                            <tr>
+                                <td>{{ form_label(form.parution) }}</td>
+                                <td>{{ form_widget(form.operateur_parution) }}</td>
+                                <td> 
+                                    {{ form_widget(form.parution) }}
+                                    <span id="input_parution_fin" style="display:none;" >au {{ form_widget(form.parution_fin) }}</span>
+                                </td>
+                            </tr>#}
+                            <tr>
+                                <td>{{ form_label(form.flux) }}</td>
+                                <td>{{ form_widget(form.operateur_flux) }}</td>
+                                <td>{{ form_widget(form.flux) }}</td>
+                            </tr>
+                            <tr class="type_day">
+                                <td>{{ form_label(form.jour) }}</td>
+                                <td>{{ form_widget(form.operateur_jour) }}</td>
+                                <td>{{ form_widget(form.jour) }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form_label(form.produit) }}</td>
+                                <td>{{ form_widget(form.operateur_produit) }}</td>
+                                <td>{{ form_widget(form.produit) }}</td>
+                            </tr>
+                            {#<tr>
+                                <td>{{ form_label(form.statut) }}</td>
+                                <td>{{ form_widget(form.operateur_statut) }}</td>
+                                <td>{{ form_widget(form.statut) }}</td>
+                            </tr>  #}                        
+                        </table>
+                        <br>
+                        <button class='valid_form' type="button" class="btn btn-primary" ><i class="glyphicon glyphicon-ok icon-white"></i> Exécuter la requête </button>
+                    </div>
+                </fieldset>
+            </form>
+        {% endif %}
+    </div> 
+ 
+    <div class="tab-pane fade" id="listeReq"> 
+         {{ render(controller('AmsAdresseBundle:Export:listeQuery')) }}
+    </div>
+</div>
+
+<script src="{{ asset('js/jquery.multi-select.js') }}"></script> 
+<script type="text/javascript">
+
+     $('.valid_form').click(function(){
+  	   var val = $('#form_jour option:selected').text();
+  	   if(val != '')
+  		   $(this).closest('form').submit();
+  	   else{
+    		 $('#amsModal').modal('show');
+    		 $('#amsModalLabel').html('Champs obligatoire');
+    		 $('#amsModalLabel').html('Champs obligatoire');
+    		 $('.modal-body').html('<div class="alert alert-danger"> La selection d\'un jour type est obligatoire </div>');
+    		 $('.type_day').attr('style','border:solid red 1px');
+                 $('.modal-body').append('<div class="btn btn-xs btn-default close-modal"> Fermer </div>');
+  	   }
+         
+     });
+     
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+          $("form input.date").datepicker({
+               dateFormat: 'yy-mm-dd', 
+               firstDay:1
+    }).attr("readonly","readonly");
+
+    var multiselectParams = {
+        selectedPosition: 'right',
+        moveOptions: false,
+        labelsx: '',
+        labeldx: '',
+        autoSort: true,
+        autoSortAvailable: true
+    };
+    
+    var monoselectParam = {
+        selectedPosition: 'right',
+        moveOptions: false,
+        labelsx: '',
+        labeldx: '',
+        autoSort: true,
+        autoSortAvailable: true,
+        maxSelected : 1
+    };
+
+    function multiselect2sideReset(id, data)
+    {
+        $('#'+ id).empty().multiselect2side('destroy');
+        $('#'+ id).multiselect2side(multiselectParams);
+        
+        $.each(data, function( index, value ) {
+           $('#'+ id).multiselect2side(
+            'addOption', 
+            {
+                name: value, 
+                value: index, 
+                selected: false}
+            ); 
+        });
+    }
+    
+    $('#form_depot').multiselect2side(multiselectParams); 
+    $('#form_tournee').multiselect2side(multiselectParams);
+    $('#form_produit').multiselect2side(multiselectParams);
+    $('#form_jour').multiselect2side(monoselectParam);
+    $('#form_statut').multiselect2side(multiselectParams);
+    $('#form_flux').multiselect2side(multiselectParams);
+
+    $( document ).ready(function() {
+
+        $(".ms2side__options").click(function(){
+            var selectElm = $(this).parent().prev("select");
+            var data = {};
+            data.name = selectElm.attr('id');
+            data.value = selectElm.val();
+            
+            if (data.name == "form_tournee" && data.value) {
+                $(".ajax-loader").show();
+                $.ajax({
+                    url: "{{ path('adresse_export_query_infos') }}",
+                    type: "POST",
+                    data: {'tourneeIds':data.value},
+                    cache: false,
+                    success: function(data) {
+                        if (data["produits"].length == 0) {
+                            bootbox.alert('Aucun produits trouvés pour cette selection.');
+                        } else {
+                            multiselect2sideReset("form_produit", data["produits"]);
+                            multiselect2sideReset("form_jour", data["jour_type"]);
+                            multiselect2sideReset("form_statut", data["typeService"]);
+                        }
+                        $(".ajax-loader").hide();
+                    },
+                    error: function(data) {
+                        alert("Une erreur inatendue a été recontrée. Veuillez essayer ultérieurement ou contacter l'équipe MRoad si le problème persiste.");
+                        $(".ajax-loader").hide();
+                    }
+                });
+            }
+        });
+        
+        $("#form_operateur_parution").change(function() {
+            var SelectValue = $(this).val();
+
+            if( SelectValue === "BETWEEN" || SelectValue === "NOT BETWEEN") {
+              $("#input_parution_fin").show();
+            } else {
+              $("#input_parution_fin").hide();
+            }
+        });
+        
+    });
+</script>       
+   
+{% endblock %}

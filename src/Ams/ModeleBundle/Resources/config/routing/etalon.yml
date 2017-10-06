@@ -1,0 +1,78 @@
+liste_etalon:
+    pattern:  /liste-etalon
+    defaults: { _controller: "AmsModeleBundle:Etalon:liste" }
+  
+gridliste_etalon:
+    pattern:  /grid-etalon
+    defaults: { _controller: "AmsModeleBundle:Etalon:grid" }
+    
+ajax_etalon_sauvegarder:
+    pattern:  /ajax-etalon-sauvegarder
+    defaults: { _controller: "AmsModeleBundle:Etalon:ajaxSauvegarder" }
+    
+export_annexe_etalon:
+    pattern:  /export-annexe-etalon
+    defaults: { _controller: "AmsModeleBundle:Etalon:exportAnnexe" }
+    
+    
+liste_etalon_tournee:
+    pattern:  /liste-etalon-tournee
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:liste" }
+    
+gridliste_etalon_tournee:
+    pattern:  /grid-etalon-tournee
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:grid" }
+    
+ajax-etalon-tournee-msg:
+    pattern:  /ajax-etalon-tournee-msg
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxMsg" }
+    
+ajax_etalon_tournee_rechercher:
+    pattern:  /ajax-etalon-tournee-rechercher
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxRechercher" }
+    
+ajax_etalon_tournee_soumettre:
+    pattern:  /ajax-etalon-tournee-soumettre
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxSoumettre" }
+    
+ajax_etalon_tournee_valider:
+    pattern:  /ajax-etalon-tournee-valider
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxValider" }
+    
+ajax_etalon_tournee_refuser:
+    pattern:  /ajax-etalon-tournee-refuser
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxRefuser" }
+    
+ajax_etalon_tournee_combo_etalon:
+    pattern:  /ajax-etalon-tournee-combo-etalon
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxComboEtalon" }
+    
+ajax_etalon_tournee_combo_employe:
+    pattern:  /ajax-etalon-tournee-combo-employe
+    defaults: { _controller: "AmsModeleBundle:EtalonTournee:ajaxComboEmploye" }
+    
+ajax_etalon_tournee_display_cycle:
+    pattern:  /ajax-etalon-tournee-display-cycle
+    defaults: { _controller: "AmsEmployeBundle:Cycle:ajaxDisplay" }
+        
+        
+liste_remplacement:
+    pattern:  /liste-remplacement
+    defaults: { _controller: "AmsModeleBundle:Remplacement:liste" }
+    
+gridliste_remplacement:
+    pattern:  /grid-remplacement
+    defaults: { _controller: "AmsModeleBundle:Remplacement:grid" }
+    
+export_annexe_remplacement:
+    pattern:  /export-annexe-remplacement
+    defaults: { _controller: "AmsModeleBundle:Remplacement:exportAnnexe" }
+
+        
+liste_remplacement_jour:
+    pattern:  /liste-remplacement-jour
+    defaults: { _controller: "AmsModeleBundle:RemplacementJour:liste" }
+    
+gridliste_remplacement_jour:
+    pattern:  /grid-remplacement-jour
+    defaults: { _controller: "AmsModeleBundle:RemplacementJour:grid" }

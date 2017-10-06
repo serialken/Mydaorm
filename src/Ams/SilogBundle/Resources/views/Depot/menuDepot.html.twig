@@ -1,0 +1,10 @@
+<ul class="nav nav-sidebar" id="ulCreerDepot">    
+    <li class="">
+        <a data-toggle="modal" data-target="#amsModal" id="addDepot" onClick="ChargeModal('{{ path('depot_creation_ajax') }}');" href="#"><span class="glyphicon glyphicon-plus-sign"></span> Créer dépôt</a>
+    </li>
+</ul>
+<ul class="nav nav-sidebar" id="ulMenuDepot">    
+  {% for depot in depots %}
+    {% include 'AmsSilogBundle:Depot:ulMenuDepot.html.twig' %}
+  {% endfor %}  
+</ul>

@@ -1,0 +1,40 @@
+{% extends 'AmsModeleBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['Dépôt'            ,null                       ,null               ,isNotEmpty         ,'{{depot_id}}'         ,null                   ,null              ,null],
+['Flux'             ,null                       ,null               ,isNotEmpty         ,'{{flux_id}}'          ,null                   ,null              ,null],
+['Début'            ,null                       ,null               ,isDate             ,moment().format("DD/MM/YYYY"),null             ,null              ,null],
+['Fin'              ,null                       ,null               ,isDateOrNull       ,null                   ,null                   ,null              ,null],
+['Jour'             ,'#select_filter_strict'    ,null               ,isNotEmpty         ,2                      ,null                   ,null              ,null],
+['natureclient_id'  ,'#select_filter_strict'    ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+['supplement_id'    ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,'onChangeSupplement(rId,cInd,nValue)'],
+['produit_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['Commentaire'      ,null                       ,null               ,isCommentaire      ,null                   ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+   function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (rowIsInserted) return true;
+        if (cInd==4 || cInd==5 || cInd==6 || cInd==7) return false; // date_distrib,tournee_id
+        return true;
+    }
+    function onChangeSupplement(rId,cInd,nValue){
+        if (!rowIsInserted) return;
+        grid.cellById(rId,7).setValue("");
+        //ajaxReloadComboFilter(grid.getCombo(7),"ajax-combo-ajouter-org-modele-supplement",{supplement_id:nValue});
+        ajaxReloadTitre(rId);
+    }
+    function ajaxReloadTitre(rId){
+        ajaxReloadComboFilter(grid.getCombo(7),"ajax-combo-ajouter-org-modele-supplement",{supplement_id:grid.cellById(rId,6).getValue()}); 
+    }
+    </script>
+{% endblock %}

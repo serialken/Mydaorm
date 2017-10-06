@@ -1,0 +1,55 @@
+calendrier:
+    pattern:  /
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:index" }
+    
+calendrier_securise:
+    pattern:  /livraisons
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:calendrierSecurise" }    
+        
+calendrier_ajax_event_modal:
+    pattern: /ajax/event
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxEventModal" }
+
+calendrier_ajax_secure_modal:
+    pattern: /ajax/secure
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxSecureModal" }
+    
+calendrier_ajax_check_product:
+    pattern: /ajax/check_product
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxCheckProductExist" }
+    
+calendrier_ajax_check_exist_ficrecap:
+    pattern: /ajax/check_fic_recap
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxCheckSocExist" }
+    
+calendrier_gestion_produits:
+    pattern: /ajax/produits
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:gestionProduits" }
+
+calendrier_update_report:
+    pattern: /update/report
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxUpdateReport" }
+    
+calendrier_create_parution:
+    pattern: /create/parution
+    defaults: { _controller: "AmsDistributionBundle:Calendrier:ajaxCreateParution" }
+    
+grid_operation_speciale_xml :
+    pattern: /grid-operation-speciale-xml
+    defaults: { _controller: "AmsDistributionBundle:ParutionSpeciale:grid" }
+    
+calendrier_parution_speciale:
+    pattern:  /calendrier-parution-speciale
+    defaults: { _controller: "AmsDistributionBundle:ParutionSpeciale:calendrier" }    
+    
+calendrier_operation_speciale:
+    pattern: /calendrier-operation-speciale
+    defaults: { _controller: "AmsDistributionBundle:ParutionSpeciale:liste" }
+    
+operation_speciale_update_delete:
+    pattern: /operation-speciale-update-delete
+    defaults: { _controller: "AmsDistributionBundle:ParutionSpeciale:UpdateAndDelete" }
+    
+calendrier_operation_special_add:
+    pattern: /calendrier-operation-speciale-add
+    defaults: { _controller: "AmsDistributionBundle:ParutionSpeciale:add" }

@@ -1,0 +1,73 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Quantités non classées{% endblock %}
+ 
+{% block body %}
+	<div class="well" style="z-index:100000;position:relative;">
+		<div style="position:absolute;"> Filtre produits :<input id="searchInput" type="text"> </div>
+		<div id="res"> Nombre de résultat {{ casl | length }} </div>
+	</div>
+	
+	<table class="table table-striped">
+		<tr>
+			<td>Produit(s)</td>
+			<td>N°Abonné</td>
+			<td>Nom/Prénom</td>
+			<td>Adresse</td>
+			<td>Quantité</td>
+			<td>Code Tournée</td>
+			<td>Actions</td>
+		</tr>
+{#                {{ dump(casl) }}#}
+{% set ct = 0 %}
+	 {% for row in casl %}
+             {% set ct = ct + 1 %}
+	 	<tr>
+			<td>{{ row.libelle }} - {{ row.produit_id }} - {{ct}} </td>
+			<td>{{ row.num_abo_id }}</td> 
+			<td>{{ row.vol1 }}</td>
+			<td>{{ row.vol4~" "~row.vol3~" "~row.cp~" "~row.ville }}</td>
+			<td>{{ row.qte }}</td>
+			<td>{{ listTournees | raw }}</td>
+			<td> 
+				<form action="" method="post">
+					<input type="hidden" name="casl_id" value="{{row.casl_id}}" />
+					<input type="hidden" name="tournee" value="" />
+					<button class="btn btn-danger btn-xs"> Affecter </button>
+				</form>
+			</td>
+		</tr>
+	 	{% endfor %}
+	</table>
+
+	<script>
+	$(function(){
+		$('select[name=tournee]').change(function(){
+			$(this).closest('tr').find('input[name=tournee]').val($(this).val());
+		});
+		
+		$("#searchInput").keyup(function() {
+			var value = $(this).val();
+			var reg=new RegExp("^"+value,"gi");
+                        var ct = 0;
+			$( "table.table-striped tr td:nth-child(1)" ).each(function( index ) {
+				if(index){
+                                    //console.log(index);
+					if(reg.test($(this).html())){
+						$(this).closest('tr').show();
+                                                ct++;
+					}
+					else{
+						$(this).closest('tr').hide();
+					}
+
+				}
+			});
+                        var val = "Nombre de résultats " + ct;
+                        $('#res').html(val);
+                        //console.log(ct);
+
+		});
+				
+	});
+	</script>
+{% endblock %}

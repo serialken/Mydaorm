@@ -1,0 +1,28 @@
+{% extends 'AmsReferentielBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['code'             ,'#text_filter'             ,null               ,isLength1          ,null                   ,null                   ,null              ,null],
+['libelle'          ,'#text_filter'             ,null               ,isLibelle          ,null                   ,null                   ,null              ,null],
+['emploi_id'        ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['typecontrat_id'   ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['urssaf_id'        ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['majoration'       ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['majoration_df'    ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['majoration_dfq'   ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['majoration_nuit'  ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['est_badge'        ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['km_paye'          ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['ouverture'        ,'#text_filter'             ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':'AmsReferentielBundle:RefPopulation'})|raw}}");
+        initDataProcessor();
+    }
+    </script>
+{% endblock %}

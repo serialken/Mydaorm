@@ -1,0 +1,33 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}{{titre}}{% endblock %}
+
+{% block body %} 
+   {{ render(controller('AmsSilogBundle:Navigation:page', {'form':form , 'route': route }))}}
+
+<div class="row">
+     <div class="col-md-6">
+        <table class="table-center table-bordered" style="width: 99%;">
+            <tr>
+                <th>Société</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Type</th>
+                <th>&nbsp;</th>
+            </tr>
+            {%for fileInfo in liste %}
+                <tr>
+                    <td align="left">{{ fileInfo["societe"] }}</td>
+                    <td align="center">{{ fileInfo["debut"]|date('d/m/Y') }}</td>
+                    <td align="center">{{ fileInfo["fin"]|date('d/m/Y') }}</td>
+                    <td align="left">{{ fileInfo["libelle"] }}</td>
+                    <td align="center">
+                        <a href="{{ path('download_annexe',{'file':fileInfo["file"],'type':fileInfo["type"]}) }}" data-description="Télécharger l'annexe" data-content="{{fileInfo["file"]}}">
+                            <i class="glyphicon glyphicon-download-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

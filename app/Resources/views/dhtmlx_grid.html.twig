@@ -1,0 +1,64 @@
+{% extends '::base.html.twig' %}
+
+    {% block css %}
+        {{ parent() }}
+        <link rel="stylesheet" type="text/css" href="{{asset ('js/dhtmlxSuite/dhtmlx_pro_full/dhtmlx.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{asset ('js/dhtmlxSuite/dhtmlxGrid/codebase/ext/dhtmlxgrid_hmenu.css') }}">
+        <style TYPE="text/css">
+            .xhdr {
+                height: auto!important;
+            }
+        </style>
+        <style> {#Centre les entêtes de colonne#}
+            div.gridbox_dhx_skyblue table.hdr td {
+            text-align: center;
+            vertical-align: middle !important;
+            }
+        </style>
+        <style>
+            .dhx_header_cmenu{
+                            background-color:#ffffff;
+                            border:2px outset silver;
+                            z-index:2;
+                    }
+            .dhx_header_cmenu_item{
+                    white-space:nowrap;
+            }	
+            /** correction scrol dans les champs de type coro sous chrome*/
+            .dhx_combo_select{
+                    font-family: arial;
+                    font-size: 12px;
+                    border: 1px solid;
+                    border-color: black silver silver black;
+                    background-color: white;
+                    cursor: default;
+                    position: absolute;
+                    overflow: auto;
+                    height: 10px;
+                    z-index: 600;
+            }
+            .dh_cell_bg_grey{
+                    background-color: #B2B2B2 !important;
+            }
+            .ui-datepicker { z-index: 9999 !important; }
+        </style>
+    {% endblock %}   
+
+    {% block js %}
+        {{ parent() }}
+        <script> var urlAuthentification="{{path('_ams_authentification')}}";</script>
+        <script src="{{ asset('js/fullcalendar-2.0.2/lib/moment.min.js') }}" type="text/javascript" /> </script>
+    
+        <script src="{{ asset('js/dhtmlxSuite/dhtmlx_pro_full/dhtmlx.js') }}" type="text/javascript" /> </script>
+<!--        <script src="/MRoad/web/js/dhtmlxSuite/dhtmlxDataProcessor/codebase/dhtmlxdataprocessor_debug.js" type="text/javascript" /> </script>-->
+        <script  src="{{ asset('js/dhtmlxSuite/dhtmlxGrid/codebase/ext/dhtmlxgrid_export.js') }}"  type="text/javascript" /> </script>   
+        <script  src="{{ asset('js/dhtmlxSuite/dhtmlxGrid/codebase/ext/dhtmlxgrid_undo.js') }}"  type="text/javascript" /> </script>   
+        <script  src="{{ asset('js/dhtmlxSuite/dhtmlxGrid/codebase/ext/dhtmlxgrid_hmenu.js') }}"  type="text/javascript" /> </script> 
+
+       {# verification des champs saisis #}
+       <script  src="{{ asset('js/dhtmlxUtilities.js')}}" type="text/javascript" /> </script>     
+       <script  src="{{ asset('js/dhtmlxDataProcessor.js')}}" type="text/javascript" /> </script>     
+       <script  src="{{ asset('js/dhtmlxVerificator.js')}}" type="text/javascript" /> </script> 
+       {# pour les msg flash #}
+       <script  src="{{ asset('js/msroad_fonctions.js')}}" type="text/javascript" /> </script> 
+    {% endblock %}

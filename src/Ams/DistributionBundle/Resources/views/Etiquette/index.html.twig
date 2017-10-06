@@ -1,0 +1,267 @@
+{# liste des feuilles de portage #}
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Etiquettes{% endblock %}
+
+{% block body %}
+  
+  <style>
+    .td_label{width:60px;font-size:14px;text-align:right}
+    select{width: 160px}
+    fieldset legend{width:auto;font-size:14px;margin-bottom:0}
+    fieldset {padding:0.35em 0.625em 0.75em;border:none;border-top:1px solid #c0c0c0}
+    .glyphicon-chevron-down{font-size:10px}
+  </style>
+  
+{% if flag == 'false'  %}
+    <div id="infoEtiquette"   class="alert alert-danger" role="alert"> Aucune imprimante n'est disponible pour l'utilisateur connécté.</div>
+{% else %}
+    <div  class='well'>
+      <div class="row">
+        <div class="col-md-12">
+           <fieldset>
+             <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Filtre(s) &nbsp;</legend>
+             <table>
+               <tr>
+                 <td class="td_label"> Dépôts : </td>
+                 <td> 
+                   <select name='depot'>
+                     <option> </option>
+                      {% for key,depot in depots %} <option value='{{ depot.code }}'>  {{  depot.libelle}} </option>{% endfor %}
+                    </select> 
+                 </td>
+                 <td class="td_label">  Flux : </td>
+                 <td>  <select name='flux'>  <option> </option> <option value="1"> Nuit </option> <option value="2"> Jour </option> </select> </td>
+                 <td class="td_label">  Date : </td>
+                 <td> <input class="date" name="date" type="text" /> </td>
+                 <td class="td_label">  </td>
+                 <td> <input type="button" value="valider" class="btn btn-primary btn-xs" id="submit" /> </td>
+               </tr>
+             </table>
+           </fieldset>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col-md-12">
+             <fieldset>
+               <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Choix de l'imprimante &nbsp;</legend>
+               <table>
+                 <tr>
+                   <td class="td_label" style="width:80px" > Imprimante : </td>
+                   <td>
+                    <select name='imprimante'>
+                    <option> </option>
+                    {% for imprimante in imprimantes %} <option value='{{ imprimante.IpImprimante }}'>  {{ imprimante.LibelleImprimante }} </option>{% endfor %}
+                    </select>
+                   </td>
+                 </tr>
+               </table>
+             </fieldset>
+          </div>
+        </div>
+        <div id='list_tournee'>
+          <div class="row">
+            <div class="col-md-12">
+                 <fieldset>
+                   <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Choix des tournées &nbsp;</legend>
+                   <div class="containTournee"> </div>
+                 </fieldset>
+            </div>
+          </div>
+        </div>
+
+      <div id='list_produit'>
+        <div class="row">
+            <div class="col-md-12">
+                 <fieldset>
+                   <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Choix des produits &nbsp;</legend>
+                   <div class="containProduit"> </div>
+                 </fieldset>
+            </div>
+          </div>
+      </div>
+
+    </div>  
+{%endif%}
+
+<script>
+    
+  function findTournee(depot,flux,date){
+      $.ajax({
+        url: "{{ path('etiquette') }}",
+        data: { 
+          id_depot : depot,
+          id_flux : flux,
+          date : date
+        },
+        success: function(data) { 
+          $('#list_tournee .containTournee').html(data);
+         },
+        error: function (xhr, ajaxOptions, thrownError) {
+           console.log('error');
+        }        
+      });
+    }
+    
+    function getProducts(tournees,date){
+      $.ajax({
+        url: "{{ path('etiquette') }}",
+        data: { 
+          tournee : tournees,
+          date : date
+        },
+        success: function(data) { 
+          $('#list_produit .containProduit').html(data);
+         },
+        error: function (xhr, ajaxOptions, thrownError) {
+           console.log('error');
+        }        
+      });
+    }
+  $(function(){
+    $('#submit').click(function(){
+      var message = '';
+      var flux = $('select[name=flux]').val();
+      var depot = $('select[name=depot]').val();
+      var date = $('input[name=date]').val();
+      if(depot != '' && flux !='' && date!='')
+        findTournee(depot,flux,date);
+      else
+        message = 'tous les champs sont obligatoires';
+    });
+    
+    $('body').delegate('.selectAllTournee','click',function(){
+      if($('> input',this).is(':checked')){
+        $('input.tournee').attr('checked','checked');
+      }
+      else{
+       $('input.tournee').removeAttr('checked');
+      }
+       
+      var date = $('input[name=date]').val();
+      var tournees = '';
+      var count = 0;
+      $( "input.tournee" ).each(function( index ) {
+        if(!$(this).is(':checked')) return;
+        if(!count)
+          tournees += $(this).val();
+        else
+          tournees += ','+$(this).val();
+        count++;
+      });
+      if(tournees !='')
+        getProducts(tournees,date)
+      else
+        $('.containProduit').html('');
+    });
+    
+    $('body').delegate('input.tournee','change',function(){
+      var tournees = '';
+      var count = 0;
+      var date = $('input[name=date]').val();
+      $( "input.tournee" ).each(function( index ) {
+        if(!$(this).is(':checked')) return;
+        if(!count)
+          tournees += $(this).val();
+        else
+          tournees += ','+$(this).val();
+        count++;
+      });
+      
+      if(tournees !='')
+        getProducts(tournees,date)
+      else
+        $('.containProduit').html('');
+    });
+    
+    $('body').delegate('.selectAllProduct','click',function(){
+      if($('> input',this).is(':checked')){
+        $('.input_radio').attr('checked','checked');
+      }
+      else{
+       $('.input_radio').removeAttr('checked');
+      }
+    });
+    
+    /** IMPRESSION DES ETIQUETTES **/
+    $('body').delegate('#print,#big_print','click',function(){
+      var tournees = '';
+        $( "input.tournee" ).each(function( index ) {
+          if(!$(this).is(':checked')) return;
+          if(!index)
+            tournees += $(this).val();
+          else
+            tournees += ','+$(this).val();
+        });
+        var flux = $('select[name=flux]').val();
+        var depot = $('select[name=depot]').val();
+        var date = $('input[name=date]').val();
+        var ip = $('select[name=imprimante]').val();
+        var product = '';
+        var message = '';
+        var format = 'small';
+        $(".input_radio:checked").each(function(index) {
+          if(!index)
+            product += $(this).val();
+          else
+            product += ','+$(this).val();
+        });
+        if(ip =='')
+          message += 'Veuillez selectionner une imprimante ';
+        else if(product =='')
+          message += 'Veuillez selectionner au moins un produit ';
+        
+        if(message != '') {
+          alert(message);
+          return false;
+        }
+        
+        if($(this).attr('id') == 'big_print')
+          format = 'big';
+
+        $.ajax({
+          url: "{{ path('etiquette_imprim') }}",
+          data: { 
+            tournee : tournees,
+            date : date,
+            product : product,
+            ip : ip,
+            format: format
+          },
+          beforeSend: function(data) { 
+             $('.modal-title').html('Impression des etiquettes');                 
+             $('.modal-body').html('<div class="alert alert-success">Veuillez patienter </div>'+
+                                 '<div id="inputForm">'+
+                                     '<button class="btn btn-default btn-xs" data-dismiss="modal" type="button">Fermer</button>'+
+                                   '</div>');                 
+             $('#amsModal').modal();
+           },
+          success: function(data) { 
+             $('.modal-title').html('Impression des etiquettes');                 
+             $('.modal-body').html('<div class="alert alert-success">L\'impression des etiquettes est en cours</div>'+
+                                 '<div id="inputForm">'+
+                                     '<button class="btn btn-default btn-xs" data-dismiss="modal" type="button">Fermer</button>'+
+                                   '</div>');                 
+             $('#amsModal').modal();
+           },
+          error: function (xhr, status,error) {
+             $('.modal-title').html('Impression des etiquettes');                 
+             $('.modal-body').html('<div class="alert alert-danger">Le poids du fichier est trop important pour l\'imprimante.<br /> Veuillez selectionner moins de tournée</div>'+
+                                   '<div id="inputForm">'+
+                                     '<button class="btn btn-default btn-xs" data-dismiss="modal" type="button">Fermer</button>'+
+                               '</div>');                 
+             $('#amsModal').modal();
+          }
+        });
+        
+    });
+  });
+    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+    $("input.date").datepicker({
+         dateFormat: 'yy-mm-dd', 
+         firstDay:1,
+      //   maxDate: new Date(),
+     }).attr("readonly","readonly");
+  </script>
+
+{% endblock %}

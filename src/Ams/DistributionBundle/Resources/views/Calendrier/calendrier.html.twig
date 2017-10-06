@@ -1,0 +1,195 @@
+{% extends 'AmsSilogBundle::layout_dashboard.html.twig' %}
+{% block title %}Calendrier des livraisons{% endblock %}
+
+{% block sidebar %}
+    {% if securise == false %}
+        <div class="liste event tab-content" style="overflow: hidden;">
+            <ul class="nav nav-sidebar" id="ulReportCalendrier">    
+              {% for produit in produits %}
+                {% include 'AmsProduitBundle:Produit:ulReportCalendrier.html.twig' %}
+              {% endfor %}  
+            </ul>
+        </div>
+    {% else %}
+        <form method="post" id="formFilterCalendar"  action="{{path('calendrier_securise')}}" >
+            <fieldset style="margin-top: 20px; width: 100%;">
+                <legend>Filtres</legend>
+                {% if form_errors(form) %}
+                    <div class="alert alert-danger alert-dismissable fade in">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{ form_errors(form) }}
+                    </div>
+                {% endif %}
+                
+                {{ form_widget(form.depots, {'attr': {'class': 'form-control'}}) }}                
+                <br>
+                {{ form_widget(form.flux, {'attr': {'class': 'form-control'}}) }}
+                <br>
+                <span>
+                    {{ form_widget(form._token) }}
+                </span>
+                <br>
+                <img class="ajaxLoader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                <button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-search white"></i> Filtrer </button>
+            </fieldset>
+        <form>
+        
+    {% endif %}
+{% endblock %}
+
+{% block dashboard %}
+    <style>
+
+            body {
+                margin-top: 40px;
+                text-align: center;
+                font-size: 14px;
+                font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            }
+
+            #calendar {
+                width: 100%;
+                margin: 0 auto;
+            }
+            
+            
+            .fc-event-inner {
+                margin: 5px;
+            }
+            
+            #calendar a.eventModal:hover {
+                border-color: #66afe9;
+                border-width: 1px;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+                outline: 0 none;
+            }
+            
+            #calendarLegend {
+                position: fixed;
+                right: 15px;
+                bottom: 5%;
+                width: 200px;
+                z-index: 10;
+            }
+
+    </style>
+    <div id='calendar'>
+    </div>
+    
+    {% if ficEtats is defined %}
+    <div id="calendarLegend" class="panel panel-info">
+        <div class="panel-heading">Legende etat fichier</div>
+        <table class="table">
+            <tbody>
+                {% for ficEtat in ficEtats %}
+                <tr>
+                    <td style="background-color:{{ficEtat.couleur}}">&nbsp;</td>
+                    <td>{{ficEtat.libelle}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <script>
+        
+        var dateNow = new Date();
+            
+        var fullCalendarOptions = {
+            droppable: false,
+            eventStartEditable: false,
+            header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right:'month,basicDay,basicWeek'
+            },
+            dayClick: function(dateNow, allDay, jsEvent, view) {
+                    $('.calendrier.tab-pane.fade').removeClass('active in');
+                    $('#calendrier_0'+dateNow.getMonth()+'_0'+dateNow.getDate()+'_'+dateNow.getFullYear()).addClass('active in');
+                },
+            editable: true,
+            events: [
+                    {% if securise == false %}
+                        {% for event in events %}
+                            { 
+                                id : '{{ event.id }}',
+                                start: new Date('{{event.date_distrib}}'),
+                                color: '{{event.etat_couleur}}',
+                                title: '{{event.nb_exemplaires}}',
+                                modale: '{{event.soc_code}}',
+                                image: '{{event.soc_img_url ? asset('uploads/documents/') ~ event.soc_img_url : asset('images/no_photo_icon.jpg') }}',
+                                type : 'event',
+                                attrTitle : 'Société: {{event.soc_libelle}}'
+                            },
+                        {% endfor %}
+                        {% for parution in parutions %}
+                            {
+                                id : '{{ parution.id }}',
+                                start: new Date('{{parution.dateParution|date('Y-m-d') }}'),
+                                color: '#FA5858',
+                                title: '{{parution.libelle|escape('js')}}',
+                                image: '{% if parution.produit.image != NULL %} {{asset(parution.produit.image.webPath)}} {% endif %}',
+                                type : 'parution',
+                                attrTitle : 'Parution : {{parution.produit.libelle}}'
+                            },
+                        {% endfor %}
+                    {% else %}
+                        {% for event in events %}
+                            {
+                                id : '{{ event.id }}',
+                                start: new Date('{{event.dateDistrib|date('Y-m-d')}}'),
+                                title: '{{event.nbExemplaires}}',
+                                image: '{{event.produit.image.webPath ? asset(event.produit.image.webPath) : asset('images/no_photo_icon.jpg')}}',
+                                color: '#F2F2F2',
+                                type : 'event',
+                                attrTitle : 'Produit : {{event.produit.libelle}}'
+                            },
+                        {% endfor %}
+                    {% endif %}
+            ],
+            feries: {{ Jferies|raw }}
+            {#viewRender: function(view, element) {
+                // TODO : alléger les données en ne chargeant que les données liés au mois en cours
+                console.log('new view: ' + view.name); 
+                console.log(element);
+                console.log($('#calendar').fullCalendar('getDate'));
+            }#}
+        };
+        
+	$(document).ready(function() {
+            
+            // Traitement compatibilité Internet Explorer
+            // lorsqu'on laisse trainer une virgule en fin d'affectation de tableau (voir ligne 150) 
+            // IE crée (en mode compatibilité) un élément vide on supprime ici cette élément pour éviter des erreurs
+            var indexLastElm = fullCalendarOptions.events.length-1;
+            if (fullCalendarOptions.events[indexLastElm] === undefined) {
+                fullCalendarOptions.events.splice(indexLastElm, 1);
+            }
+            
+            $('#calendar').fullCalendar(fullCalendarOptions);
+            
+            setTimeout(function(){
+                $('#calendar').fullCalendar( 'refetchEvents' );
+            }, 300);
+            
+	});
+	
+        function updateModal(id,societe) {
+            $.ajax({
+                url: "{{ securise ? path('calendrier_ajax_secure_modal') : path('calendrier_ajax_event_modal') }}",
+                type: 'GET',
+                data: { id : id },
+                success: function(data) { 
+                    $('#amsModal').html(data);
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                    $('#amsModalLabel').html('Une erreur est survenue.');
+                    $('#amsModalBody').html(thrownError+' - code erreur:'+xhr.status);
+                }        
+            });
+	}
+        
+    </script>
+
+{% endblock %}

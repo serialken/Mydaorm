@@ -1,0 +1,3 @@
+AmsPaieBundle_rh:
+    resource: "@AmsEmployeBundle/Resources/config/routing/rh.yml"
+    prefix:   /rh

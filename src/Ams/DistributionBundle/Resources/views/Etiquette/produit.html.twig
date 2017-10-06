@@ -1,0 +1,31 @@
+<style>
+  div.listProduitEtiquette{float:left;width:260px;text-align: left}
+  .listProduitEtiquette span{margin-left:4px}
+  .selectAllProduct{text-align: left;margin-bottom:10px}
+  #print{position:absolute;bottom:-10px;left:50%;margin-left:-160px;width:160px}
+  #big_print{position:absolute;bottom:-10px;left:50%;margin-left:20px;width:160px}
+  .containProduit{min-height:160px}
+</style>
+
+{% if data %}
+    <div class="selectAllProduct">
+    <input type="checkbox"  name="selectAllProduct"/> &nbsp;
+    <span> Selectionner tout les produits</span>
+  </div>
+  {% for q in data %} 
+    <div class="listProduitEtiquette"> 
+      <input type='checkbox' class="input_radio" name="produit_{{ q.produit_id }}" value='{{ q.produit_id }}' /> 
+      <span>{{ q.produit_libelle }} </span>
+    </div>
+  {% endfor %}
+  <br /><br />
+  <input type="button" value="Imprimer les étiquettes" class="btn btn-primary btn-xs" id="print" />
+  {% if bigLabel %}
+    <input type="button" value="Impr grosse étiquettes" class="btn btn-danger btn-xs" id="big_print" />
+  {% endif %}
+
+{% else %}
+  Il n'y a pas de produits pour cette tournée
+{% endif %}
+
+  

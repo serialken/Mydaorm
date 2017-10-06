@@ -1,0 +1,197 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Bordereaux{% endblock %}
+{% block body %}
+  <style>
+    label{width:90px;font-size:14px;text-align:right;}
+    input[type=text]{width: 100%}
+    fieldset legend{width:auto;font-size:14px;margin-bottom:0}
+    fieldset {padding:0.35em 0.625em 0.75em;border:none;border-top:1px solid #c0c0c0}
+    .glyphicon-chevron-down{font-size:10px}
+    #search-city-adr{position:absolute;right:2px;top:6px}
+    .popover {width:300px}
+    .interface .table-striped .point_livraison{background-color:#B31220;font-size:14px;color:#FFF}
+    .point_livraison span{float:right}
+    #gridbox{height:496px !important}
+  </style>
+
+    <div class="well" style="position:relative;min-height:110px">
+      {% for flashMessage in app.session.flashbag.get('arbitrage_limite') %}
+        <div class="alert alert-danger">
+          {{ flashMessage }}
+        </div>
+      {% endfor %}
+      <div class="row">
+        <div class="col-md-12">
+          <form action="" method="post">
+           <fieldset>
+             <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Filtre(s) &nbsp;</legend>
+             <table>
+               <tr>
+                 <td> 
+                    {{ form_label(form.depots) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.depots)}}
+                 </td>
+                 <td> 
+                    {{ form_label(form.flux) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.flux)}}
+                 </td>
+                 <td> 
+                    {{ form_label(form.jour) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.jour)}}
+                 </td>
+                 <td> 
+                    {{ form_label(form.tournees) }} :
+                 </td>
+                 <td class="form_tournees"> 
+                     {{ form_widget(form.tournees)}}
+                 </td>
+                 <td style="width:20px"> </td>
+                 <td> <input type="submit" value="Rechercher" class="btn btn-primary btn-sm" id="submit" /> </td>
+               </tr>
+             </table>
+           </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+     
+    <div class="grid" style='position:relative; height:700px; width:100%;display:none'>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <div id="gridbox"  style="width:100%; height:500px; background-color:white;overflow:hidden"></div>
+            <div id="cover" style='width:500px; font-size:20pt; text-align:center; font-family:Tahoma; position:absolute; top:50px; left:100px; height:150px; widht:500px; background-color:silver; opacity:0.3; -moz-opacity:0.3; filter:alpha(opacity=30);'>
+                    Chargement ...
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><div id="recinfoArea"></div>	</td>
+        </tr>
+      </table>  
+    </div>
+
+<script>
+  
+  function getTournee(depot,flux,jour){
+    if(depot == '' || flux == '' || jour == '') return false;
+    
+    $.ajax({
+      url: "{{path('change_tournee_xmlhttprequest')}}",
+      type: 'POST',
+      data: { 
+        depot : depot,
+        flux : flux, 
+        jour : jour 
+      },
+      success: function(data) { 
+        $('#form_tournees').html(data);
+       }      
+    });
+    
+  }
+  $(function(){
+    var rowId = 0;
+    var caslId = 0;
+    var tourneeCode = '';
+    var numAbo = 0;
+    var jourId = 0;
+    
+    $('#form_depots,#form_flux,#form_jour').change(function() {
+      var id_depot = $('#form_depots').val();
+      var id_flux = $('#form_flux').val();
+      var id_jour = $('#form_jour').val();
+      
+      getTournee(id_depot,id_flux,id_jour);
+    });
+    
+    function changeTournee(){
+      $( document ).delegate( "#cancel,#valid", "click", function() {
+        $('#amsModal').modal('hide');
+        if($(this).attr('id') == 'cancel')
+          grid.cells(rowId,7).setValue('');
+        else {
+          grid.deleteRow(rowId);
+          $.ajax({
+            url: "{{path('change_tournee_crud')}}",
+            type: 'POST',
+            data: { 
+              caslId : caslId,
+              tourneeCode : tourneeCode,
+              jourId : jourId,
+              numAboId : numAbo
+            },
+            success: function(data) { 
+              console.log(data);
+             }      
+          })
+        }
+        
+      });
+    }
+    $('#submit').click(function(event) {
+      event.preventDefault();
+      var id_depot = $('#form_depots').val();
+      var id_flux = $('#form_flux').val();
+      var id_tournee = $('#form_tournees').val();
+      var id_jour = $('#form_jour').val();
+      
+      if(id_depot == '' || id_flux == '' || id_jour == '' || $.isNumeric(id_tournee) == false) return false;
+      $('.grid').show();
+      
+      grid = new dhtmlXGridObject('gridbox');
+      grid.setImagePath("{{dhtmlx_img }}");
+      grid.init();
+
+      grid.attachEvent("onXLS", function() {
+              document.getElementById('cover').style.display = 'block';
+      });
+
+      grid.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
+        if(stage == 2){
+          rowId = rId;
+          caslId = grid.cells(rId,0).getValue();
+          tourneeCode = grid.cells(rId,7).getValue();
+          numAbo = grid.cells(rId,8).getValue();
+          jourId = $('#form_jour').val();
+          $('#amsModal').modal();
+          $('.modal-body').html('<div class="alert alert-info">Voulez-vous changer de tournée pour cette abonnée </div> <span id="cancel" class="btn btn-sm btn-info"> Annuler </span> &nbsp;<span class="btn btn-danger btn-sm" id="valid"> Valider </span>');
+          changeTournee();
+        }
+        return true;
+        
+      });
+      
+      grid.attachEvent("onXLE", function() {
+        document.getElementById('cover').style.display = 'none';
+      });
+
+      grid.setSkin("dhx_skyblue");
+      grid.enableSmartRendering(true);
+
+      /** Pagination */
+      grid.enablePaging(true, 50, 3, "recinfoArea");
+      grid.setPagingSkin("toolbar", "dhx_skyblue");
+
+      /** INSERT VIEW XML FORMAT **/
+      var url = "{{path('change_tournee_abos_xml', {'depot': 'tmp_depot','flux':'tmp_flux','tournee':'tmp_tournee','jour':'tmp_jour'})|raw}}";
+      url = url.replace('tmp_depot', id_depot);
+      url = url.replace('tmp_flux', id_flux);
+      url = url.replace('tmp_tournee', id_tournee);
+      url = url.replace('tmp_jour', id_jour);
+      grid.loadXML(url);
+      
+    });
+    
+  });
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+#Dernier BACKUP
+#0000-00-00 00:00:00
+
+#DIVERS --> dplace vers CRON "root"
+#00 05 * * * /var/www/MRoad_Cron/nettoyage_divers.sh
+
+# Initialisations et nettoyages de tables
+30 05 * * * /var/www/MRoad_Cron/init_nettoyages_tables.sh
+
+# Export des tournees LP vers GLI
+
+00 02 * * * /var/www/MRoad_Cron/export_vers_GLI.sh
+
+# TRAITEMENT CASL (integration, classement automatique et generation de feuilles de portage)
+#40 08 * * * /var/www/MRoad_Cron/feuille_portage_jour_suivi_0.sh
+
+45 07 * * * /var/www/MRoad_Cron/integration_cas_0.sh > /var/www/html/MRoad_Fichiers/Logs/integration_cas_0.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Pre-integration CASL sans classement dans tournees" /var/www/html/MRoad_Fichiers/Logs/integration_cas_0.txt | /usr/sbin/sendmail -t && /var/www/MRoad_Cron/logs_traitement.sh
+
+##### Traitement particulier - Expl : Decalage de jour de distribution d un produit + Generation des feuilles de ce produit
+30 09 * * * /var/www/MRoad_Cron/traitement_particulier_1.sh > /var/www/html/MRoad_Fichiers/Logs/traitement_particulier_1.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Traitement particulier ELLE" /var/www/html/MRoad_Fichiers/Logs/traitement_particulier_1.txt | /usr/sbin/sendmail -t
+
+55 10 * * * /var/www/MRoad_Cron/integration_cas_1.sh > /var/www/html/MRoad_Fichiers/Logs/integration_cas_1.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Integration CASL-1 & classement dans tournees" /var/www/html/MRoad_Fichiers/Logs/integration_cas_1.txt | /usr/sbin/sendmail -t && /var/www/MRoad_Cron/logs_traitement.sh
+
+00 12 * * * /var/www/MRoad_Scripts/maj_ordre_tournees.sh
+
+# Feuille de portage nuit et suivi
+
+30 12 * * * /var/www/MRoad_Cron/feuille_portage_nuit.sh && /var/www/MRoad_Cron/feuille_portage_nuit_suivi.sh
+30 15 * * * /var/www/MRoad_Cron/feuille_portage_nuit_suivi.sh
+
+# classement automatique
+30 15 * * * /var/www/MRoad_Cron/classement_nuit_jour.sh > /var/www/html/MRoad_Fichiers/Logs/classement_nuit_jour.txt
+
+# Feuille de portage jour et suivi
+07 20 * * * /var/www/MRoad_Cron/feuille_portage_jour.sh 
+#30 17 * * *  /var/www/MRoad_Cron/feuille_portage_jour_suivi_1.sh
+
+
+#00 17 * * * /var/www/MRoad_Cron/historisation.sh > /var/www/html/MRoad_Fichiers/Logs/historisation.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Historisation" /var/www/html/MRoad_Fichiers/Logs/historisation.txt | /usr/sbin/sendmail -t
+
+# SUIVI ACTIVITE
+00 8 * * * /var/www/MRoad_Cron/maj_crm_distrib.sh
+05 8 * * * /var/www/MRoad_Cron/suivi_activite.sh
+
+# CRM
+20 05,07,10,13,15,19,22 * * * /var/www/MRoad_Cron/export_crm.sh > /var/www/html/MRoad_Fichiers/Logs/export_crm.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Export CRM vers DAN JADE Prod" /var/www/html/MRoad_Fichiers/Logs/export_crm.txt | /usr/sbin/sendmail -t
+05 07,08,09 * * * /var/www/MRoad_Cron/export_crd.sh > /var/www/html/MRoad_Fichiers/Logs/export_crd.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Export CRD vers DAN JADE Prod" /var/www/html/MRoad_Fichiers/Logs/export_crd.txt | /usr/sbin/sendmail -t
+08 07,08,09 * * * /var/www/MRoad_Cron/export_crr.sh > /var/www/html/MRoad_Fichiers/Logs/export_crr.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Export CRR vers DAN JADE Prod" /var/www/html/MRoad_Fichiers/Logs/export_crr.txt | /usr/sbin/sendmail -t
+50 01,02,05,09,11,14,17,23 * * * /var/www/MRoad_Cron/integration_crm.sh > /var/www/html/MRoad_Fichiers/Logs/integration_crm.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Integration CRM" /var/www/html/MRoad_Fichiers/Logs/integration_crm.txt | /usr/sbin/sendmail -t
+
+# REPERAGE
+25 05,07,09,11,17,21 * * * /var/www/MRoad_Cron/export_reperage_reponses.sh
+35 21 * * * /var/www/MRoad_Cron/integration_reperage.sh > /var/www/html/MRoad_Fichiers/Logs/integration_reperage.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Traitement des reperages" /var/www/html/MRoad_Fichiers/Logs/integration_reperage.txt | /usr/sbin/sendmail -t && /var/www/MRoad_Cron/logs_traitement.sh
+
+# EMPLOYES & PAIE
+#50 19 * * * /var/www/MRoad_Cron/alimentation_employes_cycles.sh > /var/www/html/MRoad_Fichiers/Logs/alimentation_employes_cycles.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "nicolas.manzano@proximy.fr,mihai.stoenescu@proximy.fr,LOG_IT@proximy.fr" "MROAD: Alimentation employes et cycles" /var/www/html/MRoad_Fichiers/Logs/alimentation_employes_cycles.txt | /usr/sbin/sendmail -t
+45 21 * * * /var/www/MRoad_Cron/alimentation_paie.sh > /var/www/html/MRoad_Fichiers/Logs/alimentation_paie.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "nicolas.manzano@proximy.fr,Samia.Dhemaied@proximy.fr,mihai.stoenescu@proximy.fr,LOG_IT@proximy.fr" "MROAD: Alimentation paie" /var/www/html/MRoad_Fichiers/Logs/alimentation_paie.txt | /usr/sbin/sendmail -t
+30 23 * * 6 /var/www/MRoad_Cron/annexes_paie_hebdo.sh > /var/www/html/MRoad_Fichiers/Logs/annexes_paie_hebdo.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Annexes paie hebdo" /var/www/html/MRoad_Fichiers/Logs/annexes_paie_hebdo.txt | /usr/sbin/sendmail -t
+01 04 * * * /var/www/MRoad_Cron/annexes_paie_mois.sh > /var/www/html/MRoad_Fichiers/Logs/annexes_paie_mois.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Annexes paie mois" /var/www/html/MRoad_Fichiers/Logs/annexes_paie_mois.txt | /usr/sbin/sendmail -t
+
+00 18 * * * /var/www/MRoad_Cron/IK.sh > /var/www/html/MRoad_Fichiers/Logs/IK.txt
+
+# OPTIM TOURNEES - GEOCONCEPT
+00 09 * * * /var/www/MRoad_Cron/application_optim_geoconcept.sh > /dev/null
+
+
+#00 14 * * * /var/www/MRoad_Cron/integration_cas_hors_presse.sh > /var/www/html/MRoad_Fichiers/Logs/integration_cas_hors_presse.txt && /var/www/MRoad_Scripts/mailHMTLContent.sh "LOG_IT@proximy.fr" "MROAD: Integration CAS Hors Presse" /var/www/html/MRoad_Fichiers/Logs/integration_cas_hors_presse.txt | /usr/sbin/sendmail -t
+
+# SUIVI DE PRODUCTION - Tous les jours de 20h00 a 10h00 , toutes les 5 minutes
+*/5 20,21,22,23 * * * /var/www/MRoad_Cron/suivi_de_production.sh
+*/5 00,01,02,03,04,05,06,07,08,09 * * * /var/www/MRoad_Cron/suivi_de_production.sh
+
+# SUIVI DE PRODUCTION - Tous les jours de 22h00 a 23h59 ,toutes les 7 minutes
+*/7 22,23 * * * /var/www/MRoad_Cron/mail_suivi_de_production.sh
+
+# PURGE FTP SIMGAM - tous les mercredi a 14h00
+00 14 * * 3 /var/www/MRoad_Cron/purge_ftp_SuiviDeProduction.sh
+20 18 * * * /var/www/MRoad_Cron/maj_adr_franceroutage.sh

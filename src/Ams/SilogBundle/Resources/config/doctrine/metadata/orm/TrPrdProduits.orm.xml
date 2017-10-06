@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrPrdProduits" table="TR_PRD_PRODUITS">
+    <id name="prdCode" type="string" column="PRD_CODE" length="20">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="prdSocCode" type="string" column="PRD_SOC_CODE" length="10" nullable="false"/>
+    <field name="prdLibelle" type="string" column="PRD_LIBELLE" length="45" nullable="false"/>
+    <field name="prdUtlIdModif" type="string" column="PRD_UTL_ID_MODIF" length="20" nullable="false"/>
+    <field name="prdDateModif" type="datetime" column="PRD_DATE_MODIF" nullable="false"/>
+    <field name="prdDateDebut" type="date" column="PRD_DATE_DEBUT" nullable="false"/>
+    <field name="prdDateFin" type="date" column="PRD_DATE_FIN" nullable="true"/>
+  </entity>
+</doctrine-mapping>

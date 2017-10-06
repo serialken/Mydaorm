@@ -1,0 +1,50 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    {% if isAlim %}<input type="button" value="Alimenter" onclick='alimentation();'>{% endif %}
+{% endblock %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['Date Distrib' ,null                       ,null               ,isNotEmpty         ,'{{date_distrib}}'     ,null                   ,null              ,null],
+['Produit'      ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['Poids'        ,'#numeric_filter'          ,null               ,isPoids            ,null                   ,null                   ,null              ,null],
+['lock'         ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+        }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd==1 && !rowIsInserted) return false; // produit_id
+        return true;
+    }
+    function alimentation(){
+        dhtmlx.confirm({
+                type:"confirm-warning",
+                text:"Attention, vous allez perdre toutes vos modifications sur la journée en cours.<br/>Voulez-vous vraiment faire l'alimentation ?",
+                ok:"Oui",
+                cancel:"Non",
+                callback:function(result) { if (result===true) confirmedAlimentation(); }
+                });
+     }
+    function confirmedAlimentation(){
+        ajaxMessage("Alimentation en cours ...");
+        $.ajax({
+             timeout: 999000,
+             url: "ajax-alimentation-pai-poids-pco",
+             type: "GET",
+             success: function(data) { 
+                ajaxSucces("Alimentation terminée"); 
+                onLoadGrid();
+             },
+             error: function (xhr, ajaxOptions, thrownError) { ajaxErreur(xhr, ajaxOptions, thrownError); }
+        }); 
+    }
+</script>
+{% endblock %}

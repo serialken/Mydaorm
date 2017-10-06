@@ -1,0 +1,36 @@
+{% extends 'AmsReferentielBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['code'             ,'#text_filter'             ,null               ,isLength2          ,null                   ,null                   ,null              ,null],
+['libelle'          ,'#text_filter'             ,null               ,isLibelle          ,null                   ,null                   ,null              ,null],
+['affichage_modele' ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['km_paye'          ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['est_hors_presse'  ,'#text_filter'             ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+['est_hors_travail' ,'#text_filter'             ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+['est_1mai'         ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['est_pleiades'     ,'#text_filter'             ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+['est_JTPX'         ,'#text_filter'             ,null               ,isNotEmpty         ,'0'                    ,null                   ,null              ,null],
+['est_badge'        ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['est_garantie'     ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['couleur'          ,null                       ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['Actif'            ,'#text_filter'             ,null               ,isNotEmpty         ,'1'                    ,null                   ,null              ,null],
+['lock'             ,'#ismodif'                 ,'#ismodif'         ,null               ,null                   ,'{{m.lienSupprime()}}' ,'removeRow(rId,cInd)'  ,null]
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('modele_action_dhtmlx',{'repositoryName':'AmsReferentielBundle:RefActivite'})|raw}}");
+        initDataProcessor();
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        // Modification seulement de la couleur si hors-presse (Pleiades est maitre)
+        if (grid.cellById(rId,7).getValue()==1 && (cInd==0 || cInd==1 || cInd==2 || cInd==3 || cInd==4 || cInd==5 || cInd==6 || cInd==7 || cInd==10 || cInd==12)) return false;
+        if (cInd==7) return false;
+        return true;
+    }
+    </script>
+{% endblock %}

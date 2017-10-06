@@ -1,0 +1,259 @@
+{% extends '::modal.html.twig' %}
+{% block modalTitre %}
+    {% if securise == false %}
+        Société         
+        {% if event.societe.image.webPath is defined %}
+            <img src="{{asset(event.societe.image.webPath)}}"></img>                                
+        {% else %}                                
+            <b>{{ event.societe.libelle }}</b>
+        {% endif %}
+    {% else %} 
+        Livraison 
+    {% endif %}
+        
+        
+{% endblock %}
+{% block modalContenu %}
+    <style>
+        div.liste_distrib {
+            overflow-y: scroll;
+            max-height: 370px;
+        }
+        div.liste_distrib table {
+            width: 100%;
+            background: #ffffff;
+        }
+        div.liste_distrib td {
+            padding: 5px;
+        }
+        div.liste_distrib th {
+            font-size: 1em;
+            background: #D2DAE2;
+            padding: 3px;
+        }
+        
+        div.liste_distrib tr:nth-child(odd) {
+            background: #E8EDFF;
+        }
+    </style>
+    <div class="">
+        <div id="modalAlerte">
+        </div>
+        
+        {% if securise == false %}
+        <div class="well">
+            <div class="info-bulle" style="background-color:{{event.ficEtat.couleur}}">
+                Etat du fichier: {{event.ficEtat.libelle }} - {{ event.ficEtat.code }}<br/>
+                Origine: {{ event.origine == 0 ? 'Import' : 'Application' }}
+            </div>
+            <br/>
+            <div><b>{{ event.nbExemplaires }}</b> exemplaires distribués le {{ event.dateDistrib|date('d/m/Y') }}</div>
+            <br/>
+        </div>
+   
+       
+            <div class="well">
+            <div class="alert alert-warning"> La copie de quantité sur la même journée n'est pas autorisée </div>
+                <form method="post" class="form copieCalendrier" id="formCopieCalendrier" action="{{ path('calendrier_ajax_event_modal',{ 'id' : event.id })}}" {{ form_enctype(form) }} >
+                    {{ form_widget(form) }}
+                    <span id="inputFormCreate">
+                        <input type="submit" value="Valider" class="btn btn-primary" id="submit_produit_form"/>
+                        <img class="ajax-loader" style="display:none;" src='{{ asset('images/ajaxLoader.gif')}}'/>
+                    </span>
+                </form>
+            </div>
+        
+            <h4>Répartition des exemplaires par produit et dépôt</h4>
+            
+            <div class="well liste_distrib">
+                <table>
+                    {% for distrib in distributions %}
+
+                        {% if (lastDepot is not defined) or (distrib.depot != lastDepot) %}
+                        <tr class="depot_name">
+                            {% if distrib.depot is null %}
+                                <th colspan="2">Sans Depot</th>
+                            {% else %}
+                                <th colspan="2">{{ distrib.depot.libelle }}</th>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+
+                        <tr>
+                            <td>
+                                {% if distrib.produit.image.webPath is defined %}
+                                    <img src="{{asset(distrib.produit.image.webPath)}}"></img>                                
+                                {% else %}                                
+                                        <b>{{ distrib.produit.libelle }}</b>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <b>{{ distrib.nbExemplaires }}</b> exemplaires
+                            </td>
+                        </tr>
+                        {% set lastDepot = distrib.depot %}
+                    {% endfor %}
+                </table>
+            </div>
+            
+        {% else %}
+              Parution 
+        {% endif %}
+        
+    </div>
+    <script type="text/javascript">
+        $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+        // var disableddates = ["06-11-2015", "10-11-2015",];
+        var disableddates = ["{{ event.dateDistrib|date('d-m-Y') }}"];
+
+        function DisableSpecificDates(date) {
+            var string = jQuery.datepicker.formatDate('dd-mm-yy', date);
+            return [disableddates.indexOf(string) == -1];
+          }
+
+        $("form input.date").datepicker({
+             dateFormat: 'dd/mm/yy', 
+             firstDay:2,
+             beforeShowDay: DisableSpecificDates
+        }).attr("readonly","readonly");
+        
+                
+        function checkProductExistInDate(produits, date) {
+            
+            var result = false;
+            
+            $.ajax({
+                url: "{{ path('calendrier_ajax_check_product')}}",
+                type: 'POST',
+                async: false,
+                data: { 
+                    produits : produits,
+                    date : date
+                },
+                success: function(data) {
+                    result = data;
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                     $('#amsModalLabel').html('Une erreur est survenue.');
+                     $('#amsModalBody').html(thrownError+' - code erreur:'+xhr.status);
+                }        
+            });
+            
+            if (result.error != undefined) {
+                alert(result.message);
+                return false;
+            } else if (result.isExist) {
+                return confirm(result.message);
+            }
+            
+            return true;
+	}
+        
+        function checkFicRecapExistInDate(societe, date) {
+            
+            var result = false;
+            
+            $.ajax({
+                url: "{{ path('calendrier_ajax_check_exist_ficrecap')}}",
+                type: 'POST',
+                async: false,
+                data: { 
+                    societe : societe,
+                    date : date
+                },
+                success: function(data) {
+                    result = data;
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                     $('#amsModalLabel').html('Une erreur est survenue.');
+                     $('#amsModalBody').html(thrownError+' - code erreur:'+xhr.status);
+                }        
+            });
+            
+            if (result.isExist) {
+                return confirm(result.message);
+            }
+            
+            return true;
+	}
+    
+        $(document).ready(function() {
+             $('#formCopieCalendrier').submit(function(e) {
+                 
+                 
+                 
+                 
+             {% if securise == false %}
+                $('#inputFormCreate input').hide();
+                $('#inputFormCreate img.ajax-loader').show();
+                
+                //var produits = $("input[name^=form\\[produits\\]]:checked").map(function(){return $(this).val();}).get();
+                
+                var dateCopie = $("input#form_date").val();
+                var societe = {{ event.societe.id }};
+                
+                var isValid = checkFicRecapExistInDate(societe, dateCopie);
+                
+                if(!isValid) {
+                    $('#inputFormCreate input').show();
+                    $('#inputFormCreate img.ajax-loader').hide();
+                    return false;
+                }     
+        {% endif %}
+                $.ajax({
+                  url: $(this).attr('action'),
+                  type: $(this).attr('method'),
+                  data: $(this).serialize(),
+                  cache: false,
+                  success: function(data) {
+                        $('#amsModal').html(data.modal);
+                        $('#modalAlerte').html(data.alert);
+
+                        var newEventData = data.newEventData;
+                      
+                        if (newEventData !== null) {
+                            
+                           {% if securise == false %}
+                            var events = [{
+                                    id:     newEventData.id,
+                                    start:  new Date(newEventData.start),
+                                    color:  newEventData.color,
+                                    title:  newEventData.title,
+                                    modale: newEventData.modale,
+                                    image:  '{{web_files_root_dir}}' + newEventData.image,
+                                    type:   newEventData.type,
+                                    attrTitle : 'Produit: ' + newEventData.attrTitle
+                            }]; 
+                         
+                         {% else %}
+                     
+                               var events = [{
+                                    id:     newEventData.id,
+                                    start:  new Date(newEventData.start),
+                                    color:  newEventData.color,
+                                    title:  newEventData.title,
+                                    modale: newEventData.modale,
+                                    image:  '{{web_files_root_dir}}' + newEventData.image,
+                                    type:   newEventData.type,
+                                    attrTitle : 'Produit: ' + newEventData.attrTitle
+                             }]; 
+                             
+                         {% endif %}  
+                     
+                       }   
+                            $('#calendar').fullCalendar('addEventSource', events);
+                            
+                            if (data.eventIdToDelete && data.eventIdToDelete !== null) {
+                                $('#calendar').fullCalendar( 'removeEvents', data.eventIdToDelete);
+                            }
+                  },
+                  error: function(data) {
+                       alert("An unexpeded error occured. Please reload the page or contact the administrator if this error persists: "+data);
+                  },
+                });
+                
+                return false;
+             });
+         });
+    </script>  
+{% endblock %}

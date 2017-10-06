@@ -1,0 +1,26 @@
+--PHP-mixed-{{ mailDatas.sRandom }}
+Content-Type: multipart/alternative; boundary="PHP-alt-{{ mailDatas.sRandom }}"
+
+--PHP-alt-{{ mailDatas.sRandom }} 
+Content-Type: text/plain; charset="{{ mailDatas.charset }}"
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit
+
+{{ mailDatas.sContentTXT }}
+
+--PHP-alt-{{ mailDatas.sRandom }}
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit
+
+{{ mailDatas.sContentHTML|raw }}
+
+--PHP-alt-{{ mailDatas.sRandom }}--
+
+{% if mailDatas.aAttachment.sAttachedFile | default(null) is not null %}
+--PHP-mixed-{{ mailDatas.sRandom }} 
+Content-Type: {{ mailDatas.aAttachment.sMimeType }}; name="{{ mailDatas.aAttachment.sNomFichier }}" 
+Content-Transfer-Encoding: base64 
+Content-Disposition: attachment 
+
+{{ mailDatas.aAttachment.sAttachedFile }}
+{% endif %}
+--PHP-mixed-{{ mailDatas.sRandom }}--

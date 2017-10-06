@@ -1,0 +1,10 @@
+From: {{ mailDatas.sSenderAdress }}
+To: {{ mailDatas.sMailDest }}
+Subject: {{ mailDatas.sSubject }}
+Content-Type: text/html; charset="{{ mailDatas.charset }}"
+Content-Transfer-Encoding: {{ mailDatas.encoding_bits }}bit
+
+<strong>Suivi quotidien des centres</strong><br/><br/>
+Le fichier a bien été généré.<br/>Vous pouvez le télécharger en cliquant sur le lien ci-dessous.<br/><br/>
+
+{{ mailDatas.sContentHTML|raw }}

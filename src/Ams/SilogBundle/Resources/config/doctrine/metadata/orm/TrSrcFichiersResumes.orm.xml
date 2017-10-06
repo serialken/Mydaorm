@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="TrSrcFichiersResumes" table="TR_SRC_FICHIERS_RESUMES">
+    <id name="ficId" type="integer" column="FIC_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="ficCode" type="string" column="FIC_CODE" length="45" nullable="false"/>
+    <field name="ficNom" type="string" column="FIC_NOM" length="50" nullable="false"/>
+    <field name="ficSocCodeExt" type="string" column="FIC_SOC_CODE_EXT" length="10" nullable="true"/>
+    <field name="ficDateParution" type="date" column="FIC_DATE_PARUTION" nullable="true"/>
+    <field name="ficChecksum" type="integer" column="FIC_CHECKSUM" nullable="false"/>
+    <field name="ficNbLignes" type="integer" column="FIC_NB_LIGNES" nullable="false"/>
+    <field name="ficNbExemplaires" type="integer" column="FIC_NB_EXEMPLAIRES" nullable="false"/>
+    <field name="ficDateTraitement" type="datetime" column="FIC_DATE_TRAITEMENT" nullable="false"/>
+    <field name="ficEtaMsg" type="string" column="FIC_ETA_MSG" length="255" nullable="true"/>
+    <many-to-one field="ficEtaCode" target-entity="TrFicFichiersEtat">
+      <join-columns>
+        <join-column name="FIC_ETA_CODE" referenced-column-name="ETA_CODE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="ficSrc" target-entity="TrSrcSources">
+      <join-columns>
+        <join-column name="FIC_SRC_ID" referenced-column-name="SRC_ID"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

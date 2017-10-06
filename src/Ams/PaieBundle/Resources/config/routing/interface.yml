@@ -1,0 +1,88 @@
+liste_int_journal:
+    pattern:  /liste-int-journal
+    defaults: { _controller: "AmsPaieBundle:PaiIntJournal:liste" }
+    
+gridliste_int_journal:
+    pattern:  /grid-int-journal
+    defaults: { _controller: "AmsPaieBundle:PaiIntJournal:grid" }
+
+ajax_actualisation_pai_int_journal:
+    pattern:  /ajax-actualisation-pai-int-journal
+    defaults: { _controller: "AmsPaieBundle:PaiIntJournal:ajaxActualisation" }
+
+
+liste_pai_stc:
+    pattern:  /liste-pai-stc
+    defaults: { _controller: "AmsPaieBundle:PaiStc:liste" }
+    
+gridliste_pai_stc:
+    pattern:  /grid-pai-stc
+    defaults: { _controller: "AmsPaieBundle:PaiStc:grid" }
+
+ajax_generer_pai_stc:
+    pattern:  /ajax-generer-pai-stc
+    defaults: { _controller: "AmsPaieBundle:PaiStc:ajaxGenerer" }
+
+
+liste_pai_mensuel:
+    pattern:  /liste-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:liste" }
+    
+ajax_generer_pai_mensuel:
+    pattern:  /ajax-generer-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:ajaxGenerer" }
+
+ajax_bloquer_pai_mensuel:
+    pattern:  /ajax-bloquer-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:ajaxBloquer" }
+
+ajax_debloquer_pai_mensuel:
+    pattern:  /ajax-debloquer-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:ajaxDebloquer" }
+
+ajax_bloquer_reclamation_pai_mensuel:
+    pattern:  /ajax-bloquer-reclamation-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:ajaxBloquerReclamation" }
+
+ajax_cloturer_pai_mensuel:
+    pattern:  /ajax-cloturer-pai-mensuel
+    defaults: { _controller: "AmsPaieBundle:PaiMensuel:ajaxCloturer" }
+
+
+liste_pai_int_traitement:
+    pattern:  /liste-pai-int-traitement
+    defaults: { _controller: "AmsPaieBundle:PaiIntTraitement:liste" }
+    
+gridliste_pai_int_traitement:
+    pattern:  /grid-pai-int-traitement
+    defaults: { _controller: "AmsPaieBundle:PaiIntTraitement:grid" }
+
+ajax_PleiadesNG:
+    pattern:  /ajax-PleiadesNG
+    defaults: { _controller: "AmsPaieBundle:PaiIntTraitement:ajaxPleiadesNG" }
+
+ajax_Octime:
+    pattern:  /ajax-Octime
+    defaults: { _controller: "AmsPaieBundle:PaiIntTraitement:ajaxOctime" }
+
+
+liste_pai_int_log:
+    pattern:  /liste-pai-int-log
+    defaults: { _controller: "AmsPaieBundle:PaiIntLog:liste" }
+    
+gridliste_pai_int_log:
+    pattern:  /grid-pai-int-log
+    defaults: { _controller: "AmsPaieBundle:PaiIntLog:grid" }
+
+ajax_combo_pai_int_traitement:
+    pattern:  /ajax-combo-pai-int-traitement
+    defaults: { _controller: AmsPaieBundle:PaiIntTraitement:ajaxCombo }
+
+
+liste_pai_int_alimentation:
+    pattern:  /liste-pai-int-alimentation
+    defaults: { _controller: "AmsPaieBundle:PaiIntAlimentation:liste" }
+    
+ajax_alimenter_pai_int_alimentation:
+    pattern:  /ajax-alimenter-pai-int-alimentation
+    defaults: { _controller: "AmsPaieBundle:PaiIntAlimentation:ajaxAlimenter" }

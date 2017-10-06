@@ -1,0 +1,12 @@
+{% import 'AmsPaieBundle:DhtmlxGrid:macros.html.twig' as m %}
+<rows>
+    <head>      
+        <column id="prd_caract_id"  type="ro"   hidden="true"></column> 
+        <column id="produit_id"     type="coro" width="*"   align="left"    sort="sortCombo">Produit{{comboProduit|raw}}</column> 
+        <column id="type_id"        type="coro" width="*"   align="left"    sort="sortCombo">Type{{comboType|raw}}</column> 
+        <column id="type_urssaf"    type="coro" width="120" align="left"    sort="sortCombo">Type Urssaf{{comboTypeUrssaf|raw}}</column> 
+        <column id="date_modif"     type="dhxCalendar"  width="80"      align="left"    sort="date"     format='%d/%m/%Y'>Date Modification</column> 
+    </head>
+    {% include 'AmsPaieBundle:PaiRefUrssaf:row.xml.twig' %}
+</rows>
+

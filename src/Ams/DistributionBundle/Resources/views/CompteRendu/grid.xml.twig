@@ -1,0 +1,31 @@
+
+<rows>
+    {% if liste %}
+        {% for row in liste %}
+            <row>
+                    <cell>{{row.libelle_depot|trim}}</cell>
+                    <cell>{{row.libelle_tournee}}</cell>
+                    <cell>{{row.code_tournee}}</cell>
+                    <cell>{{row.qte_prevue}}</cell>
+                    {% if row.qte_recue == null%}
+                        <cell>{{row.qte_prevue}}</cell>
+                    {% else %}
+                        <cell>{{row.qte_recue}}</cell>
+                    {% endif %}
+
+                    <cell>{% if row.heure_reception is not null  %}{{row.heure_reception | date('H:i')}}{% endif %}</cell>
+                    <cell>{{row.commentaires}}</cell>
+            </row>
+        {% endfor %}
+    {% else %}
+        <row>
+            <cell colspan="7">Aucune Donnée n'est Disponible</cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+        </row>
+    {% endif %}
+</rows>

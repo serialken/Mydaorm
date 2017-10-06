@@ -1,0 +1,137 @@
+{% extends '::modal.html.twig' %}
+{% block modalCss %}
+    <style>
+           .modal-dialog {
+            width: 1000px; 
+            height: 100px;
+            margin: 100px auto;
+        }
+        #rgpAbonne {
+          overflow: scroll;
+          height: 400px;
+          }
+    </style>
+{% endblock %}
+{% block modalTitre %}
+    <h4> Affectation d'abonnés à un point de livraison. </h4>
+{% endblock %}
+    
+ {% block modalContenu %}
+        {# on set cet valeur a 0 par defaut parceque on vient de la creation d'un point de livraison  #}
+     {% set link = link|default(0) %}
+    {% if listeAbonnes|length %}
+    
+       <div class="row well"> 
+           <table class="table">
+               <tr>
+                   <th> Adressse</th>
+                   <th> Compl. Adressse</th>
+                   <th>Lieu Dit</th>
+                   <th> Cp</th> 
+                   <th> Ville</th>
+                   <th> X </th>
+                   <th> Y</th> 
+               </tr>
+               <tr>
+                   <td>{{adresseRnvp.adresse}}</td>
+                   <td> {{adresseRnvp.cAdrs}}</td>
+                   <td>{{adresseRnvp.lieuDit}}</td>
+                   <td> {{adresseRnvp.cp}}</td>
+                   <td>{{adresseRnvp.ville}}</td>
+                   <td> {{adresseRnvp.geox}}</td> 
+                   <td> {{adresseRnvp.geoy}}</td>
+               </tr>
+           </table>
+       </div>
+       
+    
+        <div class="row well" id="rgpAbonne">
+            <div id="flashModalAlerteRegroupement">
+                {% include 'modalAlerte.html.twig' with {'type': 'defaultLoad', 'message':''}%}
+            </div>
+            {% if codeTournee is defined %}
+                <h3> Liste des abonnés {% if codeTournee != '' %} de la tournée {{codeTournee}}<br/> {% else %}autour du point de livraison.{% endif %}</h3>
+                {% else %}
+                <h3> Liste des abonnés autour du point de livraison.</h3>
+            {% endif %}
+            <form method="post"   id="formAbonne" action="{{path('adresse_regroupement_abonne',{'pointLivraisonId':pointLivraisonId})}}" >	
+                <input type="hidden" name="pointLivraisonId" value ="{{pointLivraisonId}}" >
+                <input type="hidden" name="utilisateurId" value ="{{utilisateurId}}" >
+                 <div id="loader"> </div>
+             <table class="table">
+                <tr>
+                    <th>Nom Prénom</th>
+                    <th> Rai. Sociale</th>
+                    <th>Adresse</th>
+                    <th>Cp</th>
+                    <th> Ville </th>
+                    <th> Début </th>
+                    <th> Fin </th>
+                    <th> </th>
+                   <td> 
+                      <button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-ok icon-white"></i> Ok </button>  
+                   </td> 
+                </tr>
+                {% for listeAbonne in listeAbonnes %}
+                    <tr>
+                        <td>{{listeAbonne.vol1}} </td>
+                        <td> {{listeAbonne.vol2}} </td>
+                        <td>{{listeAbonne.vol3}} {{listeAbonne.vol4}}</td>
+                         <td>{{listeAbonne.cp}}</td>
+                         <td>{{listeAbonne.ville}}</td>
+                         <td>{{listeAbonne.date_debut|date('d/m/Y')}}</td>
+                         {% if  listeAbonne.date_fin == app_date_fin %}
+                              <td> ---- </td>
+                        {% else %}
+                             <td>{{listeAbonne.date_fin|date('d/m/Y') }}  </td> 
+                        {% endif %}
+                         <td> <input type ="checkbox" name="adresseIds[]" value ="{{listeAbonne.id}}" > </td>
+                    </tr>
+                {% endfor %}
+             </table>
+              
+        </div>
+    {% else %}
+    <div class="btn-info" > Aucun abonné n'a été trouvé.</div>
+ {% endif %}   
+
+
+    <script type="text/javascript">  
+        $(document).ready(function() {
+               // On masque les alertes par défaut
+               $('#flashModalAlerteRegroupement .alert').hide();
+               $('#formAbonne').submit(function(e) {
+                   e.preventDefault();
+                   $('#loader').html("<img src='{{ asset('images/ajaxLoader.gif')}}'/>");
+                   var listeCoche=new Array();
+                    $('form#formAbonne').find('input:checked').each(function(){
+                      listeCoche.push($(this).attr('value'));
+                    });
+                   $.ajax({
+                     url: $(this).attr('action'),
+                     type: $(this).attr('method'),
+                     data: $(this).serialize(),
+                     cache: false,
+                     success: function(data) {
+                       $('#amsModal').html(data.modal);
+                       showSelecteurFlashAlert('flashModalAlerteRegroupement', 'success', data.message, 5000);
+                       $('#listeGeocode').html(data.background);
+                       $('#listeGeocode').show();
+                       $('#listeGeocode').addClass('well');
+                        {#  console.log({{link}});#}
+                        changeColor();
+                       $('#resultat').hide();
+                       $.map(listeCoche,function(k){
+                        $('form#formAbonne').find('input[value='+k+']').closest('tr').remove();
+                        });
+                     },
+                     error: function(data) {
+                   
+                          alert("une erreur s'est produite");
+                     }
+                   });
+                   return false; //
+               });
+        });
+    </script>
+{% endblock %}

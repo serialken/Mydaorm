@@ -1,0 +1,25 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE            ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['societe_id'       ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['emploi_code'      ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['qualite'          ,'#select_filter_strict'    ,null               ,isLength1          ,null                   ,null                   ,null              ,null],
+['libelle'          ,'#select_filter_strict'    ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['borne_inf'        ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['borne_sup'        ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['valeur'           ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['prime'            ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+['envoiNG'          ,'#numeric_filter'          ,null               ,isNotEmpty         ,null                   ,null                   ,null              ,null],
+    ];
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}","");
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}Gestion des infos portages{% endblock %}
+
+{% block body %}
+<div class="">
+</div>
+<div class="well info_portage">
+    <div id="modalAlerte">
+    </div>
+    <form method="post" class="form info_portage" id="formInfoPortage" action="{{ path('portage_details',{'id': info.id })}}">          
+      {{ form_widget(form) }}
+      <br/>
+      <div id="inputForm">
+          <input type="submit" value="Valider" class="btn btn-primary" id="submit_form"/>
+      </div>
+    </form>
+</div>
+<div class="flashbag">
+    <table>
+        {% if app.session.flashbag.has('notice')==true %}
+            <tr>
+                <td class="center success">
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        {{ flashMessage }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+<script type="text/javascript">
+       $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+       $("form input.date").datepicker({
+            dateFormat: 'dd/mm/yy', 
+            firstDay:1
+        }).attr("readonly","readonly");
+</script>  
+{% endblock %}

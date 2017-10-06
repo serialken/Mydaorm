@@ -1,0 +1,263 @@
+{% extends '::dhtmlx_grid.html.twig' %}
+{% block title %}Gestions des etiquettes{% endblock %}
+{% block body %}
+  <style>
+    label{width:90px;font-size:14px;text-align:right;}
+    select,input[type=text]{width: 100%}
+    fieldset legend{width:auto;font-size:14px;margin-bottom:0}
+    fieldset {padding:0.35em 0.625em 0.75em;border:none;border-top:1px solid #c0c0c0}
+    .glyphicon-chevron-down{font-size:10px}
+    #search-city-adr{position:absolute;right:2px;top:6px}
+    .popover {width:300px}
+    .interface .table-striped .point_livraison{background-color:#B31220;font-size:14px;color:#FFF}
+    .point_livraison span{float:right}
+    #form_Tournee{width:100%}
+    .checkAll{float:right}
+  </style>
+
+    <div class="well" style="position:relative;min-height:155px">
+      {% for flashMessage in app.session.flashbag.get('arbitrage_limite') %}
+        <div class="alert alert-danger">
+          {{ flashMessage }}
+        </div>
+      {% endfor %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="alert alert-info"> Pour une question d'ergonomie nous avons limité les résultats à 100, excepté pour les recherches comprenant une tournée, ou un produit</div>
+          <form action="" method="post">
+           <fieldset>
+             <legend> &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> Filtre(s) &nbsp;</legend>
+             <table>
+               <tr>
+                 <td> 
+                    {{ form_label(form.Adresse) }} :
+                 </td>
+                 <td colspan="4"> 
+                     {{ form_widget(form.Adresse)}}
+                 </td>
+               </tr>
+               <tr>
+                 <td> 
+                    {{ form_label(form.Depot) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.Depot)}}
+                 </td>
+                 <td> 
+                    {{ form_label(form.Tournee) }} :
+                 </td>
+                 <td colspan="2"> 
+                  {% if sSelectTournee %}
+                    {{sSelectTournee | raw}}
+                  {% else %}
+                     {{ form_widget(form.Tournee)}}
+                  {% endif %}
+                 </td>
+               </tr>
+               <tr>
+                 <td> 
+                    {{ form_label(form.NomAbo) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.NomAbo)}}
+                 </td>
+                 <td> 
+                    {{ form_label(form.NumAbo) }} :
+                 </td>
+                 <td colspan="2"> 
+                     {{ form_widget(form.NumAbo)}}
+                 </td>
+               </tr>
+               <tr>
+                 <td> 
+                    {{ form_label(form.Zip) }} :
+                 </td>
+                 <td style="position:relative"> 
+                     {{ form_widget(form.Zip)}}
+                      <i id="search-city-adr" class="glyphicon glyphicon-search" style="cursor:pointer"onmouseover="affPopoverLien(this);" data-description="Rechercher la commune" 
+                                                                data-placement="bottom" data-content="Cet icône permet de rechercher les communes associées au code postal entré dans le champ précédent. A la suite d'un clique le champ commune n'est rempli qu'avec les communes associées au code postal !!!!" ></i>
+                 </td>
+                 <td> 
+                    {{ form_label(form.Commune) }} :
+                 </td>
+                 <td colspan="2"> 
+                     {{ form_widget(form.Commune)}}
+                 </td>
+               </tr>
+               <tr>
+                 <td> 
+                    {{ form_label(form.Produit) }} :
+                 </td>
+                 <td> 
+                     {{ form_widget(form.Produit)}}
+                 </td>
+                 
+                 <td> 
+                    {{ form_label(form.Flux) }} :
+                 </td>
+                 <td colspan="2"> 
+                     {{ form_widget(form.Flux)}}
+                 </td>
+               </tr>
+               </tr>
+               <tr>
+                 <td> <input type="submit" value="Rechercher" class="btn btn-primary" id="submit" /> </td>
+               </tr>
+             </table>
+           </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+       
+    {% if query %}
+    <div style='position:relative; width:100%;'>
+      <table class="table table-bordered table-striped" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td> Depot </td>
+          <td> Produit </td>
+          <td> Nom de l'abonné </td>
+          <td> Adresse de l'abonné </td>
+          <td> Etiquette <input type="checkbox" class="checkAll" name="checkAll"/></td>
+        </tr>
+        {% set checked = '' %}
+        {% for row in query %}
+            {% if row.etiquette is not null %} {% set checked = 'checked="checked"' %} {% else %} {% set checked = '' %} {% endif %}
+            <tr>
+              <td> {{ row.libelle }}</td>
+              <td> {{ row.produit_libelle }}</td>
+              <td> {{ row.nom_abonne }}</td>
+              <td> {{ row.adresse }}</td>
+              <td>  <input type="checkbox" class="etiquette_checkbox" name="{{row.id}}" {{checked}}/> </td>
+            </tr>
+        {% endfor %}
+      </table> 
+      <form action="{{path('adresse_etiquette_crud')}}" method="post">
+        <input type="hidden" name="abonne_soc_id_add"/>
+        <input type="hidden" name="abonne_soc_id_delete"/>
+        <input type="button" class="btn btn-danger btn-validation" value="Valider les modifications" />
+      </form>
+    </div>
+    {% endif %}
+
+<script>
+  
+  function checkEtiquette(){
+    var sAbonneSocIdAdd = '';
+    var sAbonneSocIdErase = '';
+    var countAdd = 0;
+    var countErase = 0 ;
+    $( ".etiquette_checkbox" ).each(function( index ) {
+       if($(this).is(':checked')){
+          if(countAdd == 0)
+            sAbonneSocIdAdd += $(this).attr('name');
+          else
+            sAbonneSocIdAdd += '_'+$(this).attr('name');
+          countAdd++;
+       }
+       else{
+          if(countErase == 0)
+            sAbonneSocIdErase += $(this).attr('name');
+          else
+            sAbonneSocIdErase += '_'+$(this).attr('name');
+          countErase++;
+       }
+    });
+    $('input[name=abonne_soc_id_add]').val(sAbonneSocIdAdd);
+    $('input[name=abonne_soc_id_delete]').val(sAbonneSocIdErase);
+  }
+  
+  checkEtiquette();
+  
+  function etiquetteCrud(){
+      $.ajax({
+        url: "{{path('adresse_etiquette_crud')}}",
+        type: 'POST',
+        data: { 
+          abonne_soc_id_add: $('input[name=abonne_soc_id_add]').val(),
+          abonne_soc_id_delete :  $('input[name=abonne_soc_id_delete]').val()
+        },
+        success: function(data) { 
+         },
+         error: function (xhr, ajaxOptions, thrownError) {
+            $('#amsModalLabel').html('Une erreur est survenue.');
+            $('#amsModalBody').html(thrownError+' - code erreur:'+xhr.status);
+        }        
+      });
+  }
+  $(function(){
+
+    $('.checkAll').change(function(){
+      if($('.checkAll').is(':checked'))
+        $('.etiquette_checkbox').attr('checked','checked');
+      else
+        $('.etiquette_checkbox').removeAttr('checked');
+      
+        checkEtiquette();
+    });
+    
+    $('.etiquette_checkbox').click(function(){
+      checkEtiquette();
+    });
+
+    $('.btn-validation').click(function(){
+        $('.modal-header').html('Gestion des etiquettes');
+        $('.modal-body').html('<div class="alert alert-info"> Voulez-vous valider vos modification ? </div> <div class="btn-close btn-info btn btn-xs"> Annuler </div> <div class="btn-xs btn btn-danger btn-confirm"> Oui </div>');
+        $('#amsModal').modal('show');
+    });
+
+    $(document).delegate('.btn-close',"click",function(){
+      $('#amsModal').modal('hide');
+    });
+    
+    $(document).delegate('.btn-confirm',"click",function(){
+      $('.modal-body').html('<div class="alert alert-warning"> Veuillez patienter le temps du traitement </div>');
+      etiquetteCrud();
+    });
+      
+    $( document ).ajaxStop(function() {
+        $('#amsModal').modal('hide');
+    });
+  
+  
+    $('#form_Depot').change(function(){
+      var iDepot =  $(this).val();
+      $.ajax({
+        url: "{{path('adresse_etiquette_tournees')}}",
+        type: 'POST',
+        data: { 
+          iDepot : iDepot
+        },
+        beforeSend :function(){
+            $('#form_Tournee').closest('td').html('<img id ="form_Tournee" style="width:20px;display:block;margin-left:4px" src="{{ asset('images/ajaxLoader.gif')}}"/> ');
+        },
+        success: function(data) { 
+          $('#form_Tournee').closest('td').html(data.tournees);
+        },
+         error: function (xhr, ajaxOptions, thrownError) {
+        }        
+      });
+    });
+    
+    $('#form_Depot').change();
+    
+    var init_ville =  $('#form_Commune').html();
+    $('#search-city-adr').click(function() {
+      $('#form_Commune').html(init_ville);
+      var pattern = "^" + $("#form_Zip").val();
+      var re = new RegExp(pattern);
+      $('#form_Commune option').each(function( index ) {
+          if (re.test($(this).html())) {
+            $(this).toggleOption(true);
+          } else if ($(this).val() != '') {
+            $(this).toggleOption(false);
+          }
+      });
+    });
+    
+
+  });
+
+</script>
+
+{% endblock %}

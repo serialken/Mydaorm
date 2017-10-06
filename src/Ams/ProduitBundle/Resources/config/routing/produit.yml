@@ -1,0 +1,36 @@
+
+produit_creation_ajax:
+    pattern:  /create_ajax
+    defaults: { _controller: "AmsProduitBundle:Produit:createAjax" }
+    
+produit_modification_ajax:
+    pattern:  /update_ajax
+    defaults: { _controller: "AmsProduitBundle:Produit:updateAjax" }
+    
+produit_detail_ajax:
+    pattern:  /detail_ajax
+    defaults: { _controller: "AmsProduitBundle:Produit:detailAjax" }
+    
+produit_liste_ajax:
+    pattern: /liste/ajax/{id}
+    defaults: { _controller: "AmsProduitBundle:Produit:ajaxListeProduits" }
+    requirements:
+        id: \d+
+
+produit_suppression:
+    pattern: /delete/{produitId}
+    defaults: { _controller: "AmsProduitBundle:Produit:deleteProduits" }
+    requirements:
+        produitId: \d+
+        
+produit_type_liste_constante:
+    pattern: /produit-type-liste-constante
+    defaults: { _controller: "AmsProduitBundle:Produit:listeProduits" }
+        
+produit_type_liste_complete:
+    pattern: /liste-tous-produits
+    defaults: { _controller: "AmsProduitBundle:Produit:ajaxListeTousProduits" }
+    
+produit_check_exits:
+    pattern: /check
+    defaults: { _controller: "AmsProduitBundle:Produit:check" }

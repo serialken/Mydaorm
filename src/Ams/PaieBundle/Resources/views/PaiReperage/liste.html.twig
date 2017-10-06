@@ -1,0 +1,52 @@
+{% extends 'AmsPaieBundle:DhtmlxGrid:liste.html.twig' %}
+{% block cmd %}
+    <span  style="float:left;"><input type="checkbox" id="filtreSplit"/> Cacher les tournées splittées</span>
+    <span><a href="{{path('emargemement')}}"><img src="{{ asset('images/dhtmlx_excel.png') }}" alt="Export Excel" >Emargement</a></span>
+{% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    <script>    
+    dhtmlxInit=[
+//ENTETE        ,HEADER1                    ,HEADER2            ,VERIFICATOR        ,BEFOREINSERT           ,AFTERINSERT            ,ONSELECT          ,ONCHANGE
+['groupe_id'    ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['>Journal'     ,null                       ,null               ,null               ,null                   ,null                   ,'goJournal(rId)'   ,null],
+['>Planning'    ,null                       ,null               ,null               ,null                   ,null                   ,'goPlanning(rId)'  ,null],
+['employe_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_mere' ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['tournee_org_id',null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+['journal_id'   ,null                       ,null               ,null               ,null                   ,null                   ,null               ,null],
+    ];
+
+    $(document).ready(function() {
+        dhtmlxLoadCookieObject($('#filtreSplit'));
+    });
+
+    function onLoadGrid(){
+        grid = new dhtmlXGridObject('gridbox');
+        initGrid("{{dhtmlx_img}}", "{{path('grid'~route)|raw}}");
+        grid.enableColumnMove(false);
+        dp = new dataProcessor("{{path('pai_action_dhtmlx',{'repositoryName':repository})|raw}}");
+        initDataProcessor();
+        initDateDistrib();
+        }
+    function dhtmlxgridOnLoad(){
+        gridFilter(5);
+        $('#filtreSplit').on('change', function() {
+            gridFilter(5);
+            dhtmlxSaveCookieObject($('#filtreSplit'));
+        });
+    }
+    function dhtmlxgridOnEditCell(stage, rId, cInd, nValue, oValue){
+        if (cInd<=7) return false; // groupe_id, tournee_id, employe_id
+        return true;
+    }
+    function goJournal(rId){
+        goLinkGrid("{{path('liste_pai_journal')|raw}}"+"?journal_id=",grid.cellById(rId,7).getValue());
+        }
+    function goPlanning(rId){
+        goLinkGrid("{{path('pai_planning')|raw}}"+"?employe_id=",grid.cellById(rId,4).getValue());
+        }
+    </script>
+{% endblock %}

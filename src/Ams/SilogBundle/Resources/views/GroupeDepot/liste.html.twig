@@ -1,0 +1,65 @@
+{% extends app.request.xmlHttpRequest 
+			? 'AmsSilogBundle::gabarit_base_ajax.html.twig'
+			: 'AmsSilogBundle::gabarit_base.html.twig' %}
+
+{% block title %}Groupes de dépots{% endblock %}
+	
+{% block body %}	
+	{% if app.request.xmlHttpRequest %}				
+		{{ grid(grid, 'AmsSilogBundle:Grid:grid_base_js.jquery.html.twig') }}
+	{% else %}	
+		<div class="bloc">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td rowspan="2" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+				<td class="title">Filtres</td>
+			</tr><tr>
+				<td class="content">
+				{% block grid_filters %}
+				{{ grid_search(grid, 'AmsSilogBundle:Grid:grid_base.html.twig') }} 
+				{% endblock %}
+				</td>
+			</tr>
+		</table>
+		</div>
+	
+		<div class="bloc">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td rowspan="{% if app.session.flashbag.has('notice')==true %}3{% else %}2{% endif %}" class="border"><img src="{{ asset('images/trans.png') }}" width="10" height="1"></td>
+				<td class="title">
+					<table cellspacing="0" cellpadding="0" width="100%">
+						<tr>
+							<td class="full title">Liste des groupes de dépôts ({{ grid_pager_totalcount(grid) }})</td>
+							<td class="link" nowrap="nowrap">
+								{% if lien_nouveau is defined %}
+                                                                    <a  href = "" data-toggle="modal"   class="nyroModal" data-target="#amsModal" onClick="ChargeModal('{{ path(lien_nouveau) }}');" > Ajouter un groupe de dépôts</a>      
+								{% else %}
+									&nbsp;
+								{% endif %}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			{% if app.session.flashbag.has('notice')==true %}
+			<tr>
+				<td class="center succes">
+					{% for flashMessage in app.session.flashbag.get('notice') %}
+						{{ flashMessage }}
+					{% endfor %}
+				</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<td class="content">
+					{{ grid(grid, 'AmsSilogBundle:Grid:grid_base_js.jquery.html.twig') }}
+				</td>
+			</tr>
+		</table>
+		</div>		
+		
+	{% endif %}
+
+{% endblock %}
+	

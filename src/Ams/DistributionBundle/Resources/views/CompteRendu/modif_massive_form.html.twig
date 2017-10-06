@@ -1,0 +1,31 @@
+<form method="post" id="formCRMassif" action="{{path('compte_rendu_distribution_modif_massive')}}">
+    <table class="table" style="margin-top: 20px; background-color: white;">
+        <caption>Saisie massive de comptes rendus</caption>
+        <tr class="info">
+            <td>{{ form_label(form.typeAnomalie) }}</td>
+            <td>{{ form_label(form.typeIncident) }}</td>
+            <td>{{ form_label(form.heureFinDeTournee) }}</td>
+            <td>{{ form_label(form.cmtIncidentAb) }}</td>
+            <td>{{ form_label(form.cmtIncidentDiff) }}</td>
+        </tr>
+        <tr>
+            <td>{{ form_widget(form.typeAnomalie) }}</td>
+            <td>{{ form_widget(form.typeIncident) }}</td>
+            <td>{{ form_widget(form.heureFinDeTournee) }}</td>
+            <td>{{ form_widget(form.cmtIncidentAb) }}</td>
+            <td>{{ form_widget(form.cmtIncidentDiff) }}</td>
+        </tr>
+        <tr>
+            <td>{{ form_errors(form.typeAnomalie) }}</td>
+            <td>{{ form_errors(form.typeIncident) }}</td>
+            <td>{{ form_errors(form.heureFinDeTournee) }}</td>
+            <td>{{ form_errors(form.cmtIncidentAb) }}</td>
+            <td>{{ form_errors(form.cmtIncidentDiff) }}</td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <button class="btn btn-primary" onclick="modifMassive();" type="button">Enregistrer</button>
+            </td>
+        </tr>
+    </table>
+</form>    

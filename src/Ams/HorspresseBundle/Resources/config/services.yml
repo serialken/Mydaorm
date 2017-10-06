@@ -1,0 +1,7 @@
+parameters:
+#    ams_horspresse.example.class: Ams\HorspresseBundle\Example
+
+services:
+#    ams_horspresse.example:
+#        class: %ams_horspresse.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

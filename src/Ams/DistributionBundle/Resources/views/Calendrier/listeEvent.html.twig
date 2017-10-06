@@ -1,0 +1,7 @@
+<div class="liste event tab-content" id="liste_events" style="overflow: hidden;">
+    {% for day in days %}
+        <div class="calendrier tab-pane fade" id="calendrier_{{ day.jour|date('m_d_Y') }}">
+            {% include 'AmsSilogBundle:Calendrier:menuEvent.html.twig' %}
+        </div>
+    {% endfor %}
+</div>
